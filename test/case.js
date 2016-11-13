@@ -1,5 +1,6 @@
 const Case = require('../src/vm/case');
-require('../src/linker/statement/executable/expression');
+require('../src/linker/statement/executable/expression/literal');
+require('../src/linker/statement/executable/expression/sync');
 require('../src/linker/statement/executable/jumpto');
 require('../src/linker/statement/executable/wait');
 require('../src/linker/statement/executable/return');
@@ -14,8 +15,30 @@ const syntaxTreeA = {
 		SEGMENT: [
 			{
 				BODY: {
-					SYMBOL: 'EXPRESSION',
-					EXPRESSION: '\"hello world2!\"'
+					SYMBOL: 'ES+',
+					LEFT: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: '[ES+]hello '
+						}
+					},
+					RIGHT: {
+						BODY: {
+							SYMBOL: 'ES+',
+							LEFT: {
+								BODY: {
+									SYMBOL: 'LITERAL',
+									DESTINATION: 'world.'
+								}
+							},
+							RIGHT: {
+								BODY: {
+									SYMBOL: 'LITERAL',
+									DESTINATION: 23333
+								}
+							}
+						}
+					}
 				}
 			},
 			{
@@ -23,15 +46,15 @@ const syntaxTreeA = {
 					SYMBOL: 'BRANCH',
 					CONDITION: {
 						BODY: {
-							SYMBOL: 'EXPRESSION',
-							EXPRESSION: false
+							SYMBOL: 'LITERAL',
+							DESTINATION: false
 						}
 					},
 					SEGMENT_TRUE: [
 						{
 							BODY: {
-								SYMBOL: 'EXPRESSION',
-								EXPRESSION: 'BRANCH_TRUE'
+								SYMBOL: 'LITERAL',
+								DESTINATION: 'BRANCH_TRUE'
 							}
 						},
 						{
@@ -39,8 +62,8 @@ const syntaxTreeA = {
 								SYMBOL: 'RETURN', 
 								RET: {
 									BODY: {
-										SYMBOL: 'EXPRESSION',
-										EXPRESSION: 250
+										SYMBOL: 'LITERAL',
+										DESTINATION: 250
 									}
 								}
 							}
@@ -49,8 +72,8 @@ const syntaxTreeA = {
 					SEGMENT_FALSE: [
 						{
 							BODY: {
-								SYMBOL: 'EXPRESSION',
-								EXPRESSION: 'BRANCH_FALSE'
+								SYMBOL: 'LITERAL',
+								DESTINATION: 'BRANCH_FALSE'
 							}
 						}
 					]
@@ -61,8 +84,8 @@ const syntaxTreeA = {
 					SYMBOL: 'JUMPTO',
 					URL: {
 						BODY: {
-							SYMBOL: 'EXPRESSION',
-							EXPRESSION: '\"http://hello.world\"'
+							SYMBOL: 'LITERAL',
+							DESTINATION: '\"http://hello.world\"'
 						}
 					}
 				}
@@ -72,8 +95,8 @@ const syntaxTreeA = {
 					SYMBOL: 'WAIT',
 					DELAY: {
 						BODY: {
-							SYMBOL: 'EXPRESSION',
-							EXPRESSION: 1000
+							SYMBOL: 'LITERAL',
+							DESTINATION: 1000
 						}
 					}
 				}
@@ -89,15 +112,15 @@ const syntaxTreeA = {
 					SYMBOL: 'LOOP',
 					CONDITION: {
 						BODY: {
-							SYMBOL: 'EXPRESSION',
-							EXPRESSION: true
+							SYMBOL: 'LITERAL',
+							DESTINATION: true
 						}
 					},
 					SEGMENT: [
 						{
 							BODY: {
-								SYMBOL: 'EXPRESSION',
-								EXPRESSION: '[LOOP] running'
+								SYMBOL: 'LITERAL',
+								DESTINATION: '[LOOP] running'
 							}
 						}
 					]
@@ -108,16 +131,16 @@ const syntaxTreeA = {
 					SYMBOL: 'RETURN', 
 					RET: {
 						BODY: {
-							SYMBOL: 'EXPRESSION',
-							EXPRESSION: 2000
+							SYMBOL: 'LITERAL',
+							DESTINATION: 2000
 						}
 					}
 				}
 			},
 			{
 				BODY: {
-					SYMBOL: 'EXPRESSION',
-					EXPRESSION: '\"hello world3!\"'
+					SYMBOL: 'LITERAL',
+					DESTINATION: '\"hello world3!\"'
 				}
 			}
 		]
@@ -131,8 +154,8 @@ const syntaxTreeB = {
 		SEGMENT: [
 			{
 				BODY: {
-					SYMBOL: 'EXPRESSION',
-					EXPRESSION: '[Process sub] hello world'
+					SYMBOL: 'LITERAL',
+					DESTINATION: '[Process sub] hello world'
 				}
 			}
 		]
@@ -140,7 +163,7 @@ const syntaxTreeB = {
 };
 
 const cccc = new Case({
-	processList: {
+	processMap: {
 		main: new Process(syntaxTreeA),
 		sub: new Process(syntaxTreeB)
 	}

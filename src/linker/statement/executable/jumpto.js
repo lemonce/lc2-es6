@@ -10,9 +10,9 @@ const ExecutableStatement = require('../executable');
  */
 class JumptoStatement extends ExecutableStatement {
 	constructor ({POSITION, BODY}) {
-		super({POSITION, BODY});
+		super({POSITION});
 
-		this.url = JumptoStatement.linkBySymbol(BODY.URL);
+		this.url = this.$linkBySymbol(BODY.URL);
 	}
 	
 	*execute(vm) {

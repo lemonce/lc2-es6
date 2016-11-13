@@ -11,7 +11,7 @@ class ReturnStatement extends ExecutableStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.ret = ReturnStatement.linkBySymbol(BODY.RET);
+		this.ret = this.$linkBySymbol(BODY.RET);
 	}
 
 	*execute (vm) {

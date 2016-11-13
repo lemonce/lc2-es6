@@ -1,7 +1,11 @@
 
 
 class Scope {
-	constructor () {
+	constructor (preset = {}) {
+		if (typeof preset !== 'object') {
+			throw new Error('[LCVM]: Scope presets is not a object.');
+		}
+		Object.assign(this, preset);
 
 	}
 

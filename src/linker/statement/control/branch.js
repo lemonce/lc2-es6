@@ -13,7 +13,7 @@ class BranchStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.condition = BranchStatement.linkBySymbol(BODY.CONDITION);
+		this.condition = this.$linkBySymbol(BODY.CONDITION);
 
 		this.segmentTrue = this.$linkSegment(BODY.SEGMENT_TRUE);
 		this.segmentFalse = this.$linkSegment(BODY.SEGMENT_FALSE);

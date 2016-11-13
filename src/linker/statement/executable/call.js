@@ -14,15 +14,6 @@ class CallStatement extends ExecutableStatement {
 		this.identifier = BODY.IDENTIFIER;
 	}
 
-	get eventArgs () {
-		return {
-			type: 'CALL',
-			args: {
-				delay: this.delay
-			}
-		};
-	}
-
 	*execute (vm) {
 		//TODO regist scope to vm scope stack.
 		const invoking = vm.$getProcess(this.identifier).execute(vm);

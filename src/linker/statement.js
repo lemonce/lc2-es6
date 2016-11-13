@@ -32,7 +32,7 @@ class Statement {
 		return this;
 	}
 
-	static linkBySymbol (syntaxNode) {
+	$linkBySymbol (syntaxNode) {
 		return new statementClassMap[syntaxNode.BODY.SYMBOL](syntaxNode);
 	}
 

@@ -5,7 +5,8 @@ const ControlStatement = require('../control');
  * 		BODY: {
  * 			SYMBOL: 'PROCESS',
  * 			IDENTIFIER: <string | name of the process>,
- *          SEGMENT: [<Statement...>]
+ *          SEGMENT: [<Statement...>],
+ *          ARGUMENTS: [<expression | argument identifier>,...]
  * 		}
  * 	}
  */
@@ -14,6 +15,7 @@ class ProcessStatement extends ControlStatement {
 		super({POSITION, BODY});
 
 		this.identifier = BODY.IDENTIFIER;
+		// this.arguments = this.$linkSegment(BODY.ARGUMENTS);
 
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}

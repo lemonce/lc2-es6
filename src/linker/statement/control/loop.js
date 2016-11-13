@@ -12,7 +12,7 @@ class LoopStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.condition = LoopStatement.linkBySymbol(BODY.CONDITION);
+		this.condition = this.$linkBySymbol(BODY.CONDITION);
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}
 

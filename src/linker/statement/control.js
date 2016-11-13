@@ -13,7 +13,7 @@ class ControlStatement extends Statement {
 		const linkedSegment = [];
 
 		segment.forEach(statement => {
-			const linked = Statement.linkBySymbol(statement);
+			const linked = this.$linkBySymbol(statement);
 			linkedSegment.push(linked);
 		});
 

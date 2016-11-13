@@ -11,7 +11,7 @@ class WaitStatement extends ExecutableStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.delay = WaitStatement.linkBySymbol(BODY.DELAY);
+		this.delay = this.$linkBySymbol(BODY.DELAY);
 	}
 	
 	*execute(vm) {

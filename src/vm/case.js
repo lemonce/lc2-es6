@@ -28,20 +28,20 @@ const defaultOptions = {
 
 class Case extends Emitter {
 	
-	constructor({processList, options = {}, external}, callback = () => { }) {
+	constructor({processMap, options = {}, root}, callback = () => { }) {
 		super();
 
 		this.$watchdog = new Watchdog();
 
 		this.signal = signal.IDLE;
-		this.processList = processList;
-		this.rootScope = null;
-		this.external = external;
+		this.processMap = processMap;
 		this.options = Object.assign(options, defaultOptions);
 
 		this.$runtime = null;
+		this.rootScope = new Scope(root);
+		this.loop = 0;
 		this.mainProcessInvoking = callMainProcess;
-		this.scopeStack = [];
+		this.callingStack = [];
 
 		callback(this);
 
@@ -106,7 +106,7 @@ class Case extends Emitter {
 	}
 
 	$getProcess(identifier) {
-		return this.processList[identifier];
+		return this.processMap[identifier];
 	}
 
 	$bootstrap() {
@@ -114,11 +114,11 @@ class Case extends Emitter {
 		this.rootScope = new Scope();
 		this.emit('booting', this);
 
-		const call = this.$runtime = this.mainProcessInvoking.execute(this);
+		this.$runtime = this.mainProcessInvoking.execute(this);
 		this.signal = signal.EXECUTING;
 		this.clock();
 
-		return call;
+		return this;
 	}
 
 	$check() {
@@ -131,12 +131,12 @@ class Case extends Emitter {
 	}
 
 	pushScope(scopeObject) {
-		this.scopeStack.push(scopeObject);
+		this.callingStack.push(scopeObject);
 		return this;
 	}
 
 	popScope() {
-		const scopeObject = this.scopeStack.pop();
+		const scopeObject = this.callingStack.pop();
 		return this;
 	}
 
