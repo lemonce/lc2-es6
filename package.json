@@ -14,7 +14,9 @@
   ],
   "author": "ChaosLee",
   "license": "GPL-3.0",
-  "dependencies": {},
+  "dependencies": {
+    "randexp": "^0.4.3"
+  },
   "devDependencies": {
     "jsdoc": "^3.4.3",
     "mocha": "^3.1.2"

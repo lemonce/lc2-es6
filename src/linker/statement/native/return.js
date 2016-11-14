@@ -1,4 +1,4 @@
-const ExecutableStatement = require('../executable');
+const Statement = require('../statement');
 /**
  * 	{
  * 		BODY: {
@@ -7,7 +7,7 @@ const ExecutableStatement = require('../executable');
  * 		}
  * 	}
  */
-class ReturnStatement extends ExecutableStatement {
+class ReturnStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
@@ -16,8 +16,9 @@ class ReturnStatement extends ExecutableStatement {
 
 	*execute (vm) {
 		yield* this.ret.execute(vm);
-		yield vm.$setReturn()
-			.popScope()
+
+		vm.signal = Symbol.for('RETURN');
+		yield vm.popScope()
 			.$writeback(null, vm.ret, this.position);
 	}
 }

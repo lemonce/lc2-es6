@@ -7,13 +7,13 @@ class Watchdog extends Emitter {
 		this.lifeId = null;
 		this.isWatching = false;
 		this.checkTime = 0;
-		this.limit = 0;
 	}
 
 	work(cycle = 100) {
+		this.rest();
 		this.lifeId = setInterval(() => {
 			if (this.isWatching) {
-				if (Date.now() > this.checkTime + this.limit) {
+				if (Date.now() > this.checkTime) {
 					this.wake();
 				}
 			}
@@ -26,8 +26,7 @@ class Watchdog extends Emitter {
 
 	watch (limit, wakeFn = () => {}) {
 		this.isWatching = true;
-		this.limit = limit;
-		this.checkTime = Date.now();
+		this.checkTime = Date.now() + limit;
 		this.wakeFn = wakeFn;
 	}
 

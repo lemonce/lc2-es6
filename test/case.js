@@ -1,17 +1,12 @@
-const Case = require('../src/vm/case');
-require('../src/linker/statement/executable/expression/value/literal');
-require('../src/linker/statement/executable/expression/operator/sync/sync');
-require('../src/linker/statement/executable/jumpto');
-require('../src/linker/statement/executable/wait');
-require('../src/linker/statement/executable/return');
-require('../src/linker/statement/control/branch');
-require('../src/linker/statement/control/loop');
-const Process = require('../src/linker/statement/control/process');
+/*eslint-disable*/
+const {LCVM} = require('../src/vm');
+const {link} = require('../src/linker');
 
 const syntaxTreeA = {
 	BODY: {
 		SYMBOL: 'PROCESS',
 		IDENTIFIER: 'main',
+		PARAMETER: [],
 		SEGMENT: [
 			{
 				BODY: {
@@ -33,8 +28,8 @@ const syntaxTreeA = {
 							},
 							RIGHT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
-									DESTINATION: 23333
+									SYMBOL: 'VARIABLE',
+									IDENTIFIER: 'abc'
 								}
 							}
 						}
@@ -81,7 +76,7 @@ const syntaxTreeA = {
 			},
 			{
 				BODY: {
-					SYMBOL: 'JUMPTO',
+					SYMBOL: 'BROWSER::JUMPTO',
 					URL: {
 						BODY: {
 							SYMBOL: 'LITERAL',
@@ -104,7 +99,53 @@ const syntaxTreeA = {
 			{
 				BODY: {
 					SYMBOL: 'CALL',
-					IDENTIFIER: 'sub'
+					IDENTIFIER: 'sub',
+					ARGUMENTS: [
+						{
+							BODY: {
+								SYMBOL: 'LITERAL',
+								DESTINATION: 'abecd'
+							}
+						}
+					]
+				}
+			},
+			{
+				BODY: {
+					SYMBOL: 'CALL',
+					IDENTIFIER: 'random',
+					ARGUMENTS: [
+						{
+							BODY: {
+								SYMBOL: 'LITERAL',
+								DESTINATION: /\w{5,10}/
+							}
+						}
+					]
+				}
+			},
+			{
+				BODY: {
+					SYMBOL: 'ES=',
+					IDENTIFIER: 'length',
+					SOURCES: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: 3
+						}
+					}
+				}
+			},
+			{
+				BODY: {
+					SYMBOL: 'ES=',
+					IDENTIFIER: 'index',
+					SOURCES: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: 0
+						}
+					}
 				}
 			},
 			{
@@ -112,8 +153,19 @@ const syntaxTreeA = {
 					SYMBOL: 'LOOP',
 					CONDITION: {
 						BODY: {
-							SYMBOL: 'LITERAL',
-							DESTINATION: true
+							SYMBOL: 'ES<',
+							LEFT: {
+								BODY: {
+									SYMBOL: 'VARIABLE',
+									IDENTIFIER: 'index'
+								}
+							},
+							RIGHT: {
+								BODY: {
+									SYMBOL: 'VARIABLE',
+									IDENTIFIER: 'length'
+								}
+							}
 						}
 					},
 					SEGMENT: [
@@ -121,6 +173,29 @@ const syntaxTreeA = {
 							BODY: {
 								SYMBOL: 'LITERAL',
 								DESTINATION: '[LOOP] running'
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'ES=',
+								IDENTIFIER: 'index',
+								SOURCES: {
+									BODY: {
+										SYMBOL: 'ES+',
+										LEFT: {
+											BODY: {
+												SYMBOL: 'VARIABLE',
+												IDENTIFIER: 'index'
+											}
+										},
+										RIGHT: {
+											BODY: {
+												SYMBOL: 'LITERAL',
+												DESTINATION: 1
+											}
+										}
+									}
+								}
 							}
 						}
 					]
@@ -151,36 +226,50 @@ const syntaxTreeB = {
 	BODY: {
 		SYMBOL: 'PROCESS',
 		IDENTIFIER: 'sub',
+		PARAMETER: ['abc'],
 		SEGMENT: [
 			{
 				BODY: {
 					SYMBOL: 'LITERAL',
 					DESTINATION: '[Process sub] hello world'
 				}
+			},
+			{
+				BODY: {
+					SYMBOL: 'VARIABLE',
+					IDENTIFIER: 'abc'
+				}
+			},
+			{
+				BODY: {
+					SYMBOL: 'VARIABLE',
+					IDENTIFIER: '$LOOP'
+				}
 			}
 		]
 	}
 };
 
-const cccc = new Case({
-	processMap: {
-		main: new Process(syntaxTreeA),
-		sub: new Process(syntaxTreeB)
-	}
-});
+const cccc = new LCVM(link([
+	syntaxTreeA, syntaxTreeB
+]));
 
-var index = 0;
-cccc.on('[loop]', vm => {
-	vm.ret = index < 5;
-	index++;
-});
+// var index = 0;
+// cccc.on('[loop]', vm => {
+// 	vm.ret = index < 5;
+// 	index++;
+// });
 
-cccc.on('$fetch', (invoking, vm) => {
-	console.log('[REMOTE]', invoking);
-	setTimeout(() => vm.respond(), 4000);
+const {Response} = require('../src/vm/rpc');
+cccc.on('fetch', (request, vm) => {
+	console.log('[REMOTE]', request.invoking);
+	setTimeout(() => vm.respond(new Response(request)), 2000);
 });
 cccc.on('$writeback', (err, ret) => {
 	console.log(ret);
+});
+cccc.on('loop-start', scope => {
+	scope.abc = 234567;
 });
 cccc.on('loop-end', vm => {
 	console.log('[VM-end]');

@@ -1,4 +1,4 @@
-const ExpressionStatement = require('../../expression');
+const Statement = require('../statement');
 /**
  * 	{
  * 		BODY: {
@@ -7,7 +7,7 @@ const ExpressionStatement = require('../../expression');
  * 		}
  * 	}
  */
-class LiteralStatement extends ExpressionStatement {
+class LiteralStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 

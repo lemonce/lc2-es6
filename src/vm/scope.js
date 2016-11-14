@@ -2,32 +2,24 @@
 
 
 class Scope {
-	constructor (preset = {}) {
-		if (typeof preset !== 'object') {
-			throw new Error('[LCVM]: Scope presets is not a object.');
-		}
-		Object.assign(this, preset);
-
-	}
-
-	// get $NOW () { return Date.now(); }
-	// get $LOOP () {  }
-
-	// get $HREF () { }
-	// get $SCROLL_TOP () { }
-	// get $SCROLL_LEFT () { }
-	// get $SCREEN_WIDTH () { }
-	// get $SCREEN_HEIGHT () { }
 	$new() {
-		return new Scope(this);
+		const childScope = new Scope(this);
+		Object.setPrototypeOf(childScope, this);
+		return childScope;
 	}
 }
 
 class RootScope extends Scope {
-	constructor() {
+	constructor(presets) {
 		super();
+
+		this.extend(presets);
 	}
 
+	extend(object) {
+		Object.assign(this, object);
+	}
 }
 
-module.exports = RootScope;
+exports.Scope = Scope;
+exports.RootScope = RootScope;

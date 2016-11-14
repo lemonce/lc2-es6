@@ -24,9 +24,10 @@ class Request {
 class Response {
 	/**
 	 * @param {Request} request
+	 * @param {*} data
 	 */
-	constructor(request, data) {
-		if (!request instanceof Request) {
+	constructor(request, data, ret) {
+		if (!(request instanceof Request)) {
 			throw new Error('[LCVM]: Invalid rpc request.');
 		}
 
@@ -47,6 +48,8 @@ class Response {
 		 * @public
 		 */
 		this.data = data;
+
+		this.ret = ret;
 	}
 }
 

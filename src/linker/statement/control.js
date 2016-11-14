@@ -1,10 +1,6 @@
 
-const Statement = require('../statement');
+const Statement = require('./statement');
 class ControlStatement extends Statement {
-	constructor ({POSITION, BODY}) {
-		super({POSITION, BODY});
-	}
-
 	$linkSegment (segment) {
 		if (!Array.isArray(segment)) {
 			throw new Error();
@@ -18,18 +14,6 @@ class ControlStatement extends Statement {
 		});
 
 		return linkedSegment;
-	}
-
-	*execute (context) {
-		yield this.signalRequest();
-		const signalResponse = yield;
-		
-		const segment = this.querySegment(signalResponse);
-
-		context.emit('control', this.eventArgs, this.position);
-		for (let statement of segment) {
-			yield* statement.execute(context);
-		}
 	}
 }
 

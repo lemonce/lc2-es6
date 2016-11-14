@@ -19,12 +19,12 @@ class BranchStatement extends ControlStatement {
 		this.segmentFalse = this.$linkSegment(BODY.SEGMENT_FALSE);
 	}
 
-	*execute (vm) {
-		yield* this.condition.execute(vm);
+	*execute (vm, scope) {
+		yield* this.condition.execute(vm, scope);
 
 		const segment = vm.ret ? this.segmentTrue : this.segmentFalse;
 		for (let statement of segment) {
-			yield* statement.execute(vm);
+			yield* statement.execute(vm, scope);
 		}
 	}
 }

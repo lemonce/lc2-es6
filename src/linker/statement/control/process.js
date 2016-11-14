@@ -1,47 +1,35 @@
 const ControlStatement = require('../control');
-
 /**
  * 	{
  * 		BODY: {
  * 			SYMBOL: 'PROCESS',
  * 			IDENTIFIER: <string | name of the process>,
  *          SEGMENT: [<Statement...>],
- *          ARGUMENTS: [<expression | argument identifier>,...]
+ *          PARAMETER: [<string | argument identifier>,...]
  * 		}
  * 	}
  */
 class ProcessStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
-		super({POSITION, BODY});
+		super({POSITION});
 
 		this.identifier = BODY.IDENTIFIER;
-		// this.arguments = this.$linkSegment(BODY.ARGUMENTS);
+		this.parameter = Array.from(BODY.PARAMETER);
 
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}
-
-	signalRequest () {
-		return this.identifier;
-	}
 	
-	get eventArgs () {
-		return {
-			type: 'PROCESS',
-			args: {
-				identifier: this.identifier
-			}
-		};
-	}
-
-	*execute (vm) {
+	*execute (vm, scope) {
 		for (let statement of this.segment) {
-			if (vm.isReturn) {
-				vm.$setExecuting();
-				return true;
+			if (vm.signal === Symbol.for('RETURN')) {
+				vm.signal === Symbol.for('EXECUTING');
+				break;
 			} else {
-				yield* statement.execute(vm);
+				yield* statement.execute(vm, scope);
 			}
 		}
+
+		return 0;
 	}
 }
 

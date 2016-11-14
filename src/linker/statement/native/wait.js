@@ -1,4 +1,4 @@
-const ExecutableStatement = require('../executable');
+const Statement = require('../statement');
 /**
  * 	{
  * 		BODY: {
@@ -7,7 +7,7 @@ const ExecutableStatement = require('../executable');
  * 		}
  * 	}
  */
-class WaitStatement extends ExecutableStatement {
+class WaitStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
@@ -22,5 +22,5 @@ class WaitStatement extends ExecutableStatement {
 			vm.$$run();
 		}, vm.ret);
 	}
-};
+}
 module.exports = WaitStatement.register('WAIT');
