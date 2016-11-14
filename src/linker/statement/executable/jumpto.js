@@ -23,6 +23,7 @@ class JumptoStatement extends ExecutableStatement {
 			method: 'goto',
 			args: { url: vm.ret }
 		});
+
 		yield vm.$writeback(null, true);
 	}
 }

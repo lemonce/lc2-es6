@@ -16,8 +16,11 @@ class WaitStatement extends ExecutableStatement {
 	
 	*execute(vm) {
 		yield* this.delay.execute(vm);
-
-		yield setTimeout(() => vm.$writeback(null, true, this.position), vm.ret);
+		vm.$block();
+		yield setTimeout(() => {
+			vm.$writeback(null, true, this.position);
+			vm.$$run();
+		}, vm.ret);
 	}
 };
 module.exports = WaitStatement.register('WAIT');

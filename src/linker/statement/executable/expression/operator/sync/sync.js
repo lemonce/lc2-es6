@@ -1,4 +1,4 @@
-const ExpressionStatement = require('../expression');
+const ExpressionStatement = require('../../../expression');
 
 /**
  * 	{
@@ -87,6 +87,66 @@ class ESMultiplicationStatement extends ExpressionStatement {
 	}
 }
 
+/**
+ * 	{
+ * 		BODY: {
+ * 			SYMBOL: 'ES/'
+ *          LEFT: <expression | the dst >
+ *          RIGHT: <expression | the src >
+ * 		}
+ * 	}
+ */
+class ESDivisionStatement extends ExpressionStatement {
+	constructor ({POSITION, BODY}) {
+		super({POSITION});
+
+		this.left = this.$linkBySymbol(BODY.LEFT);
+		this.right = this.$linkBySymbol(BODY.RIGHT);
+
+	}
+	
+	*execute(vm, scope) {
+		yield* this.left.execute(vm, scope);
+		const left = vm.ret;
+
+		yield* this.right.execute(vm, scope);
+		const right = vm.ret;
+
+		yield vm.$writeback(null, left / right, this.position);
+	}
+}
+
+/**
+ * 	{
+ * 		BODY: {
+ * 			SYMBOL: 'ES%'
+ *          LEFT: <expression | the dst >
+ *          RIGHT: <expression | the src >
+ * 		}
+ * 	}
+ */
+class ESComplementationStatement extends ExpressionStatement {
+	constructor ({POSITION, BODY}) {
+		super({POSITION});
+
+		this.left = this.$linkBySymbol(BODY.LEFT);
+		this.right = this.$linkBySymbol(BODY.RIGHT);
+
+	}
+	
+	*execute(vm, scope) {
+		yield* this.left.execute(vm, scope);
+		const left = vm.ret;
+
+		yield* this.right.execute(vm, scope);
+		const right = vm.ret;
+
+		yield vm.$writeback(null, left % right, this.position);
+	}
+}
+
 ESAdditionStatement.register('ES+');
 ESSubtractionStatement.register('ES-');
 ESMultiplicationStatement.register('ES*');
+ESDivisionStatement.register('ES/');
+ESComplementationStatement.register('ES%');

@@ -1,4 +1,4 @@
-const ExpressionStatement = require('../expression');
+const ExpressionStatement = require('../../expression');
 /**
  * 	{
  * 		BODY: {

@@ -14,7 +14,8 @@
   ],
   "author": "ChaosLee",
   "license": "GPL-3.0",
-  "dependencies": {
-    "lc2": "^1.5.11"
+  "dependencies": {},
+  "devDependencies": {
+    "jsdoc": "^3.4.3"
   }
 }

@@ -1,5 +1,6 @@
 
 
+
 class Scope {
 	constructor (preset = {}) {
 		if (typeof preset !== 'object') {
@@ -9,14 +10,24 @@ class Scope {
 
 	}
 
-	get $NOW () { return Date.now(); }
-	get $LOOP () {  }
+	// get $NOW () { return Date.now(); }
+	// get $LOOP () {  }
 
-	get $HREF () { }
-	get $SCROLL_TOP () { }
-	get $SCROLL_LEFT () { }
-	get $SCREEN_WIDTH () { }
-	get $SCREEN_HEIGHT () { }
+	// get $HREF () { }
+	// get $SCROLL_TOP () { }
+	// get $SCROLL_LEFT () { }
+	// get $SCREEN_WIDTH () { }
+	// get $SCREEN_HEIGHT () { }
+	$new() {
+		return new Scope(this);
+	}
 }
 
-module.exports = Scope;
+class RootScope extends Scope {
+	constructor() {
+		super();
+	}
+
+}
+
+module.exports = RootScope;

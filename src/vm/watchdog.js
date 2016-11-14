@@ -10,10 +10,14 @@ class Watchdog extends Emitter {
 		this.limit = 0;
 	}
 
-	work () {
+	work(cycle = 100) {
 		this.lifeId = setInterval(() => {
-
-		}, 100);
+			if (this.isWatching) {
+				if (Date.now() > this.checkTime + this.limit) {
+					this.wake();
+				}
+			}
+		}, cycle);
 	}
 
 	rest () {
@@ -22,13 +26,13 @@ class Watchdog extends Emitter {
 
 	watch (limit, wakeFn = () => {}) {
 		this.isWatching = true;
+		this.limit = limit;
 		this.checkTime = Date.now();
 		this.wakeFn = wakeFn;
 	}
 
 	wake () {
-		this.wakeFn();
-		this.emit('waking');
+		this.emit('waking', this.wakeFn());
 		this.isWatching = false;
 	}
 

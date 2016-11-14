@@ -1,6 +1,6 @@
 const Case = require('../src/vm/case');
-require('../src/linker/statement/executable/expression/literal');
-require('../src/linker/statement/executable/expression/sync');
+require('../src/linker/statement/executable/expression/value/literal');
+require('../src/linker/statement/executable/expression/operator/sync/sync');
 require('../src/linker/statement/executable/jumpto');
 require('../src/linker/statement/executable/wait');
 require('../src/linker/statement/executable/return');
@@ -85,7 +85,7 @@ const syntaxTreeA = {
 					URL: {
 						BODY: {
 							SYMBOL: 'LITERAL',
-							DESTINATION: '\"http://hello.world\"'
+							DESTINATION: 'http://hello.world'
 						}
 					}
 				}
@@ -177,7 +177,7 @@ cccc.on('[loop]', vm => {
 
 cccc.on('$fetch', (invoking, vm) => {
 	console.log('[REMOTE]', invoking);
-	vm.respond();
+	setTimeout(() => vm.respond(), 4000);
 });
 cccc.on('$writeback', (err, ret) => {
 	console.log(ret);
