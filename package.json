@@ -4,7 +4,7 @@
   "description": "LemonCase2 Engine by ECMAScript 6",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test/index.js"
+    "test": "mocha test/*-spec.js"
   },
   "keywords": [
     "test",
@@ -16,6 +16,7 @@
   "license": "GPL-3.0",
   "dependencies": {},
   "devDependencies": {
-    "jsdoc": "^3.4.3"
+    "jsdoc": "^3.4.3",
+    "mocha": "^3.1.2"
   }
 }
