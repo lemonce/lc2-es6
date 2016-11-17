@@ -4,6 +4,7 @@ class Watchdog extends Emitter {
 	constructor () {
 		super ();
 
+		this.cycle = 100;
 		this.lifeId = null;
 		this.isWatching = false;
 		this.checkTime = 0;
@@ -17,22 +18,23 @@ class Watchdog extends Emitter {
 					this.wake();
 				}
 			}
-		}, cycle);
+		}, this.cycle = cycle);
 	}
 
 	rest () {
 		clearInterval(this.lifeId);
+		this.lifeId = null;
 	}
 
 	watch (limit, wakeFn = () => {}) {
 		this.isWatching = true;
-		this.checkTime = Date.now() + limit;
+		this.checkTime = Date.now() + Math.max(limit, this.cycle);
 		this.wakeFn = wakeFn;
 	}
 
 	wake () {
 		this.emit('waking', this.wakeFn());
-		this.isWatching = false;
+		this.cancelWatch();
 	}
 
 	cancelWatch () {

@@ -10,8 +10,8 @@ function AssignmentStatementFactory(symbol, operation) {
 		}
 		
 		*execute(vm, scope) {
-			yield* this.sources.execute(vm, scope);
-			yield vm.$writeback(null, operation(scope, this.identifier, vm.ret), this.position);
+			yield* this.sources.doExecution(vm, scope);
+			yield vm.$writeback(null, operation(scope, this.identifier, vm.ret));
 		}
 	}
 

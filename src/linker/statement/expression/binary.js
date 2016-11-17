@@ -11,13 +11,13 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 		}
 
 		*execute(vm, scope) {
-			yield* this.left.execute(vm, scope);
+			yield* this.left.doExecution(vm, scope);
 			const left = vm.ret;
 
-			yield* this.right.execute(vm, scope);
+			yield* this.right.doExecution(vm, scope);
 			const right = vm.ret;
 
-			yield vm.$writeback(null, operation(left, right), this.position);
+			yield vm.$writeback(null, operation(left, right));
 		}
 	}
 

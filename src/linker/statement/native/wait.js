@@ -15,10 +15,10 @@ class WaitStatement extends Statement {
 	}
 	
 	*execute(vm) {
-		yield* this.delay.execute(vm);
+		yield* this.delay.doExecution(vm);
 		vm.$block();
 		yield setTimeout(() => {
-			vm.$writeback(null, true, this.position);
+			vm.$writeback(null, true);
 			vm.$$run();
 		}, vm.ret);
 	}

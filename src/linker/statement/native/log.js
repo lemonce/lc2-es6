@@ -16,9 +16,9 @@ class LogStatement extends Statement {
 	}
 
 	*execute(vm, scope) {
-		yield* this.log.execute(vm, scope);
+		yield* this.log.doExecution(vm, scope);
 		vm.emit('log', vm.ret);
-		yield vm.$writeback(null, vm.ret, this.position);
+		yield vm.$writeback(null, vm.ret);
 	}
 }
 module.exports = LogStatement;

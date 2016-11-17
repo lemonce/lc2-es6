@@ -8,17 +8,17 @@ const signal = require('./signal');
 
 const defaultOptions = {
 	strict: false,
-	blockWait: 5000,
-	busyWait: 500,
-	times: 1,
+	globalWait: 500,
+	globalLimit: 5000,
+	times: 2,
 	interval: 3000,
 	screen: {
 		width: null,
 		height: null
-	},
-	breakpoint: []
+	}
 };
-
+const RPC_LIMIT = 30;
+const WATCHDOG_CYCLE = 50;
 /**
  * [L]emon[C]ase [V]isual [M]achine
  * 
@@ -59,7 +59,7 @@ class LCVMKernel extends Emitter {
 		 * @type {Symbol}
 		 */
 		this.processMap = processMap;
-		this.options = Object.assign(options, defaultOptions);
+		this.options = Object.assign({}, defaultOptions, options);
 
 		/**
 		 * To store a token when a async RPC request occur.
@@ -74,6 +74,9 @@ class LCVMKernel extends Emitter {
 		this.rootScope = null;
 		this.loop = 0;
 		this.callingStack = [];
+
+		this.position = null;
+		this.ret = null;
 
 		callback(this);
 
@@ -91,13 +94,14 @@ class LCVMKernel extends Emitter {
 	 * @param {Object} invoking.args
 	 * @fires LCVM#$fetch
 	 */
-	$fetch(invoking) {
+	$fetch(invoking, limit = RPC_LIMIT) {
 		// Set event listener in external (invoking, vm)
 		this.signal = signal.WAITING_ASYNC_RESPONSE;
-		this.$watchdog.watch(3000, () => {
+		this.$watchdog.watch(limit, () => {
 			const message = '[LCVM]: No-response from last fetching.';
 			this.rpcToken = null;
 			this.$writeback(new Error(message), 1);
+			this.$loopEnd();
 		});
 
 		// Create a token & build to Request.
@@ -110,8 +114,8 @@ class LCVMKernel extends Emitter {
 		 * @event LCVM#$fetch
 		 * @type {Object}
 		 */
-		this.emit('fetch', request, this);
 		this.rpcToken = request.token;
+		this.emit('fetch', request, this);
 
 		return this;
 	}
@@ -124,6 +128,7 @@ class LCVMKernel extends Emitter {
 	 * @return {Case}
 	 */
 	respond(response) {
+		
 		// Invalid response.
 		if (!(response instanceof Response)) {
 			const message = '[LCVM-DEV]: Invalid RPC Response.';
@@ -154,13 +159,13 @@ class LCVMKernel extends Emitter {
 	 * @param {any} ret The result of the last operation.
 	 * @param {Object} position The position in code from compiler.
 	 */
-	$writeback(err, ret, position) {
+	$writeback(err, ret) {
 		if (err) {
 			this.emit('error', err);
 			this.signal = signal.ERROR_HALTING;
 		}
 
-		this.emit('$writeback', err, this.ret = ret, position);
+		this.emit('$writeback', err, this.ret = ret, this.position);
 		return this;
 	}
 
@@ -170,28 +175,31 @@ class LCVMKernel extends Emitter {
 	 * @return {ProcessStatement}
 	 */
 	$getProcess(identifier) {
-		//TODO get std function or process.
 		return this.processMap[identifier];
 	}
 
 	$lanuch() {
 		const loop = this.loop;
+		this.rpcToken = null;
 		this.rootScope = new RootScope({
 			get $LOOP () {
 				return loop;
 			}
 		});
-		this.$runtime = callMainProcess.execute(this);
+		this.$runtime = callMainProcess.doExecution(this);
 		this.$$run();
 		this.emit('loop-start', this.rootScope);
 	}
 
 	$bootstrap() {
 		this.signal = signal.BOOTING;
-		this.emit('booting', this.rootScope);
-		this.$watchdog.work();
 
-		this.$lanuch();
+		this.loop = 0;
+		this.emit('booting', this.rootScope);
+		this.$watchdog.work(WATCHDOG_CYCLE);
+
+		this.signal = signal.BLOCKED;
+		setTimeout(() => this.$lanuch(), this.options.interval);
 
 		return this;
 	}
@@ -212,7 +220,7 @@ class LCVMKernel extends Emitter {
 
 		this.loop += 1;
 		if (this.loop < this.options.times) {
-			this.$lanuch();
+			setTimeout(() => this.$lanuch(), this.options.interval);
 		} else {
 			this.$caseEnd();
 		}

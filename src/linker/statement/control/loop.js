@@ -17,16 +17,16 @@ class LoopStatement extends ControlStatement {
 	}
 
 	*execute (vm, scope) {
-		yield* this.condition.execute(vm, scope);
+		yield* this.condition.doExecution(vm, scope);
 
 		// Use to set condition ret for testing.
 		vm.emit('[loop]', vm);
 
 		if (vm.ret) {
 			for (let statement of this.segment) {
-				yield* statement.execute(vm, scope);
+				yield* statement.doExecution(vm, scope);
 			}
-			yield* this.execute(vm, scope);
+			yield* this.doExecution(vm, scope);
 		}
 	}
 }

@@ -254,16 +254,12 @@ const cccc = new LCVM(link([
 	syntaxTreeA, syntaxTreeB
 ]));
 
-// var index = 0;
-// cccc.on('[loop]', vm => {
-// 	vm.ret = index < 5;
-// 	index++;
-// });
-
 const {Response} = require('../src/vm/rpc');
 cccc.on('fetch', (request, vm) => {
 	console.log('[REMOTE]', request.invoking);
-	setTimeout(() => vm.respond(new Response(request)), 2000);
+	setTimeout(() => {
+		vm.respond(new Response(request));
+	}, 40);
 });
 cccc.on('$writeback', (err, ret) => {
 	console.log(ret);
@@ -272,7 +268,7 @@ cccc.on('loop-start', scope => {
 	scope.abc = 234567;
 });
 cccc.on('loop-end', vm => {
-	console.log('[VM-end]');
+	console.log('[VM-end]', vm.position);
 });
 
 cccc.$bootstrap();

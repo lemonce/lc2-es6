@@ -36,6 +36,11 @@ class Statement {
 		return new statementClassMap[syntaxNode.BODY.SYMBOL](syntaxNode);
 	}
 
+	*doExecution(vm, scope) {
+		vm.position = this.position;
+		yield* this.execute(vm, scope);
+	}
+
 }
 
 module.exports = Statement;

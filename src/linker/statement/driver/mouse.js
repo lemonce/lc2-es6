@@ -28,22 +28,30 @@ function PointerStatementFactory(symbol, method) {
 		}
 
 		*execute(vm, scope) {
-			yield* this.selector.execute(vm, scope);
+			yield* this.selector.doExecution(vm, scope);
 			const selector = vm.ret;
 
-			yield* this.offsetTop.execute(vm, scope);
+			yield* this.offsetTop.doExecution(vm, scope);
 			const offsetTop = vm.ret;
 
-			yield* this.offsetLeft.execute(vm, scope);
+			yield* this.offsetLeft.doExecution(vm, scope);
 			const offsetLeft = vm.ret;
 
-			yield* this.limit.execute(vm, scope);
-			const limit = vm.ret;
+			yield* this.limit.doExecution(vm, scope);
+			const limit = vm.ret || vm.options.globalLimit;
 
-			//TODO watchdog
+			yield vm.$fetch({
+				method,
+				args: {selector, offsetTop, offsetLeft}
+			}, limit);
 
-			yield vm.$fetch({method, args: {selector, offsetTop, offsetLeft}});
 			yield vm.$writeback(null, true);
+
+			const autoWait = vm.options.globalWait;
+			if (vm.options.globalWait) {
+				vm.$block();
+				yield setTimeout(() => vm.$$run(), autoWait);
+			}
 		}
 	}
 
@@ -71,15 +79,15 @@ class MouseMoveStatement extends DriverStatement {
 
 	*execute(vm, scope) {
 		if (this.selector) {
-			yield* this.selector.execute(vm, scope);
+			yield* this.selector.doExecution(vm, scope);
 			const selector = vm.ret;
 
 			yield vm.$fetch({method: 'doMove', args: {selector}});
 		} else {
-			yield* this.left.execute(vm, scope);
+			yield* this.left.doExecution(vm, scope);
 			const left = vm.ret;
 
-			yield* this.top.execute(vm, scope);
+			yield* this.top.doExecution(vm, scope);
 			const top = vm.ret;
 
 			yield vm.$fetch({method: 'doMove', args: {left, top}});

@@ -20,11 +20,11 @@ class BranchStatement extends ControlStatement {
 	}
 
 	*execute (vm, scope) {
-		yield* this.condition.execute(vm, scope);
+		yield* this.condition.doExecution(vm, scope);
 
 		const segment = vm.ret ? this.segmentTrue : this.segmentFalse;
 		for (let statement of segment) {
-			yield* statement.execute(vm, scope);
+			yield* statement.doExecution(vm, scope);
 		}
 	}
 }

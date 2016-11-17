@@ -15,11 +15,11 @@ class ReturnStatement extends Statement {
 	}
 
 	*execute (vm) {
-		yield* this.ret.execute(vm);
+		yield* this.ret.doExecution(vm);
 
 		vm.signal = Symbol.for('RETURN');
 		yield vm.popScope()
-			.$writeback(null, vm.ret, this.position);
+			.$writeback(null, vm.ret);
 	}
 }
 

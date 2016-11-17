@@ -26,7 +26,7 @@ const native = {
 	floor: Math.floor,
 	round: Math.round,
 	format: (dateString, format) => {
-		
+		//TODO use angular date filter.
 	},
 	now: Date.now,
 };
@@ -49,22 +49,22 @@ class CallStatement extends Statement {
 			const parameterList = process.parameter;
 			
 			for(let index in this.arguments) {
-				yield* this.arguments[index].execute(vm, scope);
+				yield* this.arguments[index].doExecution(vm, scope);
 				scope[parameterList[index]] = vm.ret;
 			}
 			
-			const invoking = process.execute(vm, scope);
+			const invoking = process.doExecution(vm, scope);
 			vm.pushScope({invoking});
 			yield* invoking;
 		} else {
 			const args = [];
 			for(let index in this.arguments) {
-				yield* this.arguments[index].execute(vm, scope);
+				yield* this.arguments[index].doExecution(vm, scope);
 				args.push(vm.ret);
 			}
 
 			const ret = native[this.identifier].apply(null, args);
-			yield vm.$writeback(null, ret, this.position);
+			yield vm.$writeback(null, ret);
 		}
 	}
 }

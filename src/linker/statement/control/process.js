@@ -25,7 +25,7 @@ class ProcessStatement extends ControlStatement {
 				vm.signal === Symbol.for('EXECUTING');
 				break;
 			} else {
-				yield* statement.execute(vm, scope);
+				yield* statement.doExecution(vm, scope);
 			}
 		}
 

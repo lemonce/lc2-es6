@@ -1,5 +1,7 @@
 const Statement = require('../statement');
 /**
+ * 	assert <expression>
+ * 		in <expression>
  * 	{
  * 		BODY: {
  * 			SYMBOL: 'ACTION',
@@ -13,10 +15,24 @@ class AssertStatement extends Statement {
 		super({POSITION});
 
 		this.test = BODY.TEST;
+		this.limit = this.$linkBySymbol(BODY.LIMIT);
+	}
+
+	*test(vm, scope) {
+		yield* this.test.doExecution(vm, scope);
+		
+		return vm.ret;
 	}
 	
-	*execute() {
-		yield;
+	*execute(vm, scope) {
+		yield* this.limit.doExecution(vm, scope);
+		const limit = vm.ret || vm.options.globalLimit;
+		
+		//TODO onceTest
+
+
+		//TODO cycleTest
+
 	}
 }
 module.exports = AssertStatement;

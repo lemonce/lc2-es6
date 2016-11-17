@@ -17,16 +17,16 @@ class ESConditionStatement extends Statement {
 	}
 	
 	*execute(vm, scope) {
-		yield* this.condition.execute(vm, scope);
+		yield* this.condition.doExecution(vm, scope);
 		const condition = vm.ret;
 
 		if (condition) {
-			yield* this.true.execute(vm, scope);
+			yield* this.true.doExecution(vm, scope);
 		} else {
-			yield* this.false.execute(vm, scope);
+			yield* this.false.doExecution(vm, scope);
 		}
 
-		yield vm.$writeback(null, vm.ret, this.position);
+		yield vm.$writeback(null, vm.ret);
 	}
 }
 ESConditionStatement.register('ES?:');

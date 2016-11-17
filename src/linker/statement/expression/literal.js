@@ -15,7 +15,7 @@ class LiteralStatement extends Statement {
 	}
 
 	*execute(vm) {
-		yield vm.$writeback(null, this.destination, this.position);
+		yield vm.ret = this.destination;
 	}
 }
 

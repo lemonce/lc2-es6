@@ -14,7 +14,7 @@ function BrowserStatementFactory(symbol, method) {
 		
 		*execute(vm) {
 			yield vm.$fetch({method, args: {}});
-			yield vm.$writeback(null, true, this.position);
+			yield vm.$writeback(null, true);
 		}
 	}
 	BrowserSimpleStatementClass.register(symbol);
@@ -32,7 +32,7 @@ class JumptoStatement extends DriverStatement {
 	}
 	
 	*execute(vm) {
-		yield* this.url.execute(vm);
+		yield* this.url.doExecution(vm);
 
 		yield vm.$fetch({
 			method: 'jumpto',
@@ -53,10 +53,10 @@ class ResizeStatement extends DriverStatement {
 	}
 	
 	*execute(vm) {
-		yield* this.width.execute(vm);
+		yield* this.width.doExecution(vm);
 		const width = vm.ret;
 
-		yield* this.height.execute(vm);
+		yield* this.height.doExecution(vm);
 		const height = vm.ret;
 
 		yield vm.$fetch({

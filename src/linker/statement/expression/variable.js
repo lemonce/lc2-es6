@@ -15,7 +15,7 @@ class VariableStatement extends Statement {
 	}
 
 	*execute(vm, scope) {
-		yield vm.$writeback(null, scope[this.identifier], this.position);
+		yield vm.$writeback(null, scope[this.identifier]);
 	}
 }
 

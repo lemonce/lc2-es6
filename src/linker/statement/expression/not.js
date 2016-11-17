@@ -16,10 +16,10 @@ class ESNotStatement extends Statement {
 	}
 	
 	*execute(vm, scope) {
-		yield* this.sources.execute(vm, scope);
+		yield* this.sources.doExecution(vm, scope);
 		const sources = vm.ret;
 
-		yield vm.$writeback(null, !sources, this.position);
+		yield vm.$writeback(null, !sources);
 	}
 }
 ESNotStatement.register('ES!');
