@@ -42,5 +42,6 @@ class Statement {
 	}
 
 }
+Statement.map = statementClassMap;
 
 module.exports = Statement;

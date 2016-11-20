@@ -45,7 +45,7 @@ class LCVMKernel extends Emitter {
 	 * @param {Object} executionTree.options - Some options to VM.
 	 * @param {LCVMFactoryCallback} callback - Do something after construction.
 	 */
-	constructor({processMap, options = {}}, callback = () => {}) {
+	constructor({processMap, options = {}} = {}, callback = () => {}) {
 		super();
 
 		/**
@@ -71,7 +71,7 @@ class LCVMKernel extends Emitter {
 		this.rpcToken = null;
 		this.signal = signal.IDLE;
 		this.$runtime = null;
-		this.rootScope = null;
+		this.rootScope = new RootScope();
 		this.loop = 0;
 		this.callingStack = [];
 
@@ -251,6 +251,16 @@ class LCVMKernel extends Emitter {
 		}
 
 		return this.$loopEnd();
+	}
+
+	run(executionNode, scope = {}) {
+		const childScope = this.rootScope.$new();
+		Object.assign(childScope, scope);
+		for(let tick of executionNode.doExecution(this, childScope)) {
+			tick;
+		}
+
+		return this.ret;
 	}
 
 	$block() {

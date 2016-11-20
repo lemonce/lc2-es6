@@ -3,7 +3,7 @@
 
 class Scope {
 	$new() {
-		const childScope = new Scope(this);
+		const childScope = new Scope();
 		Object.setPrototypeOf(childScope, this);
 		return childScope;
 	}

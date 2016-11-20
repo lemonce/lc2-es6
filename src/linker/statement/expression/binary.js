@@ -30,8 +30,7 @@ function match(left, right) {
 	if (right.test) {
 		return right.test($left);
 	}
-
-	return ~left.indexOf(String(right));
+	return Boolean(~$left.indexOf(String(right)));
 }
 
 const operationSymbolMap = {

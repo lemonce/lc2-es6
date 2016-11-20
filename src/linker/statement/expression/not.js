@@ -12,7 +12,6 @@ class ESNotStatement extends Statement {
 		super({POSITION});
 
 		this.sources = this.$linkBySymbol(BODY.SOURCES);
-		this.right = this.$linkBySymbol(BODY.RIGHT);
 	}
 	
 	*execute(vm, scope) {
