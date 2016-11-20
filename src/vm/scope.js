@@ -2,18 +2,14 @@
 
 
 class Scope {
-	$new() {
-		const childScope = new Scope();
+	constructor(presets) {
+		this.extend(presets);
+	}
+
+	$new(presets) {
+		const childScope = new Scope(presets);
 		Object.setPrototypeOf(childScope, this);
 		return childScope;
-	}
-}
-
-class RootScope extends Scope {
-	constructor(presets) {
-		super();
-
-		this.extend(presets);
 	}
 
 	extend(object) {
@@ -22,4 +18,3 @@ class RootScope extends Scope {
 }
 
 exports.Scope = Scope;
-exports.RootScope = RootScope;

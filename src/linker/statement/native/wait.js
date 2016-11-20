@@ -17,8 +17,15 @@ class WaitStatement extends Statement {
 	*execute(vm) {
 		yield* this.delay.doExecution(vm);
 		vm.$block();
+		//TODO check vm.ret is Number or not.
 		yield setTimeout(() => {
 			vm.$writeback(null, true);
+
+			if (vm.$runtime === null) {
+				vm.emit('[WAIT]', vm);
+				return;
+			}
+
 			vm.$$run();
 		}, vm.ret);
 	}

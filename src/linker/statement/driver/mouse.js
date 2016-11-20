@@ -24,7 +24,7 @@ function PointerStatementFactory(symbol, method) {
 			this.selector = this.$linkBySymbol(BODY.SELECTOR);
 			this.offsetTop = this.$linkBySymbol(BODY.OFFSET_TOP);
 			this.offsetLeft = this.$linkBySymbol(BODY.OFFSET_LEFT);
-			this.limit = this.$linkBySymbol(BODY.LIMIT);
+			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 		}
 
 		*execute(vm, scope) {
@@ -37,8 +37,13 @@ function PointerStatementFactory(symbol, method) {
 			yield* this.offsetLeft.doExecution(vm, scope);
 			const offsetLeft = vm.ret;
 
-			yield* this.limit.doExecution(vm, scope);
-			const limit = vm.ret || vm.options.globalLimit;
+			let limit;
+			if (this.limit) {
+				yield* this.limit.doExecution(vm, scope);
+				limit = vm.ret;
+			} else {
+				limit = vm.options.globalLimit;
+			}
 
 			yield vm.$fetch({
 				method,
@@ -48,7 +53,7 @@ function PointerStatementFactory(symbol, method) {
 			yield vm.$writeback(null, true);
 
 			const autoWait = vm.options.globalWait;
-			if (vm.options.globalWait) {
+			if (vm.options.globalWait >= 0) {
 				vm.$block();
 				yield setTimeout(() => vm.$$run(), autoWait);
 			}

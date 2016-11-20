@@ -3,7 +3,7 @@ const Statement = require('./statement');
 class ControlStatement extends Statement {
 	$linkSegment (segment) {
 		if (!Array.isArray(segment)) {
-			throw new Error();
+			throw new Error('[LCVM-DEV]: Invalid segment.');
 		}
 
 		const linkedSegment = [];

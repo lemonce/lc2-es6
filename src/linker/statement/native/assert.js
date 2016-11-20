@@ -5,7 +5,8 @@ const Statement = require('../statement');
  * 	{
  * 		BODY: {
  * 			SYMBOL: 'ACTION',
- * 			TEST: <string | a lc2 expression witch to test>
+ * 			TEST: <expression | a lc2 expression witch to test>,
+ * 			LIMIT: <expression>
  * 		}
  * 	}
  */
@@ -14,25 +15,30 @@ class AssertStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.test = BODY.TEST;
+		this.test = this.$linkBySymbol(BODY.TEST);
 		this.limit = this.$linkBySymbol(BODY.LIMIT);
 	}
 
-	*test(vm, scope) {
-		yield* this.test.doExecution(vm, scope);
-		
-		return vm.ret;
-	}
-	
 	*execute(vm, scope) {
 		yield* this.limit.doExecution(vm, scope);
+		//TODO check limit(vm.ret)
 		const limit = vm.ret || vm.options.globalLimit;
-		
-		//TODO onceTest
+		const cycleTestStart = Date.now();
+		while (Date.now() - cycleTestStart <= limit) {
+			yield* this.test.doExecution(vm, scope);
+			vm.emit('[ASSERT]', vm);
+			let test = vm.ret;
+			
+			if (test === true) {
+				yield vm.$writeback(null, true);
+				return;
+			} else {
+				vm.$block();
+				setTimeout(() => vm.$$run(), 50);
+			}
+		}
 
-
-		//TODO cycleTest
-
+		yield vm.$writeback(new Error('[LCVM-ASSERT]: Assertion Failure.'), false);
 	}
 }
-module.exports = AssertStatement;
+module.exports = AssertStatement.register('ASSERT');

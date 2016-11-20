@@ -1,6 +1,6 @@
 'use strict';
 const Emitter = require('events');
-const {RootScope} = require('./scope');
+const {Scope} = require('./scope');
 const Watchdog = require('./watchdog');
 const {callMainProcess} = require('../linker/');
 const {Request, Response} = require('./rpc');
@@ -10,7 +10,7 @@ const defaultOptions = {
 	strict: false,
 	globalWait: 500,
 	globalLimit: 5000,
-	times: 2,
+	times: 1,
 	interval: 3000,
 	screen: {
 		width: null,
@@ -71,7 +71,7 @@ class LCVMKernel extends Emitter {
 		this.rpcToken = null;
 		this.signal = signal.IDLE;
 		this.$runtime = null;
-		this.rootScope = new RootScope();
+		this.rootScope = new Scope();
 		this.loop = 0;
 		this.callingStack = [];
 
@@ -97,7 +97,7 @@ class LCVMKernel extends Emitter {
 	$fetch(invoking, limit = RPC_LIMIT) {
 		// Set event listener in external (invoking, vm)
 		this.signal = signal.WAITING_ASYNC_RESPONSE;
-		this.$watchdog.watch(limit, () => {
+		this.$watchdog.watch(Math.max(limit, RPC_LIMIT), () => {
 			const message = '[LCVM]: No-response from last fetching.';
 			this.rpcToken = null;
 			this.$writeback(new Error(message), 1);
@@ -139,7 +139,7 @@ class LCVMKernel extends Emitter {
 		// Expired response.
 		if (response.token !== this.rpcToken) {
 			const message = '[LCVM]: The last RPC is expired.';
-			this.emit('error', new Error(message));
+			this.emit('warning', new Error(message));
 			this.rpcToken = null;
 			return;
 		}
@@ -181,7 +181,7 @@ class LCVMKernel extends Emitter {
 	$lanuch() {
 		const loop = this.loop;
 		this.rpcToken = null;
-		this.rootScope = new RootScope({
+		this.rootScope = new Scope({
 			get $LOOP () {
 				return loop;
 			}
@@ -254,11 +254,10 @@ class LCVMKernel extends Emitter {
 	}
 
 	run(executionNode, scope = {}) {
-		const childScope = this.rootScope.$new();
-		Object.assign(childScope, scope);
-		for(let tick of executionNode.doExecution(this, childScope)) {
-			tick;
-		}
+		const childScope = this.rootScope.$new(scope);
+
+		this.$runtime = executionNode.doExecution(this, childScope);
+		this.$$run();
 
 		return this.ret;
 	}

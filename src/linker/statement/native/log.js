@@ -1,7 +1,7 @@
 /**
  * 	{
  * 		BODY: {
- * 			SYMBOL: 'WAIT',
+ * 			SYMBOL: 'LOG',
  *          LOG: <expression | lc2 expression about content>
  * 		}
  * 	}
@@ -12,7 +12,7 @@ class LogStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.log = BODY.LOG;
+		this.log = this.$linkBySymbol(BODY.LOG);
 	}
 
 	*execute(vm, scope) {
@@ -21,4 +21,4 @@ class LogStatement extends Statement {
 		yield vm.$writeback(null, vm.ret);
 	}
 }
-module.exports = LogStatement;
+module.exports = LogStatement.register('LOG');
