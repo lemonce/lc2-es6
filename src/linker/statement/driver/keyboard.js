@@ -2,7 +2,7 @@ const DriverStatement = require('../driver');
 /**
  *  input <selector>
  *      [by <value>],
- *      [in <waiting>]
+ *      [in <limitation>]
  */
 class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
@@ -10,7 +10,7 @@ class InputStatement extends DriverStatement {
 
 		this.selector = this.$linkBySymbol(BODY.SELECTOR);
 		this.value = this.$linkBySymbol(BODY.VALUE);
-		this.limit = this.$linkBySymbol(BODY.LIMIT);
+		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
 	*execute(vm, scope) {
@@ -20,8 +20,13 @@ class InputStatement extends DriverStatement {
 		yield* this.value.doExecution(vm, scope);
 		const value = vm.ret;
 
-		yield* this.limit.doExecution(vm, scope);
-		const limit = vm.ret || vm.options.globalLimit;
+		let limit;
+		if (this.limit) {
+			yield* this.limit.doExecution(vm, scope);
+			limit = vm.ret;
+		} else {
+			limit = vm.options.globalLimit;
+		}
 
 		yield vm.$fetch({
 			method: 'doInput',

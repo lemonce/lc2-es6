@@ -1,5 +1,6 @@
 const {link, Statement} = require('../src/linker');
 const LCVMKernel = require('../src/vm/kernel');
+const {Response, Resquest} = require('../src/vm/rpc');
 const assert = require('assert');
 
 const blankVM = new LCVMKernel();
@@ -420,7 +421,9 @@ describe('Statement::', function () {
 			}, 2500);
 		});
 
-		it('assert', function (done) {
+		describe('assert::', function () {
+			this.timeout(8000);
+
 			const process = {
 				BODY: {
 					SYMBOL: 'PROCESS',
@@ -447,22 +450,36 @@ describe('Statement::', function () {
 					]
 				}
 			};
-			const vm = new LCVMKernel(link([process]));
-			
-			vm.on('loop-end', vm => {
-				assert.equal(vm.ret, true);
-				done();
+
+			it('true', function (done) {
+				const vm1 = new LCVMKernel(link([process]));
+				vm1.on('loop-end', vm => {
+					assert.equal(vm.ret, true);
+					done();
+				});
+				let ai = 0;
+				vm1.on('[ASSERT]', vm => {
+					ai++;
+					if (ai === 20) {
+						vm.ret = true;
+					}
+				});
+				vm1.$bootstrap();
 			});
 
-			let ai = 0;
-			vm.on('[ASSERT]', vm => {
-				ai++;
-				if (ai === 20) {
-					vm.ret = true;
-				}
-			});
+			it('false', function (done) {
+				const vm0 = new LCVMKernel(link([process]));
+				vm0.on('error', err => {
+					assert.equal(vm0.signal, Symbol.for('ERROR_HALTING'));
+				});
 
-			vm.$bootstrap();
+				vm0.on('loop-end', vm => {
+					assert.equal(vm.ret, false);
+					done();
+				});
+
+				vm0.$bootstrap();
+			});
 
 		});
 
@@ -481,6 +498,183 @@ describe('Statement::', function () {
 
 			let $ret = blankVM.run(node);
 			assert.equal($ret, 'A log');
+		});
+	});
+
+	describe('driver::', function () {
+		describe('browser::', function () {
+			it('back', function (done) {
+				const blankVM = new LCVMKernel();
+				const node = new Statement.map['BROWSER::BACK']({
+					BODY: {
+						SYMBOL: 'BROWSER::BACK'
+					}
+				});
+
+				blankVM.on('fetch', function (request) {
+					assert.deepEqual(request.invoking, {
+						method: 'back',
+						args: {}
+					});
+					done();
+				});
+
+				blankVM.run(node);
+			});
+
+			it('forward', function (done) {
+				const blankVM = new LCVMKernel();
+				const node = new Statement.map['BROWSER::FORWARD']({
+					BODY: {
+						SYMBOL: 'BROWSER::FORWARD'
+					}
+				});
+
+				blankVM.on('fetch', function (request) {
+					assert.deepEqual(request.invoking, {
+						method: 'forward',
+						args: {}
+					});
+					done();
+				});
+
+				blankVM.run(node);
+			});
+
+			it('refresh', function (done) {
+				const blankVM = new LCVMKernel();
+				const node = new Statement.map['BROWSER::REFRESH']({
+					BODY: {
+						SYMBOL: 'BROWSER::REFRESH'
+					}
+				});
+
+				blankVM.on('fetch', function (request) {
+					assert.deepEqual(request.invoking, {
+						method: 'refresh',
+						args: {}
+					});
+					done();
+				});
+
+				blankVM.run(node);
+			});
+
+			it('jumpto', function (done) {
+				const blankVM = new LCVMKernel();
+				const node = new Statement.map['BROWSER::JUMPTO']({
+					BODY: {
+						SYMBOL: 'BROWSER::JUMPTO',
+						URL: {
+							BODY: {
+								SYMBOL: 'LITERAL',
+								DESTINATION: 'http://baidu.com'
+							}
+						}
+					}
+				});
+
+				blankVM.on('fetch', function (request) {
+					assert.deepEqual(request.invoking, {
+						method: 'jumpto',
+						args: { url: 'http://baidu.com' }
+					});
+					done();
+				});
+
+				blankVM.run(node);
+			});
+
+			it('resize', function () {
+
+			});
+		});
+
+		describe('action::', function () {
+			this.timeout(2000);
+
+			const pointerSymbolMap = {
+				'ACTION::CLICK': 'doClick',
+				'ACTION::DBLCLICK': 'doDblclick',
+				'ACTION::RCLICK': 'doRclick',
+				'ACTION::MOVEIN': 'doMovein',
+				'ACTION::MOVEOUT': 'doMoveout',
+				'ACTION::DROP': 'doDrop',
+				'ACTION::HOLD': 'doHold'
+			}
+
+			function genNode(symbol) {
+				return new Statement.map[symbol]({
+					BODY: {
+						SYMBOL: symbol,
+						SELECTOR: {
+							BODY: {
+								SYMBOL: 'LITERAL',
+								DESTINATION: 'body a'
+							}
+						}
+					}
+				});
+			}
+
+			for(let symbol in pointerSymbolMap) {
+				it(symbol, function () {
+					const vm = new LCVMKernel();
+					vm.on('fetch', request => {
+						assert.deepEqual(request.invoking, {
+							method: pointerSymbolMap[symbol],
+							args: {
+								selector: 'body a'
+							}
+						});
+
+						setImmediate(() => vm.respond(new Response(request)));
+					});
+					// vm.on('loop-end', function () {
+					// 	done();
+					// });
+					vm.run(genNode(symbol));
+				});
+			}
+
+		});
+
+		it('ACTION::INPUT', function () {
+			const vm = new LCVMKernel();
+			vm.on('fetch', request => {
+				assert.deepEqual(request.invoking, {
+					method: 'doInput',
+					args: {
+						selector: 'body a',
+						value: 'abc'
+					}
+				});
+
+				setImmediate(() => vm.respond(new Response(request)));
+			});
+			
+			const node = new Statement.map['ACTION::INPUT']({
+				BODY: {
+					SYMBOL: 'ACTION::INPUT',
+					SELECTOR: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: 'body a'
+						}
+					},
+					VALUE: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: 'abc'
+						}
+					}
+				}
+			});
+			vm.run(node);
+		});
+
+		it('upload', function () {
+
 		});
 	});
 });

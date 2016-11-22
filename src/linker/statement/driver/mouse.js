@@ -22,8 +22,8 @@ function PointerStatementFactory(symbol, method) {
 			super({POSITION});
 
 			this.selector = this.$linkBySymbol(BODY.SELECTOR);
-			this.offsetTop = this.$linkBySymbol(BODY.OFFSET_TOP);
-			this.offsetLeft = this.$linkBySymbol(BODY.OFFSET_LEFT);
+			this.offsetTop = BODY.OFFSET_TOP && this.$linkBySymbol(BODY.OFFSET_TOP);
+			this.offsetLeft = BODY.OFFSET_LEFT && this.$linkBySymbol(BODY.OFFSET_LEFT);
 			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 		}
 
@@ -31,11 +31,11 @@ function PointerStatementFactory(symbol, method) {
 			yield* this.selector.doExecution(vm, scope);
 			const selector = vm.ret;
 
-			yield* this.offsetTop.doExecution(vm, scope);
-			const offsetTop = vm.ret;
+			// yield* this.offsetTop.doExecution(vm, scope);
+			// const offsetTop = vm.ret;
 
-			yield* this.offsetLeft.doExecution(vm, scope);
-			const offsetLeft = vm.ret;
+			// yield* this.offsetLeft.doExecution(vm, scope);
+			// const offsetLeft = vm.ret;
 
 			let limit;
 			if (this.limit) {
@@ -47,7 +47,10 @@ function PointerStatementFactory(symbol, method) {
 
 			yield vm.$fetch({
 				method,
-				args: {selector, offsetTop, offsetLeft}
+				args: {
+					selector,
+					// offsetTop, offsetLeft
+				}
 			}, limit);
 
 			yield vm.$writeback(null, true);

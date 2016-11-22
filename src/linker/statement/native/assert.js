@@ -37,7 +37,6 @@ class AssertStatement extends Statement {
 				setTimeout(() => vm.$$run(), 50);
 			}
 		}
-
 		yield vm.$writeback(new Error('[LCVM-ASSERT]: Assertion Failure.'), false);
 	}
 }

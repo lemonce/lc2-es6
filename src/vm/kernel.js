@@ -97,7 +97,7 @@ class LCVMKernel extends Emitter {
 	$fetch(invoking, limit = RPC_LIMIT) {
 		// Set event listener in external (invoking, vm)
 		this.signal = signal.WAITING_ASYNC_RESPONSE;
-		this.$watchdog.watch(Math.max(limit, RPC_LIMIT), () => {
+		this.$watchdog.watch(limit, () => {
 			const message = '[LCVM]: No-response from last fetching.';
 			this.rpcToken = null;
 			this.$writeback(new Error(message), 1);
@@ -161,8 +161,8 @@ class LCVMKernel extends Emitter {
 	 */
 	$writeback(err, ret) {
 		if (err) {
-			this.emit('error', err);
 			this.signal = signal.ERROR_HALTING;
+			this.emit('error', err);
 		}
 
 		this.emit('$writeback', err, this.ret = ret, this.position);
