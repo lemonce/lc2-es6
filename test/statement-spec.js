@@ -1,9 +1,9 @@
-const {link, Statement} = require('../src/linker');
-const LCVMKernel = require('../src/vm/kernel');
-const {Response, Resquest} = require('../src/vm/rpc');
+'use strict';
+const {link, LCVM} = require('../src/lcvm');
+const {Statement, Response, Resquest, signal} = require('../src/esvm/');
 const assert = require('assert');
 
-const blankVM = new LCVMKernel();
+const blankVM = new LCVM();
 describe('Statement::', function () {
 
 	describe('Expression::', function () {
@@ -381,7 +381,7 @@ describe('Statement::', function () {
 					]
 				}
 			};
-			const vm = new LCVMKernel(link([process]));
+			const vm = new LCVM(link([process]));
 			
 			vm.on('loop-end', vm => {
 				assert.equal(vm.ret, 'xyz');
@@ -407,16 +407,16 @@ describe('Statement::', function () {
 				}
 			});
 
-			const vm = new LCVMKernel();
+			const vm = new LCVM();
 			vm.on('[WAIT]', vm => {
-				assert(Symbol.for('EXECUTING'), vm.signal);
+				assert(signal.get('EXECUTING'), vm.signal);
 			});
 
 			vm.run(node);
-			assert(Symbol.for('BLOCKED'), vm.signal);
+			assert(signal.get('BLOCKED'), vm.signal);
 
 			setTimeout(() => {
-				assert.equal(vm.signal, Symbol.for('BLOCKED'));
+				assert.equal(vm.signal, signal.get('BLOCKED'));
 				done();
 			}, 2500);
 		});
@@ -424,35 +424,26 @@ describe('Statement::', function () {
 		describe('assert::', function () {
 			this.timeout(8000);
 
-			const process = {
+			const node = {
 				BODY: {
-					SYMBOL: 'PROCESS',
-					IDENTIFIER: 'main',
-					PARAMETER: [],
-					SEGMENT: [
-						{
-							BODY: {
-								SYMBOL: 'ASSERT',
-								TEST: {
-									BODY: {
-										SYMBOL: 'LITERAL',
-										DESTINATION: false
-									}
-								},
-								LIMIT: {
-									BODY: {
-										SYMBOL: 'LITERAL',
-										DESTINATION: 2000
-									}
-								}
-							}
+					SYMBOL: 'ASSERT',
+					TEST: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: false
 						}
-					]
+					},
+					LIMIT: {
+						BODY: {
+							SYMBOL: 'LITERAL',
+							DESTINATION: 1000
+						}
+					}
 				}
 			};
 
 			it('true', function (done) {
-				const vm1 = new LCVMKernel(link([process]));
+				const vm1 = new LCVM();
 				vm1.on('loop-end', vm => {
 					assert.equal(vm.ret, true);
 					done();
@@ -460,17 +451,17 @@ describe('Statement::', function () {
 				let ai = 0;
 				vm1.on('[ASSERT]', vm => {
 					ai++;
-					if (ai === 20) {
+					if (ai === 10) {
 						vm.ret = true;
 					}
 				});
-				vm1.$bootstrap();
+				vm1.run(new Statement.map['ASSERT'](node));
 			});
 
 			it('false', function (done) {
-				const vm0 = new LCVMKernel(link([process]));
+				const vm0 = new LCVM();
 				vm0.on('error', err => {
-					assert.equal(vm0.signal, Symbol.for('ERROR_HALTING'));
+					assert.equal(vm0.signal, signal.get('ERROR_HALTING'));
 				});
 
 				vm0.on('loop-end', vm => {
@@ -478,7 +469,7 @@ describe('Statement::', function () {
 					done();
 				});
 
-				vm0.$bootstrap();
+				vm0.run(new Statement.map['ASSERT'](node));
 			});
 
 		});
@@ -504,7 +495,7 @@ describe('Statement::', function () {
 	describe('driver::', function () {
 		describe('browser::', function () {
 			it('back', function (done) {
-				const blankVM = new LCVMKernel();
+				const blankVM = new LCVM();
 				const node = new Statement.map['BROWSER::BACK']({
 					BODY: {
 						SYMBOL: 'BROWSER::BACK'
@@ -523,7 +514,7 @@ describe('Statement::', function () {
 			});
 
 			it('forward', function (done) {
-				const blankVM = new LCVMKernel();
+				const blankVM = new LCVM();
 				const node = new Statement.map['BROWSER::FORWARD']({
 					BODY: {
 						SYMBOL: 'BROWSER::FORWARD'
@@ -542,7 +533,7 @@ describe('Statement::', function () {
 			});
 
 			it('refresh', function (done) {
-				const blankVM = new LCVMKernel();
+				const blankVM = new LCVM();
 				const node = new Statement.map['BROWSER::REFRESH']({
 					BODY: {
 						SYMBOL: 'BROWSER::REFRESH'
@@ -561,7 +552,7 @@ describe('Statement::', function () {
 			});
 
 			it('jumpto', function (done) {
-				const blankVM = new LCVMKernel();
+				const blankVM = new LCVM();
 				const node = new Statement.map['BROWSER::JUMPTO']({
 					BODY: {
 						SYMBOL: 'BROWSER::JUMPTO',
@@ -601,7 +592,7 @@ describe('Statement::', function () {
 				'ACTION::MOVEOUT': 'doMoveout',
 				'ACTION::DROP': 'doDrop',
 				'ACTION::HOLD': 'doHold'
-			}
+			};
 
 			function genNode(symbol) {
 				return new Statement.map[symbol]({
@@ -619,7 +610,7 @@ describe('Statement::', function () {
 
 			for(let symbol in pointerSymbolMap) {
 				it(symbol, function () {
-					const vm = new LCVMKernel();
+					const vm = new LCVM();
 					vm.on('fetch', request => {
 						assert.deepEqual(request.invoking, {
 							method: pointerSymbolMap[symbol],
@@ -640,7 +631,7 @@ describe('Statement::', function () {
 		});
 
 		it('ACTION::INPUT', function () {
-			const vm = new LCVMKernel();
+			const vm = new LCVM();
 			vm.on('fetch', request => {
 				assert.deepEqual(request.invoking, {
 					method: 'doInput',
