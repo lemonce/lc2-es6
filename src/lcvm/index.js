@@ -23,22 +23,19 @@ require('./driver/browser');
 require('./driver/mouse');
 require('./driver/keyboard');
 
-
 /**
  * 	{
- * 		processList: [],
+ * 		processMap: {},
  * 		options: {}
  * 	}
  * 
  * @exports link
  * @param {Object} syntaxTree 
  */
-exports.link = function link({processList, options}) {
-	const processMap = {};
-
-	processList.forEach(syntaxProcess => {
-		processMap[syntaxProcess.BODY.IDENTIFIER] = new Process(syntaxProcess);
-	});
+exports.link = function link({processMap, options}) {
+	for(let identifier in processMap) {
+		processMap[identifier] = new Process(processMap[identifier]);
+	}
 
 	return {processMap, options};
 };
