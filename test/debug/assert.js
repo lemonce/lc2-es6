@@ -1,6 +1,5 @@
 /*eslint-disable*/
-const {LCVM} = require('../src/vm');
-const {link} = require('../src/linker');
+const {LCVM, link} = require('../../src/lcvm');
 
 const syntaxTreeA = {
 	BODY: {
@@ -79,11 +78,12 @@ const syntaxTreeA = {
 	}
 };
 
-const cccc = new LCVM(link([
-	syntaxTreeA
-]));
+const cccc = new LCVM(link({
+	processList: [syntaxTreeA],
+	options: {}
+}));
 
-const {Response} = require('../src/vm/rpc');
+const {Response} = require('../../src/esvm').rpc;
 cccc.on('fetch', (request, vm) => {
 	console.log('[REMOTE]', request.invoking);
 	setTimeout(() => {
@@ -98,7 +98,7 @@ cccc.on('[ASSERT]', vm => {
         vm.ret = true;
     }
 });
-cccc.on('$writeback', (err, ret) => {
+cccc.on('writeback', (err, ret) => {
 	console.log('[TEST]', ret);
 });
 cccc.on('loop-start', scope => {
@@ -108,4 +108,4 @@ cccc.on('loop-end', vm => {
 	console.log('[VM-end]', vm.position);
 });
 
-cccc.$bootstrap();
+cccc.start();

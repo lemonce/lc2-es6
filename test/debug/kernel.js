@@ -9,6 +9,6 @@ let kernel = new Kernel();
 
 kernel.$runtime = test.doExecution(kernel, {});
 kernel.$bootstrap();
-kernel.$lanuch();
+kernel.$launch();
 
 return;

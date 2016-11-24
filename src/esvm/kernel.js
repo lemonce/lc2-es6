@@ -152,15 +152,16 @@ class Kernel extends Emitter {
 		this.$runtime = statement.doExecution(this);
 	}
 
-	$lanuch() {
+	$launch() {
 		if (this.$runtime === null) {
 			throw new Error('[ESVM]: No-program in vm.');
 		}
 
 		if (this.signal.launching === false) {
-			throw new Error(`[ESVM]: Can not $lanuch vm from signal:${this.signal.tag}`);
+			throw new Error(`[ESVM]: Can not $launch vm from signal:${this.signal.tag}`);
 		}
 
+		this.$watchdog.work(WATCHDOG_CYCLE);
 		this.rpcToken = null;
 		this.emit('programe-start', this);
 		this.$run();
@@ -173,7 +174,6 @@ class Kernel extends Emitter {
 
 		this.emit('bootstrap-start', this);
 		this.signal = signal.get('BOOTING');
-		this.$watchdog.work(WATCHDOG_CYCLE);
 		this.emit('bootstrap-end', this);
 
 		return this;
@@ -198,6 +198,7 @@ class Kernel extends Emitter {
 	$halt() {
 		this.$runtime = null;
 		this.signal = signal.get('IDLE');
+		this.$watchdog.rest();
 
 		return this;
 	}

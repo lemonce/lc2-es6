@@ -45,13 +45,13 @@ describe('ESVM::', function () {
 			});
 		});
 
-		describe('lanuch::', function () {
+		describe('launch::', function () {
 			const vk = new Kernel();
 			vk.$bootstrap();
 
 			it('No-program +E', function () {
 				assert.throws(() => {
-					vk.$lanuch();
+					vk.$launch();
 				}, '[ESVM]: No-program in vm.');
 			});
 
@@ -59,13 +59,13 @@ describe('ESVM::', function () {
 				const vk = new Kernel();
 				assert.throws(() => {
 					vk.loadProgram(statement);
-					vk.$lanuch();
-				}, /\[ESVM\]: Can not \$lanuch vm from signal/);
+					vk.$launch();
+				}, /\[ESVM\]: Can not \$launch vm from signal/);
 			});
 
 			it('normal -E', function () {
 				vk.loadProgram(statement);
-				vk.$lanuch();
+				vk.$launch();
 				assert.equal(vk.flag, 1);
 			});
 
@@ -81,7 +81,7 @@ describe('ESVM::', function () {
 				};
 
 				vk.loadProgram(is);
-				vk.$lanuch();
+				vk.$launch();
 
 				assert.equal(vk.p1, 1);
 				assert.equal(vk.p2, undefined);
@@ -113,7 +113,7 @@ describe('ESVM::', function () {
 					assert.equal(pos, mockPos);
 					done();
 				});
-				vk.$lanuch();
+				vk.$launch();
 				assert.equal('start', vk.p1);
 			});
 
@@ -132,7 +132,7 @@ describe('ESVM::', function () {
 					assert.equal(err.message, 'abc');
 					done();
 				});
-				vk.$lanuch();
+				vk.$launch();
 				assert.equal('start', vk.p1);
 			});
 		});
@@ -163,7 +163,7 @@ describe('ESVM::', function () {
 
 				vk.$bootstrap();
 				vk.loadProgram(program);
-				vk.$lanuch();
+				vk.$launch();
 			});
 
 			describe('respond::', function () {
@@ -192,7 +192,7 @@ describe('ESVM::', function () {
 
 					vk.$bootstrap();
 					vk.loadProgram(program);
-					vk.$lanuch();
+					vk.$launch();
 				});
 
 				it('Sync response', function (done) {
@@ -210,10 +210,10 @@ describe('ESVM::', function () {
 
 					vk.$bootstrap();
 					vk.loadProgram(program);
-					vk.$lanuch();
+					vk.$launch();
 				});
 			});
 
 		});
-	})
+	});
 });

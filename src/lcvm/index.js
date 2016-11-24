@@ -12,7 +12,7 @@ require('./expression/condition'); // ES?:
 require('./expression/selector'); // LC7 <* />
 
 // Native
-const CallStatement = require('./native/call');
+require('./native/call');
 require('./native/log');
 require('./native/return');
 require('./native/wait');
@@ -33,22 +33,14 @@ require('./driver/keyboard');
  * @exports link
  * @param {Object} syntaxTree 
  */
-exports.link = function link(syntaxTree) {
+exports.link = function link({processList, options}) {
 	const processMap = {};
-	const options = syntaxTree.options;
 
-	syntaxTree.forEach(syntaxProcess => {
+	processList.forEach(syntaxProcess => {
 		processMap[syntaxProcess.BODY.IDENTIFIER] = new Process(syntaxProcess);
 	});
 
 	return {processMap, options};
 };
-
-exports.callMainProcess = new CallStatement({
-	BODY: {
-		IDENTIFIER: 'main',
-		ARGUMENTS: []
-	}
-});
 
 exports.LCVM = require('./lcvm').LCVM;

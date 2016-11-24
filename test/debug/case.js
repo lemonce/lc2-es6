@@ -1,6 +1,6 @@
 /*eslint-disable*/
-const {LCVM} = require('../src/vm');
-const {link} = require('../src/linker');
+const {ESVM} = require('../src/esvm');
+const {link} = require('../src/lcvm');
 
 const syntaxTreeA = {
 	BODY: {

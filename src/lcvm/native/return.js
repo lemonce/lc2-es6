@@ -19,7 +19,7 @@ class ReturnStatement extends Statement {
 
 		vm.signal = Symbol.for('RETURN');
 		yield vm.popScope()
-			.$writeback(null, vm.ret);
+			.writeback(null, vm.ret);
 	}
 }
 

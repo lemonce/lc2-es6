@@ -1,9 +1,14 @@
 const {ESVM, Scope, signal, Statement} = require('../esvm');
+const CallStatement = require('./native/call');
+const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
+
+signal.register('CONTROL_SUSPEND', {interception: true});
+signal.register('CONTROL_STOP', {interception: true});
 
 const defaultOptions = {
 	strict: false,
 	globalWait: 500,
-	globalLimit: 5000,
+	globalLimit: 0,
 	times: 1,
 	interval: 3000,
 	screen: {
@@ -21,13 +26,12 @@ class LCVM extends ESVM {
 		this.rootScope = new Scope();
 		this.loop = 0;
 		this.callingStack = [];
-		this.$breakpointMap = {};
 
 		this.on('program-end', () => this.loopEnd());
 		this.on('program-start', () => {
 			const loop = this.loop;
 			this.rootScope = new Scope({
-				get $LOOP () { return loop; }
+				get $LOOP() { return loop; }
 			});
 
 		});
@@ -46,12 +50,12 @@ class LCVM extends ESVM {
 	loopEnd () {
 		this.emit('loop-end', this);
 
-		this.signal = signal.get('BLOCKED');
-		//TODO program
-
 		this.loop += 1;
 		if (this.loop < this.options.times) {
-			setTimeout(() => this.$lanuch(), this.options.interval);
+			this.signal = signal.get('BOOTING');
+			setTimeout(() => {
+				this.callMainProcess();
+			}, this.options.interval);
 		} else {
 			this.caseEnd();
 		}
@@ -62,6 +66,7 @@ class LCVM extends ESVM {
 		this.$watchdog.rest();
 
 		this.$runtime = null;
+		this.$state = 'ready';
 		this.emit('case-end', this);
 	}
 
@@ -87,6 +92,42 @@ class LCVM extends ESVM {
 			throw new Error('[ESVM-DEV]: Invalid statement.');
 		}
 		this.$runtime = statement.doExecution(this, this.rootScope);
+	}
+
+	callMainProcess() {
+		this.loadProgram(callMain);
+		this.$launch();
+
+		return this;
+	}
+
+	get state() { return this.$state; }
+	getPosition() { return this.position; }
+	start() {
+		this.$bootstrap();
+		this.$state = 'running';
+		this.callMainProcess();
+		return this;
+	}
+
+	pause() {
+		this.$state = 'suspend';
+		this.signal = signal.get('CONTROL_SUSPEND');
+		return this;
+	}
+
+	resume() {
+		this.$state = 'running';
+		this.$$run();
+		return this;
+	}
+
+	stop() {
+		if (this.signal === signal.get('IDLE')) {
+			return this;
+		}
+		this.$state = 'ready';
+		return this;
 	}
 }
 
