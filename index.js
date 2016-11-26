@@ -1,3 +1,6 @@
-const ESVM = require('./src/vm');
-const linker = require('./src/linker');
-module.exports = Object.assign({}, ESVM, { linker });
+const {link, LCVM} = require('./src/lcvm');
+const {Statement} = require('./src/esvm');
+module.exports = {
+	linkNode: Statement.linkNode,
+	link, LCVM
+};

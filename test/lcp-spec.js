@@ -145,7 +145,7 @@ process sub_1 (str, reg){
 		vm2.start();
 	});
 	
-	it.only('while code', function (done) {
+	it('while code', function (done) {
 		const code = `
 #AUTOWAIT 500
 #TIMES 1;

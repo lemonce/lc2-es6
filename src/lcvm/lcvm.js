@@ -4,6 +4,7 @@ const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
 
 signal.register('CONTROL_SUSPEND', {interception: true});
 signal.register('CONTROL_STOP', {interception: true});
+signal.register('RETURN');
 
 const defaultOptions = {
 	strict: false,
@@ -43,7 +44,7 @@ class LCVM extends ESVM {
 	}
 
 	popScope() {
-		this.callingStack.pop();
+		const {invoking} = this.callingStack.pop();
 		return this;
 	}
 
@@ -62,9 +63,6 @@ class LCVM extends ESVM {
 	}
 
 	caseEnd () {
-		this.signal = signal.IDLE;
-		this.$watchdog.rest();
-
 		this.$runtime = null;
 		this.$state = 'ready';
 		this.emit('case-end', this);
@@ -110,15 +108,15 @@ class LCVM extends ESVM {
 		return this;
 	}
 
-	pause() {
-		this.$state = 'suspend';
-		this.signal = signal.get('CONTROL_SUSPEND');
-		return this;
-	}
+	// pause() {
+	// 	this.$state = 'suspend';
+	// 	this.signal = signal.get('CONTROL_SUSPEND');
+	// 	return this;
+	// }
 
 	resume() {
 		this.$state = 'running';
-		this.$$run();
+		this.$run();
 		return this;
 	}
 
@@ -126,6 +124,7 @@ class LCVM extends ESVM {
 		if (this.signal === signal.get('IDLE')) {
 			return this;
 		}
+		this.$halt();
 		this.$state = 'ready';
 		return this;
 	}

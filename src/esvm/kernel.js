@@ -197,6 +197,7 @@ class Kernel extends Emitter {
 
 	$halt() {
 		this.$runtime = null;
+		this.rpcToken = null;
 		this.signal = signal.get('IDLE');
 		this.$watchdog.rest();
 

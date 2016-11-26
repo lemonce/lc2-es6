@@ -1,3 +1,4 @@
+const {signal} = require('../../esvm');
 const {Statement} = require('../../esvm/');
 /**
  * 	{
@@ -14,10 +15,10 @@ class ReturnStatement extends Statement {
 		this.ret = this.$linkBySymbol(BODY.RET);
 	}
 
-	*execute (vm) {
-		yield* this.ret.doExecution(vm);
+	*execute (vm, scope) {
+		yield* this.ret.doExecution(vm, scope);
 
-		vm.signal = Symbol.for('RETURN');
+		vm.signal = signal.get('RETURN');
 		yield vm.popScope()
 			.writeback(null, vm.ret);
 	}

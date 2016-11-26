@@ -16,7 +16,7 @@ class BranchStatement extends ControlStatement {
 		this.condition = this.$linkBySymbol(BODY.CONDITION);
 
 		this.segmentTrue = this.$linkSegment(BODY.SEGMENT_TRUE);
-		this.segmentFalse = this.$linkSegment(BODY.SEGMENT_FALSE);
+		this.segmentFalse = this.$linkSegment(BODY.SEGMENT_FALSE || []);
 	}
 
 	*execute (vm, scope) {

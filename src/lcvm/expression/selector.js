@@ -17,8 +17,8 @@ function SelectorStatementFactory(symbol, method) {
 			this.selector = this.$linkBySymbol(BODY.SELECTOR);
 		}
 		
-		*execute(vm) {
-			yield* this.selector.doExecution(vm);
+		*execute(vm, scope) {
+			yield* this.selector.doExecution(vm, scope);
 			yield vm.fetch({method, args: {selector: vm.ret}});
 			yield vm.writeback(null, vm.ret);
 		}

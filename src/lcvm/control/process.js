@@ -1,3 +1,4 @@
+const {signal} = require('../../esvm');
 const ControlStatement = require('../control');
 /**
  * 	{
@@ -21,8 +22,8 @@ class ProcessStatement extends ControlStatement {
 	
 	*execute (vm, scope) {
 		for (let statement of this.segment) {
-			if (vm.signal === Symbol.for('RETURN')) {
-				vm.signal === Symbol.for('EXECUTING');
+			if (vm.signal === signal.get('RETURN')) {
+				vm.signal = signal.get('EXECUTING');
 				break;
 			} else {
 				yield* statement.doExecution(vm, scope);

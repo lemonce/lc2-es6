@@ -19,9 +19,7 @@ function AssignmentStatementFactory(symbol, operation) {
 }
 
 const operationSymbolMap = {
-	'ES=': (scope, identifier, sources) => {
-		scope[identifier] = sources;
-	},
+	'ES=': (scope, identifier, sources) => scope[identifier] = sources,
 	'ES+=': (scope, identifier, sources) => scope[identifier] += sources,
 	'ES-=': (scope, identifier, sources) => scope[identifier] -= sources,
 	'ES*=': (scope, identifier, sources) => scope[identifier] *= sources,

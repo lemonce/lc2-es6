@@ -4,7 +4,7 @@ const {Statement, Response, Resquest, signal} = require('../../src/esvm/');
 const code = `
 
 #AUTOWAIT 500
-#TIMES 1;
+#TIMES 2;
 #INTERVAL 999;
 #SCREEN 1,2
 #LIMIT
@@ -18,17 +18,32 @@ process main () {
 
 	if (b === 'b4') {
 		a = random(/[0-9a-z]{16}/);
+		click 'div#' + a;
+		c = <@'div#'+a/>;
 	} else {
 		a = random(/[0-9a-z]{40}/);
 	}
+
+	getUsername('fff');
+	pass = 'abc';
+	getUsername(pass);
 	return 'success:' + a;
+}
+
+process getUsername(pass) {
+	if (pass !== 'fff') {
+		name = 'fff' + 3456;
+		return name;
+	}
+
+	return pass + 'dddd';
 }
 		`;
 const syntaxTree = parse(code);
 const executionTree = link(syntaxTree);
 const vm2 = new LCVM(executionTree);
-vm2.on('writeback', (err, ret, pos) => {
-	console.log(err, ret, pos);
+vm2.on('writeback', (err, ret, {start, end}) => {
+	console.log(ret, code.substring(start, end));
 });
 vm2.on('loop-end', vm => {
 	// assert.equal(vm.ret, false);
