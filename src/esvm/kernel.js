@@ -93,7 +93,7 @@ class Kernel extends Emitter {
 		// The token will be checked when responding.
 		const request = new Request(invoking);
 		this.rpcToken = request.token;
-		this.emit('fetch', request, this);
+		this.emit('fetch', request, this, Response);
 
 		return this;
 	}

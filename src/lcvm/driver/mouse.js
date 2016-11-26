@@ -42,7 +42,7 @@ function PointerStatementFactory(symbol, method) {
 				yield* this.limit.doExecution(vm, scope);
 				limit = vm.ret;
 			} else {
-				limit = vm.options.globalLimit;
+				limit = vm.options.limit;
 			}
 
 			yield vm.fetch({
@@ -55,10 +55,10 @@ function PointerStatementFactory(symbol, method) {
 
 			yield vm.writeback(null, true);
 
-			const autoWait = vm.options.globalWait;
-			if (vm.options.globalWait >= 0) {
+			const autoWait = vm.options.wait;
+			if (vm.options.wait >= 0) {
 				vm.$block();
-				yield setTimeout(() => vm.$$run(), autoWait);
+				yield setTimeout(() => vm.$run(), autoWait);
 			}
 		}
 	}

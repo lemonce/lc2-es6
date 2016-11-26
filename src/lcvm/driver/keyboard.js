@@ -25,7 +25,7 @@ class InputStatement extends DriverStatement {
 			yield* this.limit.doExecution(vm, scope);
 			limit = vm.ret;
 		} else {
-			limit = vm.options.globalLimit;
+			limit = vm.options.limit;
 		}
 
 		yield vm.fetch({
@@ -35,10 +35,10 @@ class InputStatement extends DriverStatement {
 
 		yield vm.writeback(null, true);
 
-		const autoWait = vm.options.globalWait;
-		if (vm.options.globalWait) {
+		const autoWait = vm.options.wait;
+		if (vm.options.wait) {
 			vm.$block();
-			yield setTimeout(() => vm.$$run(), autoWait);
+			yield setTimeout(() => vm.$run(), autoWait);
 		}
 
 	}

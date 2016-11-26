@@ -5,7 +5,6 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 		constructor ({POSITION, BODY}) {
 			super({POSITION});
 
-			this.identifier = BODY.IDENTIFIER;
 			this.left = this.$linkBySymbol(BODY.LEFT);
 			this.right = this.$linkBySymbol(BODY.RIGHT);
 		}

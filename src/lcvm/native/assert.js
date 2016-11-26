@@ -16,13 +16,13 @@ class AssertStatement extends Statement {
 		super({POSITION});
 
 		this.test = this.$linkBySymbol(BODY.TEST);
-		this.limit = this.$linkBySymbol(BODY.LIMIT);
+		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
 	*execute(vm, scope) {
 		yield* this.limit.doExecution(vm, scope);
 		//TODO check limit(vm.ret)
-		const limit = vm.ret || vm.options.globalLimit;
+		const limit = vm.ret || vm.options.limit;
 		const cycleTestStart = Date.now();
 		while (Date.now() - cycleTestStart <= limit) {
 			yield* this.test.doExecution(vm, scope);
@@ -35,7 +35,7 @@ class AssertStatement extends Statement {
 			} else {
 				vm.$block();
 				setTimeout(() => {
-					//Issue: I don't know when the vm will lost $runtime.
+					//Issue: I don't know when the vm lose $runtime.
 					vm.$runtime && vm.$run();
 				}, 50);
 			}

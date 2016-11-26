@@ -33,7 +33,7 @@ describe('ESVM::', function () {
 
 			it('signal#IDEL -E', function () {
 				vk.$bootstrap();
-				assert.notEqual(vk.$watchdog.lifeId, null);
+				// assert.notEqual(vk.$watchdog.lifeId, null);
 				assert.equal(event['bootstrap-start'], true);
 				assert.equal(event['bootstrap-end'], true);
 			});

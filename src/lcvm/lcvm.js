@@ -7,8 +7,8 @@ signal.register('CONTROL_STOP', {interception: true});
 
 const defaultOptions = {
 	strict: false,
-	globalWait: 500,
-	globalLimit: 0,
+	wait: 500,
+	limit: 0,
 	times: 1,
 	interval: 3000,
 	screen: {

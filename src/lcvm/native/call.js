@@ -43,7 +43,7 @@ class CallStatement extends Statement {
 
 	*execute (vm) {
 		const scope = vm.rootScope.$new();
-		const process = vm.getProcess(this.identifier);
+		const process = vm.processMap && vm.getProcess(this.identifier);
 		
 		if (process) {
 			const parameterList = process.parameter;

@@ -360,7 +360,7 @@ describe('Statement::', function () {
 			assert.equal($ret, 'def');
 		});
 
-		it('process {...} | call | return', function () {
+		it('process () {...} | call | return', function () {
 			const process = {
 				BODY: {
 					SYMBOL: 'PROCESS',
