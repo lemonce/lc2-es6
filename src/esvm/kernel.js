@@ -181,12 +181,16 @@ class Kernel extends Emitter {
 
 	$run() {
 		this.signal = signal.get('EXECUTING');
-		for(let tick of this.$runtime) {
+		let isDone = false;
+		
+		while (!isDone) {
+			const {done} = this.$runtime.next();
+			isDone = done;
 			if (this.signal.interception) {
 				if (this.signal === signal.get('ERROR_HALTING')) {
 					break;
 				}
-				return tick;
+				return;
 			}
 		}
 
