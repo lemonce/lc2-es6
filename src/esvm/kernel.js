@@ -61,11 +61,30 @@ class Kernel extends Emitter {
 		this.$runtime = null;
 
 		this.ret = null;
-		this.position = null;
+		this.$operationStack = [];
 
 		/*eslint-disable no-console */
 		this.on('error', err => console.log(`[ESVM-DEV]: ${err.message}`));
 		/*eslint-enable no-console */
+	}
+
+	get position() {
+		const op = this.$operationStack[0];
+		return op ? this.$operationStack[0].position : {start: 0, end: 0};
+	}
+
+	$clearOperationStack() {
+		this.$operationStack.length = 0;
+		return this;
+	}
+
+	pushOperation(operation) {
+		this.$operationStack.unshift(operation);
+		return this;
+	}
+
+	popOperation(operation) {
+		return this.$operationStack.shift(operation);
 	}
 
 	/**
@@ -210,6 +229,7 @@ class Kernel extends Emitter {
 
 	$block() {
 		this.signal = signal.get('BLOCKED');
+		this.$clearOperationStack();
 		return this;
 	}
 }

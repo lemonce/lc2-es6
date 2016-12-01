@@ -79,6 +79,9 @@ process main () {
 		vm2.on('case-end', vm => {
 			done();
 		});
+		vm2.on('writeback', (err, ret, {start, end}) => {
+			console.log(ret, code.substring(start, end));
+		});
 		vm2.on('fetch', (req, vm, Response) => {
 			setTimeout(() => {
 				vm.respond(new Response(req));

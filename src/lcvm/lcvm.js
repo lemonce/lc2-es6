@@ -9,7 +9,7 @@ signal.register('RETURN');
 const defaultOptions = {
 	strict: false,
 	wait: 500,
-	limit: 0,
+	limit: 5000,
 	times: 1,
 	interval: 3000,
 	screen: {

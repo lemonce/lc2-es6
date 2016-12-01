@@ -29,10 +29,6 @@ class Statement {
 		this.position = POSITION;
 	}
 
-	get eventArgs () {
-		return { type: 'ABSTRACT', args: {} };
-	}
-	
 	static register ($Symbol) {
 		if (!this.prototype.execute) {
 			throw new Error(`[ESVM-DEV]: ${error.NO_EXECUTE($Symbol)}`);
@@ -46,10 +42,10 @@ class Statement {
 	}
 
 	*doExecution(vm, scope) {
-		vm.position = this.position;
+		vm.pushOperation(this);
 		yield* this.execute(vm, scope);
+		vm.popOperation();
 	}
-
 }
 Statement.map = statementClassMap;
 Statement.linkNode = linkNode;

@@ -20,9 +20,14 @@ class AssertStatement extends Statement {
 	}
 
 	*execute(vm, scope) {
-		yield* this.limit.doExecution(vm, scope);
-		//TODO check limit(vm.ret)
-		const limit = vm.ret || vm.options.limit;
+		let limit;
+		if (this.limit) {
+			yield* this.limit.doExecution(vm, scope);
+			limit = vm.ret;
+		} else {
+			limit = vm.options.limit;
+		}
+		
 		const cycleTestStart = Date.now();
 		while (Date.now() - cycleTestStart <= limit) {
 			yield* this.test.doExecution(vm, scope);
