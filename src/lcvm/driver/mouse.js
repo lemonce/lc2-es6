@@ -8,7 +8,10 @@ const pointerSymbolMap = {
 	'ACTION::MOVEIN': 'doMovein',
 	'ACTION::MOVEOUT': 'doMoveout',
 	'ACTION::DROP': 'doDrop',
-	'ACTION::HOLD': 'doHold'
+	'ACTION::HOLD': 'doHold',
+
+	'ACTION::CHECK': 'doCheck',
+	'ACTION::UNCHECK': 'doUncheck'
 };
 
 /**

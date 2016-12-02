@@ -29,6 +29,12 @@ for(let tag in signalForKernel) {
 
 const RPC_LIMIT = 30;
 const WATCHDOG_CYCLE = 50;
+function defaultNoResponseHandle(vm) {
+	const message = '[ESVM]: No-response from last fetching.';
+	vm.rpcToken = null;
+	vm.writeback(new Error(message), 1);
+	vm.$halt();
+}
 /**
  * [L]emon[C]ase [V]isual [M]achine
  * 
@@ -95,18 +101,14 @@ class Kernel extends Emitter {
 	 * @param {String} invoking.method name
 	 * @param {Object} invoking.args
 	 */
-	fetch(invoking, limit = RPC_LIMIT) {
+	fetch(invoking, limit = RPC_LIMIT, noResponseHandle = defaultNoResponseHandle) {
 		if (this.signal !== signal.get('EXECUTING')) {
 			throw new Error('[ESVM]: Invalid signal.');
 		}
 
 		// Set event listener in external (invoking, vm)
 		this.signal = signal.get('WAITING_ASYNC_RESPONSE');
-		this.$watchdog.watch(limit, () => {
-			const message = '[ESVM]: No-response from last fetching.';
-			this.rpcToken = null;
-			this.writeback(new Error(message), 1);
-		});
+		this.$watchdog.watch(limit, () => noResponseHandle(this));
 
 		// Create a token & build to Request.
 		// The token will be checked when responding.
@@ -213,9 +215,7 @@ class Kernel extends Emitter {
 			}
 		}
 
-		this.$halt();
-		this.emit('program-end', this);
-		return this;
+		return this.$halt();
 	}
 
 	$halt() {
@@ -223,13 +223,14 @@ class Kernel extends Emitter {
 		this.rpcToken = null;
 		this.signal = signal.get('IDLE');
 		this.$watchdog.rest();
+		this.emit('program-end', this);
+		this.$clearOperationStack();
 
 		return this;
 	}
 
 	$block() {
 		this.signal = signal.get('BLOCKED');
-		this.$clearOperationStack();
 		return this;
 	}
 }

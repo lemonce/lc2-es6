@@ -19,7 +19,14 @@ function SelectorStatementFactory(symbol, method) {
 		
 		*execute(vm, scope) {
 			yield* this.selector.doExecution(vm, scope);
-			yield vm.fetch({method, args: {selector: vm.ret}});
+			yield vm.fetch({method,
+				args: {
+					selector: vm.ret
+				}
+			}, undefined, () => {
+				vm.writeback(null, false);
+				vm.$run();
+			});
 			yield vm.writeback(null, vm.ret);
 		}
 	}

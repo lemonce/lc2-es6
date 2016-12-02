@@ -1,6 +1,6 @@
 {
   "name": "lc2-es6-vm",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "LemonCase2 Engine by ECMAScript 6",
   "main": "index.js",
   "scripts": {

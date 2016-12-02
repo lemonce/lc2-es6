@@ -32,7 +32,7 @@ class AssertStatement extends Statement {
 		while (Date.now() - cycleTestStart <= limit) {
 			yield* this.test.doExecution(vm, scope);
 			vm.emit('[ASSERT]', vm);
-			let test = vm.ret;
+			let test = Boolean(vm.ret);
 			
 			if (test === true) {
 				yield vm.writeback(null, true);

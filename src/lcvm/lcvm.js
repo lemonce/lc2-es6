@@ -104,7 +104,7 @@ class LCVM extends ESVM {
 	start() {
 		this.$bootstrap();
 		this.$state = 'running';
-		this.callMainProcess();
+		setTimeout(() => this.callMainProcess(), this.options.interval);
 		return this;
 	}
 
