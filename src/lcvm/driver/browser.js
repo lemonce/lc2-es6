@@ -31,8 +31,8 @@ class JumptoStatement extends DriverStatement {
 		this.url = this.$linkBySymbol(BODY.URL);
 	}
 	
-	*execute(vm) {
-		yield* this.url.doExecution(vm);
+	*execute(vm, scope) {
+		yield* this.url.doExecution(vm, scope);
 
 		yield vm.fetch({
 			method: 'jumpto',
@@ -52,11 +52,11 @@ class ResizeStatement extends DriverStatement {
 		this.height = this.$linkBySymbol(BODY.HEIGHT);
 	}
 	
-	*execute(vm) {
-		yield* this.width.doExecution(vm);
+	*execute(vm, scope) {
+		yield* this.width.doExecution(vm, scope);
 		const width = vm.ret;
 
-		yield* this.height.doExecution(vm);
+		yield* this.height.doExecution(vm, scope);
 		const height = vm.ret;
 
 		yield vm.fetch({

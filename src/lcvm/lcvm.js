@@ -19,7 +19,7 @@ const defaultOptions = {
 };
 
 class LCVM extends ESVM {
-	constructor({processMap, options = {}} = {}) {
+	constructor({processMap, options = {}, global} = {}) {
 		super();
 		
 		this.processMap = processMap;
@@ -35,6 +35,10 @@ class LCVM extends ESVM {
 				get $LOOP() { return loop; }
 			});
 
+			global.forEach(statement => {
+				const run = Statement.linkNode(statement).doExecution(this, this.rootScope);
+				for(let tick of run);
+			});
 		});
 	}
 	

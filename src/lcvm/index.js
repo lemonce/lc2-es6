@@ -32,12 +32,12 @@ require('./driver/keyboard');
  * @exports link
  * @param {Object} syntaxTree 
  */
-exports.link = function link({processMap, options}) {
+exports.link = function link({processMap, options, global}) {
 	for(let identifier in processMap) {
 		processMap[identifier] = new Process(processMap[identifier]);
 	}
 
-	return {processMap, options};
+	return {processMap, options, global};
 };
 
 exports.LCVM = require('./lcvm').LCVM;

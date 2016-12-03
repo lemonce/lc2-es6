@@ -184,7 +184,7 @@ class Kernel extends Emitter {
 
 		this.$watchdog.work(WATCHDOG_CYCLE);
 		this.rpcToken = null;
-		this.emit('programe-start', this);
+		this.emit('program-start', this);
 		this.$run();
 	}
 
