@@ -23,13 +23,13 @@ class ProcessStatement extends ControlStatement {
 	*execute (vm, scope) {
 		for (let statement of this.segment) {
 			if (vm.signal === signal.get('RETURN')) {
-				vm.signal = signal.get('EXECUTING');
 				break;
 			} else {
 				yield* statement.doExecution(vm, scope);
 			}
 		}
 
+		vm.signal = signal.get('EXECUTING');
 		return 0;
 	}
 }

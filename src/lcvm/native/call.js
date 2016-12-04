@@ -41,8 +41,8 @@ class CallStatement extends Statement {
 		}
 	}
 
-	*execute (vm) {
-		const scope = vm.rootScope.$new();
+	*execute (vm, parentScope) {
+		const scope = parentScope.$new();
 		const process = vm.processMap && vm.getProcess(this.identifier);
 		
 		if (process) {

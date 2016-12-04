@@ -31,11 +31,11 @@ class LCVM extends ESVM {
 		this.on('program-end', () => this.loopEnd());
 		this.on('program-start', () => {
 			const loop = this.loop;
-			this.rootScope = new Scope({
+			Object.assign(this.rootScope, {
 				get $LOOP() { return loop; }
 			});
 
-			global.forEach(statement => {
+			global && global.forEach(statement => {
 				const run = Statement.linkNode(statement).doExecution(this, this.rootScope);
 				for(let tick of run);
 			});
@@ -48,7 +48,8 @@ class LCVM extends ESVM {
 	}
 
 	popScope() {
-		const {invoking} = this.callingStack.pop();
+		// const {invoking} = 
+		this.callingStack.pop();
 		return this;
 	}
 
@@ -82,8 +83,8 @@ class LCVM extends ESVM {
 	}
 
 	run(executionNode, scope) {
-		Object.assign(this.rootScope, scope);
 		this.loadProgram(executionNode);
+		Object.assign(this.rootScope, scope);
 		this.$run();
 
 		return this.ret;
@@ -93,7 +94,7 @@ class LCVM extends ESVM {
 		if (!(statement instanceof Statement)) {
 			throw new Error('[ESVM-DEV]: Invalid statement.');
 		}
-		this.$runtime = statement.doExecution(this, this.rootScope);
+		this.$runtime = statement.doExecution(this, this.rootScope = new Scope());
 	}
 
 	callMainProcess() {
@@ -111,12 +112,6 @@ class LCVM extends ESVM {
 		setTimeout(() => this.callMainProcess(), this.options.interval);
 		return this;
 	}
-
-	// pause() {
-	// 	this.$state = 'suspend';
-	// 	this.signal = signal.get('CONTROL_SUSPEND');
-	// 	return this;
-	// }
 
 	resume() {
 		this.$state = 'running';
