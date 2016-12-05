@@ -2,16 +2,16 @@
 const DriverStatement = require('../driver');
 
 const pointerSymbolMap = {
-	'ACTION::CLICK': 'doClick',
-	'ACTION::DBLCLICK': 'doDblclick',
-	'ACTION::RCLICK': 'doRclick',
-	'ACTION::MOVEIN': 'doMovein',
-	'ACTION::MOVEOUT': 'doMoveout',
-	'ACTION::DROP': 'doDrop',
-	'ACTION::HOLD': 'doHold',
+	'ACTION::CLICK': {method: 'doClick', action: 'click'},
+	'ACTION::DBLCLICK': {method: 'doDblclick', action: 'dblclick'},
+	'ACTION::RCLICK': {method: 'doRclick', action: 'rclick'},
+	'ACTION::MOVEIN': {method: 'doMovein', action: 'movein'},
+	'ACTION::MOVEOUT': {method: 'doMoveout', action: 'moveout'},
+	'ACTION::DROP': {method: 'doDrop'},
+	'ACTION::HOLD': {method: 'doHold'},
 
-	'ACTION::CHECK': 'doCheck',
-	'ACTION::UNCHECK': 'doUncheck'
+	'ACTION::CHECK': {method: 'doCheck', action: 'check'},
+	'ACTION::UNCHECK': {method: 'doUncheck', action: 'uncheck'}
 };
 
 /**
@@ -19,7 +19,7 @@ const pointerSymbolMap = {
  * 		on <left>, <top>
  * 		in <limit>
  */
-function PointerStatementFactory(symbol, method) {
+function PointerStatementFactory(symbol, {method, action}) {
 	class PointerStatementClass extends DriverStatement {
 		constructor({POSITION, BODY}) {
 			super({POSITION});
@@ -48,6 +48,7 @@ function PointerStatementFactory(symbol, method) {
 				limit = vm.options.limit;
 			}
 
+			const startTime = Date.now();
 			yield vm.fetch({
 				method,
 				args: {
@@ -56,6 +57,16 @@ function PointerStatementFactory(symbol, method) {
 				}
 			}, limit);
 
+			yield vm.emit('driver', {
+				type: 'action',
+				data: {
+					action, selector,
+					line: this.position && this.position.LINE,
+					success: true,
+					param: null,
+					duration: Date.now() - startTime
+				}
+			});
 			yield vm.writeback(null, true);
 
 			const autoWait = vm.options.wait;

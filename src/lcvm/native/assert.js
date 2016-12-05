@@ -35,6 +35,14 @@ class AssertStatement extends Statement {
 			let test = Boolean(vm.ret);
 			
 			if (test === true) {
+				yield vm.emit('driver', {
+					type: 'assert',
+					data: {
+						line: this.position && this.position.LINE,
+						success: true,
+						duration: Date.now() - cycleTestStart
+					}
+				});
 				yield vm.writeback(null, true);
 				return;
 			} else {
@@ -45,6 +53,15 @@ class AssertStatement extends Statement {
 				}, 50);
 			}
 		}
+		
+		yield vm.emit('driver', {
+			type: 'assert',
+			data: {
+				line: this.position && this.position.LINE,
+				success: false,
+				duration: Date.now() - cycleTestStart
+			}
+		});
 		yield vm.writeback(new Error('[LCVM-ASSERT]: Assertion Failure.'), false);
 	}
 }

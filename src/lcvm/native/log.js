@@ -17,7 +17,15 @@ class LogStatement extends Statement {
 
 	*execute(vm, scope) {
 		yield* this.log.doExecution(vm, scope);
-		vm.emit('log', vm.ret);
+		const content = vm.ret;
+		vm.emit('log', content);
+		yield vm.emit('driver', {
+			type: 'message',
+			data: {
+				line: this.position && this.position.LINE,
+				content
+			}
+		});
 		yield vm.writeback(null, vm.ret);
 	}
 }

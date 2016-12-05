@@ -14,6 +14,12 @@ function BrowserStatementFactory(symbol, method) {
 		
 		*execute(vm) {
 			yield vm.fetch({method, args: {}});
+			yield vm.emit('driver', {
+				type: method,
+				data: {
+					line: this.position && this.position.LINE,
+				}
+			});
 			yield vm.writeback(null, true);
 		}
 	}
@@ -33,10 +39,18 @@ class JumptoStatement extends DriverStatement {
 	
 	*execute(vm, scope) {
 		yield* this.url.doExecution(vm, scope);
+		const url = vm.ret;
 
 		yield vm.fetch({
 			method: 'jumpto',
-			args: { url: vm.ret }
+			args: { url }
+		});
+		yield vm.emit('driver', {
+			type: 'jumpto',
+			data: {
+				line: this.position && this.position.LINE,
+				url
+			}
 		});
 
 		yield vm.writeback(null, true);

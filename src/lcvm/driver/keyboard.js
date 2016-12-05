@@ -28,10 +28,23 @@ class InputStatement extends DriverStatement {
 			limit = vm.options.limit;
 		}
 
+		const startTime = Date.now();
 		yield vm.fetch({
 			method: 'doInput',
 			args: {selector, value}
 		}, limit);
+
+		yield vm.emit('driver', {
+			type: 'action',
+			data: {
+				selector,
+				action: 'input',
+				line: this.position && this.position.LINE,
+				success: true,
+				param: value,
+				duration: Date.now() - startTime
+			}
+		});
 
 		yield vm.writeback(null, true);
 
