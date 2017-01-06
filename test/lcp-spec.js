@@ -114,8 +114,6 @@ process main () {
 	input "input" by selector + 1;
 	rclick time ;
 	dblclick selector ;
-	movein selector ;
-	moveout time ;
 	//assert "null";
 	assert <@"sth"/> in 00000;
 	//assert selector in 3000;
@@ -181,6 +179,97 @@ process main () {
 			// assert.equal(vm.ret, false);
 		});
 		vm2.on('case-end', vm => {
+			done();
+		});
+		vm2.on('fetch', (req, vm, Response) => {
+			setTimeout(() => {
+				vm.respond(new Response(req));
+			}, 100);
+		});
+		vm2.start();
+	});
+
+	it('while with return', function (done) {
+		const code = `
+#AUTOWAIT 500
+#TIMES 1;
+
+process main () {
+	index = 0;
+	while(index<5) {
+		b = 'b' + index;
+		index+=1;
+		while (true) {
+			index += 2;
+			if (index === 3) {
+				return index;
+			}
+		}
+	}
+
+	return 'success:' + a;
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(err, ret, pos);
+		});
+		vm2.on('loop-end', vm => {
+			// assert.equal(vm.ret, false);
+		});
+		vm2.on('case-end', ({ret}) => {
+			assert.equal(ret, 3);
+			done();
+		});
+		vm2.on('fetch', (req, vm, Response) => {
+			setTimeout(() => {
+				vm.respond(new Response(req));
+			}, 100);
+		});
+		vm2.start();
+	});
+
+	it.only('while with continue & break', function (done) {
+		const code = `
+#AUTOWAIT 500
+#TIMES 1;
+
+process main () {
+	index = 0;
+	while(index<5) {
+		if (index === 0) {
+			break;
+		}
+	}
+	log index;
+
+	while(index < 5) {
+		index += 1;
+		continue;
+		a = 'abc'; //19
+	}
+	log index;
+
+	return a;
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(err, ret, pos);
+		});
+
+		let index = 0;
+		const result = [0, 5];
+		vm2.on('log', data => {
+			assert.equal(result[index], data);
+			index++;
+		});
+		vm2.on('case-end', ({ret}) => {
+			assert.equal(ret, undefined);
 			done();
 		});
 		vm2.on('fetch', (req, vm, Response) => {

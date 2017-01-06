@@ -4,9 +4,10 @@ const DriverStatement = require('../driver');
 const pointerSymbolMap = {
 	'ACTION::CLICK': {method: 'doClick', action: 'click'},
 	'ACTION::DBLCLICK': {method: 'doDblclick', action: 'dblclick'},
-	'ACTION::DROP': {method: 'doDrop'},
+	'ACTION::RCLICK': {method: 'doRclick', action: 'rclick'},
 	'ACTION::HOLD': {method: 'doHold', action: 'hold'},
-	'ACTION::MOVE': {method: 'doMove', action: 'move'}
+	'ACTION::MOVE': {method: 'doMove', action: 'move'},
+	'ACTION::SCROLL': {method: 'doScroll', action: 'scroll'}
 };
 
 /**
@@ -82,37 +83,27 @@ for(let symbol in pointerSymbolMap) {
 /**
  * 	move <[to <left>, <right>] | [on <selector>]>
  */
-class MouseMoveStatement extends DriverStatement {
-	constructor({POSITION, BODY}) {
+class MouseDropStatement extends DriverStatement {
+	constructor({POSITION}) {
 		super({POSITION});
-
-		if (BODY.SELECTOR) {
-			this.selector = this.$linkBySymbol(BODY.SELECTOR);
-		} else {
-			this.left = this.$linkBySymbol(BODY.LEFT);
-			this.top = this.$linkBySymbol(BODY.TOP);
-		}
 	}
 
-	*execute(vm, scope) {
-		if (this.selector) {
-			yield* this.selector.doExecution(vm, scope);
-			const selector = vm.ret;
-
-			yield vm.fetch({method: 'doMove', args: {selector}});
-		} else {
-			yield* this.left.doExecution(vm, scope);
-			const left = vm.ret;
-
-			yield* this.top.doExecution(vm, scope);
-			const top = vm.ret;
-
-			yield vm.fetch({method: 'doMove', args: {left, top}});
-		}
-
+	*execute(vm) {
+		const startTime = Date.now();
+		yield vm.fetch({method: 'doDrop', args: {}});
+		yield vm.emit('driver', {
+			type: 'action',
+			data: {
+				action: 'drop',
+				line: this.position && this.position.LINE,
+				success: true,
+				param: null,
+				duration: Date.now() - startTime
+			}
+		});
 		yield vm.writeback(null, true);
 	}
 }
-MouseMoveStatement.register('ACTION::MOVE');
+MouseDropStatement.register('ACTION::DROP');
 
 //TODO wheel

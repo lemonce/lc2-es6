@@ -588,10 +588,10 @@ describe('Statement::', function () {
 				'ACTION::CLICK': 'doClick',
 				'ACTION::DBLCLICK': 'doDblclick',
 				'ACTION::RCLICK': 'doRclick',
-				'ACTION::MOVEIN': 'doMovein',
-				'ACTION::MOVEOUT': 'doMoveout',
 				'ACTION::DROP': 'doDrop',
-				'ACTION::HOLD': 'doHold'
+				'ACTION::HOLD': 'doHold',
+				'ACTION::SCROLL': 'doScroll',
+				'ACTION::MOVE': 'doMove'
 			};
 
 			function genNode(symbol) {
@@ -612,6 +612,14 @@ describe('Statement::', function () {
 				it(symbol, function () {
 					const vm = new LCVM();
 					vm.on('fetch', request => {
+						if (request.invoking.method === 'doDrop') {
+							assert.deepEqual(request.invoking, {
+								method: 'doDrop',
+								args: {}
+							});
+							return;
+						}
+
 						assert.deepEqual(request.invoking, {
 							method: pointerSymbolMap[symbol],
 							args: {
