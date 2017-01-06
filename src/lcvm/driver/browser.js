@@ -3,7 +3,7 @@ const DriverStatement = require('../driver');
 const browserActionMap = {
 	'BROWSER::BACK': 'back',
 	'BROWSER::FORWARD': 'forward',
-	'BROWSER::REFRESH':'refresh'
+	'BROWSER::REFRESH': 'refresh'
 };
 
 function BrowserStatementFactory(symbol, method) {

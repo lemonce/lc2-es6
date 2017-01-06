@@ -4,14 +4,9 @@ const DriverStatement = require('../driver');
 const pointerSymbolMap = {
 	'ACTION::CLICK': {method: 'doClick', action: 'click'},
 	'ACTION::DBLCLICK': {method: 'doDblclick', action: 'dblclick'},
-	'ACTION::RCLICK': {method: 'doRclick', action: 'rclick'},
-	'ACTION::MOVEIN': {method: 'doMovein', action: 'movein'},
-	'ACTION::MOVEOUT': {method: 'doMoveout', action: 'moveout'},
 	'ACTION::DROP': {method: 'doDrop'},
-	'ACTION::HOLD': {method: 'doHold'},
-
-	'ACTION::CHECK': {method: 'doCheck', action: 'check'},
-	'ACTION::UNCHECK': {method: 'doUncheck', action: 'uncheck'}
+	'ACTION::HOLD': {method: 'doHold', action: 'hold'},
+	'ACTION::MOVE': {method: 'doMove', action: 'move'}
 };
 
 /**

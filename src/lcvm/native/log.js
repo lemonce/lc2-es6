@@ -20,7 +20,7 @@ class LogStatement extends Statement {
 		const content = vm.ret;
 		vm.emit('log', content);
 		yield vm.emit('driver', {
-			type: 'message',
+			type: 'log',
 			data: {
 				line: this.position && this.position.LINE,
 				content

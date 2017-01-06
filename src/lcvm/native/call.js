@@ -21,6 +21,7 @@ const native = {
 	random: regexp => {
 		return regexp ? randexp(regexp) : Math.random();
 	},
+	trim: string => String(string).trim(),
 	abs: Math.abs,
 	ceil: Math.ceil,
 	floor: Math.floor,
