@@ -37,6 +37,7 @@ describe('Testing with compiler::', function () {
 		'"abc"!~"bc"',
 		'length("444")',
 		'number("23")',
+		'format("2016-09-02", "YYYY:MM:DD")',
 		'/[a-z0-9]{16}/',
 		'random(/[a-z0-9]{16}/)',
 		'1&&1',
