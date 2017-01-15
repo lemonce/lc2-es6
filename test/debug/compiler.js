@@ -1,6 +1,5 @@
 const {parse, parseAt} = require('lc2-compiler');
-const {link, LCVM} = require('../../src/lcvm');
-const {Statement, Response, Resquest, signal} = require('../../src/esvm/');
+const {link, LCVM} = require('../../src');
 const code = `
 
 #AUTOWAIT 500
@@ -51,9 +50,9 @@ vm2.on('loop-end', vm => {
 vm2.on('case-end', vm => {
 	// done();
 });
-vm2.on('fetch', (req, vm, Response) => {
-	setTimeout(() => {
-		vm.respond(new Response(req));
-	}, 100);
+vm2.on('fetch', rpc => {
+	rpc.async(() => {
+		return new Promise(resolve => setTimeout(resolve, 100));
+	});
 });
 vm2.start();

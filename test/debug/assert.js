@@ -1,5 +1,5 @@
 /*eslint-disable*/
-const {LCVM, link} = require('../../src/lcvm');
+const {LCVM, link} = require('../../src');
 
 const syntaxTreeA = {
 	BODY: {
@@ -83,12 +83,11 @@ const cccc = new LCVM(link({
 	options: {}
 }));
 
-const {Response} = require('../../src/esvm').rpc;
-cccc.on('fetch', (request, vm) => {
-	console.log('[REMOTE]', request.invoking);
-	setTimeout(() => {
-		vm.respond(new Response(request));
-	}, 40);
+cccc.on('fetch', (rpc, invoking) => {
+	console.log('[REMOTE]', invoking);
+	rpc.async(() => {
+		return new Promise(resolve => setTimeout(resolve, 40));
+	});
 });
 
 let ai = 0;

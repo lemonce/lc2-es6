@@ -1,4 +1,4 @@
-const {Statement} = require('../../esvm/');
+const {Statement} = require('es-vm');
 
 function AssignmentStatementFactory(symbol, operation) {
 	class AssignmentStatementClass extends Statement {

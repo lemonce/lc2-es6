@@ -1,4 +1,4 @@
-const {Statement} = require('../../esvm/');
+const {Statement} = require('es-vm');
 
 function BinaryOperatorStatementFactory(symbol, operation) {
 	class BinaryOperatorStatementClass extends Statement {
@@ -38,8 +38,6 @@ const operationSymbolMap = {
 	'ES*': (left, right) => left * right,
 	'ES/': (left, right) => left / right,
 	'ES%': (left, right) => left % right,
-	'ES&&': (left, right) => left && right,
-	'ES||': (left, right) => left || right,
 	'ES==': (left, right) => left == right,
 	'ES!=': (left, right) => left != right,
 	'ES===': (left, right) => left === right,

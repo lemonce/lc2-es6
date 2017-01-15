@@ -1,5 +1,5 @@
 const {parse, parseAt} = require('lc2-compiler');
-const {link, LCVM} = require('../../src/lcvm');
+const {link, LCVM} = require('../../src');
 
 const code = `
 #AUTOWAIT 500

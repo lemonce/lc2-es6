@@ -1,6 +1,6 @@
 const ControlStatement = require('../control');
-const {Statement} = require('../../esvm/');
-const {signal} = require('../../esvm');
+const {Statement} = require('es-vm');
+const {signal} = require('es-vm');
 
 signal.register('BREAK');
 signal.register('CONTINUE');

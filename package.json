@@ -15,6 +15,8 @@
   "author": "ChaosLee",
   "license": "GPL-3.0",
   "dependencies": {
+    "es-vm": "^1.1.0",
+    "moment": "^2.17.1",
     "randexp": "^0.4.3"
   },
   "devDependencies": {

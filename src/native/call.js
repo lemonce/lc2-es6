@@ -1,5 +1,6 @@
-const {Statement} = require('../../esvm/');
+const {Statement} = require('es-vm');
 const {randexp} = require('randexp');
+const moment = require('moment');
 /**
  * 	{
  * 		BODY: {
@@ -26,9 +27,7 @@ const native = {
 	ceil: Math.ceil,
 	floor: Math.floor,
 	round: Math.round,
-	format: (dateString, format) => {
-		//TODO use angular date filter.
-	},
+	format: (dateString, format) => moment(dateString).format(format),
 	now: Date.now,
 };
 class CallStatement extends Statement {

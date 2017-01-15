@@ -6,7 +6,7 @@
  * 		}
  * 	}
  */
-const {Statement} = require('../../esvm/');
+const {Statement} = require('es-vm');
 
 class LogStatement extends Statement {
 	constructor ({POSITION, BODY}) {

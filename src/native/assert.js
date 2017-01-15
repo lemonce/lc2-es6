@@ -1,4 +1,4 @@
-const {Statement} = require('../../esvm/');
+const {Statement} = require('es-vm');
 /**
  * 	assert <expression>
  * 		in <expression>

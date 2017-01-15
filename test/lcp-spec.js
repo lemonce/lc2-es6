@@ -1,6 +1,6 @@
 const {parse, parseAt} = require('lc2-compiler');
-const {link, LCVM} = require('../src/lcvm');
-const {Statement, Response, Resquest, signal} = require('../src/esvm/');
+const {link, LCVM} = require('../src');
+const {Statement} = require('es-vm');
 const assert = require('assert');
 
 describe('Testing with compiler::', function () {
@@ -47,7 +47,7 @@ describe('Testing with compiler::', function () {
 		'while (false) {2;a+=1;}',
 
 		// 'process main () {}',
-	]
+	];
 
 	it('Sync code', function () {
 		code.forEach(str => {
@@ -82,10 +82,10 @@ process main () {
 		vm2.on('writeback', (err, ret, {start, end}) => {
 			console.log(ret, code.substring(start, end));
 		});
-		vm2.on('fetch', (req, vm, Response) => {
-			setTimeout(() => {
-				vm.respond(new Response(req));
-			}, 1500);
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 1500));
+			});
 		});
 		vm2.start();
 	});
@@ -96,7 +96,7 @@ process main () {
 #TIMES 1;
 #INTERVAL 999;
 #SCREEN 1,2
-#LIMIT
+#LIMIT 2000
 
 process main () {
 	// a = random();
@@ -138,10 +138,10 @@ process sub_1 (str, reg){
 		vm2.on('case-end', vm => {
 			done();
 		});
-		vm2.on('fetch', (req, vm, Response) => {
-			setTimeout(() => {
-				vm.respond(new Response(req));
-			}, 100);
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
 		});
 		vm2.start();
 	});
@@ -181,10 +181,10 @@ process main () {
 		vm2.on('case-end', vm => {
 			done();
 		});
-		vm2.on('fetch', (req, vm, Response) => {
-			setTimeout(() => {
-				vm.respond(new Response(req));
-			}, 100);
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
 		});
 		vm2.start();
 	});
@@ -223,15 +223,15 @@ process main () {
 			assert.equal(ret, 3);
 			done();
 		});
-		vm2.on('fetch', (req, vm, Response) => {
-			setTimeout(() => {
-				vm.respond(new Response(req));
-			}, 100);
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
 		});
 		vm2.start();
 	});
 
-	it.only('while with continue & break', function (done) {
+	it('while with continue & break', function (done) {
 		const code = `
 #AUTOWAIT 500
 #TIMES 1;
@@ -272,10 +272,10 @@ process main () {
 			assert.equal(ret, undefined);
 			done();
 		});
-		vm2.on('fetch', (req, vm, Response) => {
-			setTimeout(() => {
-				vm.respond(new Response(req));
-			}, 100);
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
 		});
 		vm2.start();
 	});

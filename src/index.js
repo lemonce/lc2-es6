@@ -7,7 +7,7 @@ require('./control/loop');
 require('./expression/value');
 require('./expression/binary'); // 15ES + 2LC
 require('./expression/assignment'); // 5ES
-require('./expression/not'); // ES!
+require('./expression/logic'); // ES! ES&& ES||
 require('./expression/condition'); // ES?:
 require('./expression/selector'); // LC7 <* />
 

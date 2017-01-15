@@ -1,11 +1,10 @@
-const {Kernel} = require('../../src/esvm/kernel');
-const Statement = require('../../src/esvm/statement');
+const {ESVM, Statement} = require('es-vm');
 
 const test = new Statement();
 test.execute = function* (vm, scope) {
 	yield vm.flag = 1;
 };
-let kernel = new Kernel();
+let kernel = new ESVM();
 
 kernel.$runtime = test.doExecution(kernel, {});
 kernel.$bootstrap();

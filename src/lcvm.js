@@ -1,4 +1,4 @@
-const {ESVM, Scope, signal, Statement} = require('../esvm');
+const {ESVM, Scope, signal, Statement} = require('es-vm');
 const CallStatement = require('./native/call');
 const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
 

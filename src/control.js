@@ -1,4 +1,4 @@
-const {Statement} = require('../esvm/');
+const {Statement} = require('es-vm');
 class ControlStatement extends Statement {
 	$linkSegment (segment) {
 		if (!Array.isArray(segment)) {

@@ -1,4 +1,4 @@
-const {signal} = require('../../esvm');
+const {signal} = require('es-vm');
 const ControlStatement = require('../control');
 /**
  * 	{

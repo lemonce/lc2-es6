@@ -1,5 +1,5 @@
-const {signal} = require('../../esvm');
-const {Statement} = require('../../esvm/');
+const {signal} = require('es-vm');
+const {Statement} = require('es-vm');
 /**
  * 	{
  * 		BODY: {
