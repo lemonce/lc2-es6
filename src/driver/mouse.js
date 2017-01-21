@@ -4,7 +4,6 @@ const DriverStatement = require('../driver');
 const pointerSymbolMap = {
 	'ACTION::CLICK': {method: 'doClick', action: 'click'},
 	'ACTION::DBLCLICK': {method: 'doDblclick', action: 'dblclick'},
-	'ACTION::RCLICK': {method: 'doRclick', action: 'rclick'},
 	'ACTION::HOLD': {method: 'doHold', action: 'hold'},
 	'ACTION::MOVE': {method: 'doMove', action: 'move'},
 	'ACTION::SCROLL': {method: 'doScroll', action: 'scroll'}
@@ -20,21 +19,13 @@ function PointerStatementFactory(symbol, {method, action}) {
 		constructor({POSITION, BODY}) {
 			super({POSITION});
 
-			this.selector = this.$linkBySymbol(BODY.SELECTOR);
-			this.offsetTop = BODY.OFFSET_TOP && this.$linkBySymbol(BODY.OFFSET_TOP);
-			this.offsetLeft = BODY.OFFSET_LEFT && this.$linkBySymbol(BODY.OFFSET_LEFT);
+			this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
 			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 		}
 
 		*execute(vm, scope) {
-			yield* this.selector.doExecution(vm, scope);
+			yield* this.selectElement(this, scope).doExecution(vm, scope);
 			const selector = vm.ret;
-
-			// yield* this.offsetTop.doExecution(vm, scope);
-			// const offsetTop = vm.ret;
-
-			// yield* this.offsetLeft.doExecution(vm, scope);
-			// const offsetLeft = vm.ret;
 
 			let limit;
 			if (this.limit) {
@@ -49,7 +40,8 @@ function PointerStatementFactory(symbol, {method, action}) {
 				method,
 				args: {
 					selector,
-					// offsetTop, offsetLeft
+					// scope.$BUTTON
+					// scope.$OFFSET_X, scope.$OFFSET_Y,
 				}
 			}, limit);
 

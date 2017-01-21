@@ -37,6 +37,7 @@ describe('Testing with compiler::', function () {
 		'"abc"!~"bc"',
 		'length("444")',
 		'number("23")',
+		'number("aaa")',
 		'format("2016-09-02", "YYYY:MM:DD")',
 		'/[a-z0-9]{16}/',
 		'random(/[a-z0-9]{16}/)',
@@ -113,7 +114,6 @@ process main () {
 	input "input" by /test\d{4}/img;
 	input "input" by /[/]/;
 	input "input" by selector + 1;
-	rclick time ;
 	dblclick selector ;
 	//assert "null";
 	assert <@"sth"/> in 00000;
@@ -273,6 +273,87 @@ process main () {
 			assert.equal(ret, undefined);
 			done();
 		});
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
+		});
+		vm2.start();
+	});
+
+	it('magic word', function(done) {
+		const syntaxTree = {
+			main: {
+				BODY: {
+					SYMBOL: 'PROCESS',
+					IDENTIFIER: 'main',
+					PARAMETER: [],
+					SEGMENT: [
+						{
+							BODY: {
+								SYMBOL: 'ES=',
+								IDENTIFIER: '$IT',
+								SOURCES: {
+									BODY: {
+										SYMBOL: 'LITERAL',
+										DESTINATION: '#btn'
+									}
+								}
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'ACTION::CLICK',
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'ACTION::CLICK',
+								SELECTOR: {
+									BODY: {
+										SYMBOL: 'LITERAL',
+										DESTINATION: 'body a'
+									}
+								}
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'ACTION::INPUT',
+								VALUE: {
+									BODY: {
+										SYMBOL: 'LITERAL',
+										DESTINATION: 111
+									}
+								}
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'RETURN', 
+								RET: {
+									BODY: {
+										SYMBOL: 'LITERAL',
+										DESTINATION: 'success'
+									}
+								}
+							}				
+						}
+					]
+				}
+			}
+		};
+		const executionTree = link({processMap: syntaxTree});
+		const vm2 = new LCVM(executionTree);
+
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(err, ret, pos);
+		});
+
 		vm2.on('fetch', rpc => {
 			rpc.async(() => {
 				return new Promise(resolve => setTimeout(resolve, 100));

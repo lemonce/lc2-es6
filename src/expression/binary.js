@@ -16,7 +16,17 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 			yield* this.right.doExecution(vm, scope);
 			const right = vm.ret;
 
-			yield vm.writeback(null, operation(left, right));
+			try {
+				const ret = operation(left, right);
+
+				if(typeof ret === 'number' && !isFinite(ret)) {
+					throw new Error(`Invalid operand: ${ret}.`);
+				}
+				
+				yield vm.writeback(null, ret);	
+			} catch (err) {
+				vm.writeback(err, null).$halt();
+			}
 		}
 	}
 

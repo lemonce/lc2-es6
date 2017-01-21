@@ -11,7 +11,12 @@ const moment = require('moment');
  * 	}
  */
 const native = {
-	number: Number,
+	number: num => {
+		if(isNaN(num)) {
+			throw new Error(`NaN: ${num} can not be converted to number.`);
+		}
+		return Number(num);
+	},
 	bool: Boolean,
 	length: string => string.length,
 	charAt: (string, pos) => string.charAt(pos),
@@ -63,8 +68,13 @@ class CallStatement extends Statement {
 				args.push(vm.ret);
 			}
 
-			const ret = native[this.identifier].apply(null, args);
-			yield vm.writeback(null, ret);
+			try {
+				const ret = native[this.identifier].apply(null, args);
+				yield vm.writeback(null, ret);				
+			} catch (err) {
+				vm.writeback(err, null).$halt();
+			}
+
 		}
 	}
 }

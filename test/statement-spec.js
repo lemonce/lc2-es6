@@ -630,7 +630,6 @@ describe('Statement::', function () {
 			const pointerSymbolMap = {
 				'ACTION::CLICK': 'doClick',
 				'ACTION::DBLCLICK': 'doDblclick',
-				'ACTION::RCLICK': 'doRclick',
 				'ACTION::DROP': 'doDrop',
 				'ACTION::HOLD': 'doHold',
 				'ACTION::SCROLL': 'doScroll',

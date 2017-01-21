@@ -8,13 +8,13 @@ class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
 		super({POSITION});
 
-		this.selector = this.$linkBySymbol(BODY.SELECTOR);
+		this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
 		this.value = this.$linkBySymbol(BODY.VALUE);
 		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
 	*execute(vm, scope) {
-		yield* this.selector.doExecution(vm, scope);
+		yield* this.selectElement(this, scope).doExecution(vm, scope);
 		const selector = vm.ret;
 
 		yield* this.value.doExecution(vm, scope);

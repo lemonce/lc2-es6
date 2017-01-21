@@ -11,7 +11,17 @@ function AssignmentStatementFactory(symbol, operation) {
 		
 		*execute(vm, scope) {
 			yield* this.sources.doExecution(vm, scope);
-			yield vm.writeback(null, operation(scope, this.identifier, vm.ret));
+			try {
+				const ret = operation(scope, this.identifier, vm.ret);
+
+				if(typeof ret === 'number' && !isFinite(ret)) {
+					throw new Error(`Invalid operand: ${ret}.`);
+				}
+				
+				yield vm.writeback(null, ret);	
+			} catch (err) {
+				vm.writeback(err, null).$halt();
+			}
 		}
 	}
 
