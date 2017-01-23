@@ -17,13 +17,7 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 			const right = vm.ret;
 
 			try {
-				const ret = operation(left, right);
-
-				if(typeof ret === 'number' && !isFinite(ret)) {
-					throw new Error(`Invalid operand: ${ret}.`);
-				}
-				
-				yield vm.writeback(null, ret);	
+				yield vm.writeback(null, operation(left, right));	
 			} catch (err) {
 				vm.writeback(err, null).$halt();
 			}
@@ -31,6 +25,13 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 	}
 
 	return BinaryOperatorStatementClass.register(symbol);
+}
+
+function doOperation(val) {
+	if(typeof val === 'number' && !isFinite(val)) {
+		throw new Error(`[LCVM]: Invalid operand in binary operation: ${val}.`);
+	}
+	return val;
 }
 
 function match(left, right) {
@@ -43,11 +44,11 @@ function match(left, right) {
 }
 
 const operationSymbolMap = {
-	'ES+': (left, right) => left + right,
-	'ES-': (left, right) => left - right,
-	'ES*': (left, right) => left * right,
-	'ES/': (left, right) => left / right,
-	'ES%': (left, right) => left % right,
+	'ES+': (left, right) => doOperation(left + right),
+	'ES-': (left, right) => doOperation(left - right),
+	'ES*': (left, right) => doOperation(left * right),
+	'ES/': (left, right) => doOperation(left / right),
+	'ES%': (left, right) => doOperation(left % right),
 	'ES==': (left, right) => left == right,
 	'ES!=': (left, right) => left != right,
 	'ES===': (left, right) => left === right,

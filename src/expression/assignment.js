@@ -11,14 +11,8 @@ function AssignmentStatementFactory(symbol, operation) {
 		
 		*execute(vm, scope) {
 			yield* this.sources.doExecution(vm, scope);
-			try {
-				const ret = operation(scope, this.identifier, vm.ret);
-
-				if(typeof ret === 'number' && !isFinite(ret)) {
-					throw new Error(`Invalid operand: ${ret}.`);
-				}
-				
-				yield vm.writeback(null, ret);	
+			try {				
+				yield vm.writeback(null, doOperation(operation, scope, this.identifier, vm.ret));	
 			} catch (err) {
 				vm.writeback(err, null).$halt();
 			}
@@ -26,6 +20,16 @@ function AssignmentStatementFactory(symbol, operation) {
 	}
 
 	return AssignmentStatementClass.register(symbol);
+}
+
+function doOperation(operation, scope, identifier, ret) {
+	const val = operation(scope, identifier, ret);
+
+	if(typeof val === 'number' && !isFinite(val)) {
+		throw new Error(`[LCVM]: Invalid operand: ${val}.`);
+	}
+
+	return val;
 }
 
 const operationSymbolMap = {

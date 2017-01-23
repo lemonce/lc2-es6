@@ -1,5 +1,4 @@
-const {ESVM, signal, Statement} = require('es-vm');
-const LCScope = require('./scope'); 
+const {ESVM, signal, Statement, Scope} = require('es-vm');
 const CallStatement = require('./native/call');
 const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
 
@@ -25,7 +24,7 @@ class LCVM extends ESVM {
 		
 		this.processMap = processMap;
 		this.options = Object.assign({}, defaultOptions, options);
-		this.rootScope = new LCScope();
+		this.rootScope = new Scope();
 		this.loop = 0;
 		this.callingStack = [];
 
@@ -95,7 +94,7 @@ class LCVM extends ESVM {
 		if (!(statement instanceof Statement)) {
 			throw new Error('[ESVM-DEV]: Invalid statement.');
 		}
-		this.$runtime = statement.doExecution(this, this.rootScope = new LCScope());
+		this.$runtime = statement.doExecution(this, this.rootScope = new Scope());
 	}
 
 	callMainProcess() {

@@ -281,7 +281,7 @@ process main () {
 		vm2.start();
 	});
 
-	it('magic word', function(done) {
+	it('magic word -E', function(done) {
 		const syntaxTree = {
 			main: {
 				BODY: {
@@ -359,6 +359,82 @@ process main () {
 				return new Promise(resolve => setTimeout(resolve, 100));
 			});
 		});
+		vm2.start();
+	});
+
+	it('magic word with empty selector', function(done) {
+		const syntaxTree = {
+			main: {
+				BODY: {
+					SYMBOL: 'PROCESS',
+					IDENTIFIER: 'main',
+					PARAMETER: [],
+					SEGMENT: [
+						{
+							BODY: {
+								SYMBOL: 'ACTION::CLICK',
+							}
+						},
+						{
+							BODY: {
+								SYMBOL: 'RETURN', 
+								RET: {
+									BODY: {
+										SYMBOL: 'LITERAL',
+										DESTINATION: 'success'
+									}
+								}
+							}				
+						}
+					]
+				}
+			}
+		};
+		const executionTree = link({processMap: syntaxTree});
+		const vm2 = new LCVM(executionTree);
+
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(ret, pos);
+		});
+
+		vm2.on('fetch', rpc => {
+			rpc.async(() => {
+				return new Promise(resolve => setTimeout(resolve, 100));
+			});
+		});
+		vm2.start();
+	});
+
+	it('magic word with invalid value', function(done) {
+		const code = `
+#TIMES 1
+#INTERVAL 3000
+#AUTOWAIT 500
+#LIMIT	2000
+
+process main () {
+	$IT = '#btn';
+	$BUTTON = 'r';
+	click $IT;
+	return 'success';
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(ret, pos);
+		});
+
 		vm2.start();
 	});
 });

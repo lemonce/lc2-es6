@@ -1,6 +1,7 @@
 const {Statement} = require('es-vm');
 const {randexp} = require('randexp');
 const moment = require('moment');
+const LCScope = require('../scope');
 /**
  * 	{
  * 		BODY: {
@@ -13,7 +14,7 @@ const moment = require('moment');
 const native = {
 	number: num => {
 		if(isNaN(num)) {
-			throw new Error(`NaN: ${num} can not be converted to number.`);
+			throw new Error(`[LCVM]: ${num} can not be converted to number.`);
 		}
 		return Number(num);
 	},
@@ -47,7 +48,7 @@ class CallStatement extends Statement {
 	}
 
 	*execute (vm, parentScope) {
-		const scope = parentScope.$new();
+		const scope = new LCScope(parentScope);
 		const process = vm.processMap && vm.getProcess(this.identifier);
 		
 		if (process) {

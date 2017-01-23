@@ -8,14 +8,23 @@ class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
 		super({POSITION});
 
-		this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
+		this.selector = this.$linkBySymbol(BODY.SELECTOR || {
+			BODY: {
+				SYMBOL: 'VARIABLE',
+				IDENTIFIER: '$IT'
+			}
+		});
 		this.value = this.$linkBySymbol(BODY.VALUE);
 		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
 	*execute(vm, scope) {
-		yield* this.selectElement(this, scope).doExecution(vm, scope);
+		yield* this.selector.doExecution(vm, scope);
 		const selector = vm.ret;
+		if(!selector) {
+			yield vm.writeback(new Error('[LCVM]: Empty selector founded.'), null);
+		}
+		scope.$IT = this.selector.destination;
 
 		yield* this.value.doExecution(vm, scope);
 		const value = vm.ret;

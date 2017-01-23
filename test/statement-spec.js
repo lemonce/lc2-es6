@@ -36,7 +36,7 @@ describe('Statement::', function () {
 		});
 
 		describe('BinaryOperator::', function () {
-			describe('NoState::', function () {
+			describe('NoState -E::', function () {
 				function generateNode(left, right, operator) {
 					return new Statement.map[operator]({
 						BODY: {
@@ -74,7 +74,7 @@ describe('Statement::', function () {
 					],
 					'ES/': [
 						{ left: 6, right: 3, ret: 2 },
-						{ left: '100', right: 20, ret: 5 }
+						{ left: '100', right: 20, ret: 5 },
 					],
 					'ES%': [
 						{ left: 1, right: 3, ret: 1 },
@@ -157,7 +157,61 @@ describe('Statement::', function () {
 				}
 			});
 
-			describe('State::', function () {
+			describe('NoState +E::', function () {
+				function generateNode(left, right, operator) {
+					return new Statement.map[operator]({
+						BODY: {
+							SYMBOL: operator,
+							LEFT: {
+								BODY: {
+									SYMBOL: 'LITERAL',
+									DESTINATION: left
+								}
+							},
+							RIGHT: {
+								BODY: {
+									SYMBOL: 'LITERAL',
+									DESTINATION: right
+								}
+							}
+						}
+					});
+				}
+
+				const BinaryOperatorData = {
+					'ES-': [
+						{ left: 1, right: 'aaa'},
+						{ left: '5', right: NaN},
+						{ left: Infinity, right: 1}
+					],
+					'ES*': [
+						{ left: '5', right: NaN},
+						{ left: Infinity, right: 1}
+					],
+					'ES/': [
+						{ left: '5', right: NaN},
+						{ left: 1, right: 0},
+						{ left: 0, right: 0}
+					],
+					'ES%': [
+						{ left: 3, right: 0},
+						{ left: '5', right: 'bbb'}
+					]
+				};
+
+				for(let operator in BinaryOperatorData) {
+					it(operator, function () {
+						BinaryOperatorData[operator].forEach(({left, right, ret}) => {
+							const syntaxNode = generateNode(left, right, operator);
+							const vm = new LCVM();
+							let $ret = vm.run(syntaxNode);
+							assert.equal($ret, null);
+						});
+					});
+				}
+			});
+
+			describe('State -E::', function () {
 				function generateNode(sources, operator) {
 					return new Statement.map[operator]({
 						BODY: {
@@ -200,6 +254,50 @@ describe('Statement::', function () {
 							const syntaxNode = generateNode(sources, operator);
 							const $ret = blankVM.run(syntaxNode, { test: 250 });
 							assert.equal(ret, $ret);
+						});
+					});
+				}
+			});
+
+			describe('State +E::', function () {
+				function generateNode(sources, operator) {
+					return new Statement.map[operator]({
+						BODY: {
+							SYMBOL: operator,
+							IDENTIFIER: 'test',
+							SOURCES: {
+								BODY: {
+									SYMBOL: 'LITERAL',
+									DESTINATION: sources
+								}
+							}
+						}
+					});
+				}
+
+				const BinaryOperatorData = {
+					'ES-=': [
+						{ sources: 'aaa'},
+						{ sources: Infinity}
+					],
+					'ES*=': [
+						{ sources: NaN}
+					],
+					'ES/=': [
+						{ sources: 0}
+					],
+					'ES%=': [
+						{ sources: 0}
+					],
+				};
+
+				for(let operator in BinaryOperatorData) {
+					it(operator, function () {
+						BinaryOperatorData[operator].forEach(({sources, ret}) => {
+							const syntaxNode = generateNode(sources, operator);
+							const vm = new LCVM();
+							const $ret = vm.run(syntaxNode, { test: 250 });
+							assert.equal($ret, null);
 						});
 					});
 				}
