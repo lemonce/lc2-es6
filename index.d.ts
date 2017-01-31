@@ -1,20 +1,20 @@
 /**
  * link syntax tree
  */
-export function link(syntaxTree: object): object;
+export function link(syntaxTree: Object): Object;
 /**
  * virtual machine instance
  */
 export class LCVM {
-	processMap: object;
-	options: object;
+	processMap: Object;
+	options: Object;
 	loop: number;
 
-	run(executionNode: object, scope?: object): any;
+	run(executionNode: Object, scope?: Object): any;
 	on(event: eventName, callback: (...arg) => void): void;
-};
+}
 
-const eventName = 'loop-end'
+type eventName = 'loop-end'
 	| 'case-end'
 	| 'fecth'
 	| 'writeback'
