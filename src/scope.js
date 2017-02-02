@@ -1,13 +1,8 @@
 const {Scope} = require('es-vm');
 
 class LCScope extends Scope {
-	constructor(parentScope = new LCScope(), presets) {
+	constructor(presets) {
 		super(presets);
-		if(parentScope instanceof LCScope) {
-			Object.setPrototypeOf(this, parentScope);
-		} else {
-			this.extend(parentScope);
-		}
 
 		this.$button = 'left';
 		this.$offsetX = '50%';
@@ -15,7 +10,11 @@ class LCScope extends Scope {
 		this.$it = null;
 	}
 
-
+	$new(presets) {
+		const childScope = new LCScope(presets);
+		Object.setPrototypeOf(childScope, this);
+		return childScope;
+	}
 
 	set $BUTTON(val) {
 		const button = ['left', 'middle', 'right'];

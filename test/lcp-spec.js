@@ -437,4 +437,37 @@ process main () {
 
 		vm2.start();
 	});
+
+	it('magic word process local', function(done) {
+		const code = `
+#TIMES 1
+#INTERVAL 3000
+#AUTOWAIT 500
+#LIMIT	2000
+
+process main () {
+	$IT = '#btn';
+	click_r();
+	click $IT;
+	return 'success';
+}
+process click_r (){
+	$BUTTON = 'right';
+	click $IT;
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(ret, pos);
+		});
+
+		vm2.start();
+	});
 });

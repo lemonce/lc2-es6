@@ -48,7 +48,7 @@ class CallStatement extends Statement {
 	}
 
 	*execute (vm, parentScope) {
-		const scope = new LCScope(parentScope);
+		const scope = parentScope.$new();
 		const process = vm.processMap && vm.getProcess(this.identifier);
 		
 		if (process) {
