@@ -1,5 +1,7 @@
 const {parse, parseAt} = require('lc2-compiler');
-const {link, LCVM} = require('../../src');
+const {link, LCVM, config} = require('../../src');
+
+console.log(config.get('MAX_RPC_LIMIT'));
 
 const code = `
 #AUTOWAIT 500

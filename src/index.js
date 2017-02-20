@@ -41,3 +41,5 @@ exports.link = function link({processMap, options, global}) {
 };
 
 exports.LCVM = require('./lcvm').LCVM;
+
+exports.config = require('./config');

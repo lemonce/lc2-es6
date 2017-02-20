@@ -1,4 +1,5 @@
 const DriverStatement = require('../driver');
+const config = require('../config');
 
 const browserActionMap = {
 	'BROWSER::BACK': 'back',
@@ -13,7 +14,7 @@ function BrowserStatementFactory(symbol, method) {
 		}
 		
 		*execute(vm) {
-			yield vm.fetch({method, args: {}});
+			yield vm.fetch({method, args: {}}, config.get('MAX_RPC_LIMIT'));
 			yield vm.emit('driver', {
 				type: method,
 				data: {
@@ -44,7 +45,7 @@ class JumptoStatement extends DriverStatement {
 		yield vm.fetch({
 			method: 'jumpto',
 			args: { url }
-		});
+		}, config.get('MAX_RPC_LIMIT'));
 		yield vm.emit('driver', {
 			type: 'jumpto',
 			data: {
@@ -73,6 +74,8 @@ class ResizeStatement extends DriverStatement {
 		yield* this.height.doExecution(vm, scope);
 		const height = vm.ret;
 
+
+		//TODO
 		yield vm.fetch({
 			method: 'resize',
 			args: { width, height }

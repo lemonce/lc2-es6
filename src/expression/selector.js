@@ -1,4 +1,6 @@
 const {Statement} = require('es-vm');
+const config = require('../config');
+
 const methodSymbolMap = {
 	'LC<!': 'isDisplay',
 	'LC<#': 'getLength',
@@ -23,7 +25,7 @@ function SelectorStatementFactory(symbol, method) {
 				args: {
 					selector: vm.ret
 				}
-			}, undefined, () => {
+			}, config.get('MAX_RPC_LIMIT'), () => {
 				vm.writeback(null, false);
 				vm.$run();
 			});
