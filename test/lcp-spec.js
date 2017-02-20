@@ -470,4 +470,49 @@ process click_r (){
 
 		vm2.start();
 	});
+
+	it.only('magic word for complex code', function(done) {
+		const code = `
+#TIMES 1
+#INTERVAL 3000
+#AUTOWAIT 500
+#LIMIT	2000
+
+process main () {
+	$IT = '#btn';
+	click $IT;
+	click $IT;
+	click '#sdf';
+	click $IT;
+	$BUTTON = 'right';
+	$IT = '#111';
+	click $IT;
+	$BUTTON = 'left';
+	click $IT;
+	click_r();
+	aaa = '#btn';
+	click aaa;
+	click $IT;
+	return 'success';
+}
+
+process click_r (){
+	$BUTTON = 'right';
+	click '#inside';
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(ret, pos);
+		});
+
+		vm2.start();
+	});
 });

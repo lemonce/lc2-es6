@@ -24,7 +24,7 @@ class InputStatement extends DriverStatement {
 		if(!selector) {
 			yield vm.writeback(new Error('[LCVM]: Empty selector founded.'), null);
 		}
-		scope.$IT = this.selector.destination;
+		scope.$IT = selector;
 
 		yield* this.value.doExecution(vm, scope);
 		const value = vm.ret;

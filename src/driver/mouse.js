@@ -34,7 +34,7 @@ function PointerStatementFactory(symbol, {method, action}) {
 			if(!selector) {
 				yield vm.writeback(new Error('[LCVM]: Empty selector founded.'), null);
 			}
-			scope.$IT = this.selector.destination;
+			scope.$IT = selector;
 			
 			let limit;
 			if (this.limit) {
