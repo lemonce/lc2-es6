@@ -41,6 +41,8 @@ class LCVM extends ESVM {
 				for(let tick of run);
 			});
 		});
+
+		this.booterId = -1;
 	}
 	
 	pushScope(scopeObject) {
@@ -60,7 +62,7 @@ class LCVM extends ESVM {
 		this.loop += 1;
 		if (this.loop < this.options.times) {
 			this.signal = signal.get('BOOTING');
-			setTimeout(() => {
+			this.booterId = setTimeout(() => {
 				this.callMainProcess();
 			}, this.options.interval);
 		} else {
@@ -110,13 +112,15 @@ class LCVM extends ESVM {
 	start() {
 		this.$bootstrap();
 		this.$state = 'running';
-		setTimeout(() => this.callMainProcess(), this.options.interval);
+		this.booterId = setTimeout(() => this.callMainProcess(), this.options.interval);
+
 		return this;
 	}
 
 	resume() {
 		this.$state = 'running';
 		this.$run();
+
 		return this;
 	}
 
@@ -126,6 +130,8 @@ class LCVM extends ESVM {
 		}
 		this.$halt();
 		this.$state = 'ready';
+		clearTimeout(this.booterId);
+
 		return this;
 	}
 }
