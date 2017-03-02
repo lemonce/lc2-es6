@@ -471,7 +471,7 @@ process click_r (){
 		vm2.start();
 	});
 
-	it.only('magic word for complex code', function(done) {
+	it('magic word for complex code', function(done) {
 		const code = `
 #TIMES 1
 #INTERVAL 3000
@@ -507,6 +507,48 @@ process click_r (){
 
 		vm2.on('case-end', () => {
 			done();
+		});
+
+		vm2.on('writeback', (err, ret, pos) => {
+			console.log(ret, pos);
+		});
+
+		vm2.start();
+	});
+
+	it('local scope', function(done) {
+		const code = `
+#TIMES 1
+#INTERVAL 3000
+#AUTOWAIT 500
+#LIMIT	2000
+
+process main () {
+	n = 1;
+	func(2,n);
+	log n;
+	log m;
+	return 'success';
+}
+process func (n, m){
+	log n;
+	log m;
+	n = 3;
+	log n;
+}
+		`;
+		const syntaxTree = parse(code);
+		const executionTree = link(syntaxTree);
+		const vm2 = new LCVM(executionTree);
+
+		const res = [2, 1, 3, 1, undefined];
+		let pos = 0;
+		vm2.on('case-end', () => {
+			done();
+		});
+
+		vm2.on('log', ret => {
+			assert.equal(ret, res[pos++]);
 		});
 
 		vm2.on('writeback', (err, ret, pos) => {

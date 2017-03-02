@@ -55,7 +55,7 @@ class CallStatement extends Statement {
 			const parameterList = process.parameter;
 			
 			for(let index in this.arguments) {
-				yield* this.arguments[index].doExecution(vm, scope);
+				yield* this.arguments[index].doExecution(vm, parentScope);
 				scope[parameterList[index]] = vm.ret;
 			}
 			
