@@ -1,6 +1,6 @@
 const {Statement} = require('es-vm');
 const {randexp} = require('randexp');
-const moment = require('moment');
+const moment = require('moment/min/moment.min.js');
 const LCScope = require('../scope');
 /**
  * 	{
