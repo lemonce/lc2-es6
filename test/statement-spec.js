@@ -8,27 +8,27 @@ describe('Statement::', function () {
 
 	describe('Expression::', function () {
 		describe('value::', function () {
-			it('literal', function () {
+			it('LITERAL::SIMPLE', function () {
 				const syntaxNode = {
 					BODY: {
-						SYMBOL: 'LITERAL',
+						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 'test'
 					}
 				};
 
-				let ret = blankVM.run(new Statement.map['LITERAL'](syntaxNode));
+				let ret = blankVM.run(new Statement.map['LITERAL::SIMPLE'](syntaxNode));
 				assert.equal(ret, 'test');
 			});
 
 			it('variable', function () {
 				const syntaxNode = {
 					BODY: {
-						SYMBOL: 'VARIABLE',
+						SYMBOL: 'ACCESS::VARIABLE',
 						IDENTIFIER: 'abc'
 					}
 				};
 
-				let ret = blankVM.run(new Statement.map['VARIABLE'](syntaxNode), {
+				let ret = blankVM.run(new Statement.map['ACCESS::VARIABLE'](syntaxNode), {
 					abc: 123
 				});
 				assert.equal(ret, 123);
@@ -43,13 +43,13 @@ describe('Statement::', function () {
 							SYMBOL: operator,
 							LEFT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: left
 								}
 							},
 							RIGHT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: right
 								}
 							}
@@ -164,13 +164,13 @@ describe('Statement::', function () {
 							SYMBOL: operator,
 							LEFT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: left
 								}
 							},
 							RIGHT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: right
 								}
 							}
@@ -216,10 +216,15 @@ describe('Statement::', function () {
 					return new Statement.map[operator]({
 						BODY: {
 							SYMBOL: operator,
-							IDENTIFIER: 'test',
-							SOURCES: {
+							LEFT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'ACCESS::VARIABLE',
+									IDENTIFIER: 'test'
+								}
+							},
+							RIGHT: {
+								BODY: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: sources
 								}
 							}
@@ -264,10 +269,15 @@ describe('Statement::', function () {
 					return new Statement.map[operator]({
 						BODY: {
 							SYMBOL: operator,
-							IDENTIFIER: 'test',
-							SOURCES: {
+							LEFT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'ACCESS::VARIABLE',
+									IDENTIFIER: 'test'
+								}
+							},
+							RIGHT: {
+								BODY: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: sources
 								}
 							}
@@ -311,19 +321,19 @@ describe('Statement::', function () {
 						SYMBOL: 'ES?:',
 						CONDITION: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: false
 							}
 						},
 						TRUE: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 123
 							}
 						},
 						FALSE: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 456
 							}
 						}
@@ -356,7 +366,7 @@ describe('Statement::', function () {
 						SYMBOL: 'LC<!',
 						SELECTOR: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'body a'
 							}
 						}
@@ -385,17 +395,22 @@ describe('Statement::', function () {
 							SYMBOL: operator,
 							LEFT: {
 								BODY: {
-									SYMBOL: 'LITERAL',
+									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: left
 								}
 							},
 							RIGHT: {
 								BODY: {
 									SYMBOL: 'ES=',
-									IDENTIFIER: 'test',
-									SOURCES: {
+									LEFT: {
 										BODY: {
-											SYMBOL: 'LITERAL',
+											SYMBOL: 'ACCESS::VARIABLE',
+											IDENTIFIER: 'test'
+										}
+									},
+									RIGHT: {
+										BODY: {
+											SYMBOL: 'LITERAL::SIMPLE',
 											DESTINATION: 45
 										}
 									}
@@ -444,14 +459,14 @@ describe('Statement::', function () {
 					SYMBOL: 'LOOP',
 					CONDITION: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: false
 						}
 					},
 					SEGMENT: [
 						{
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: true
 							}
 						}
@@ -475,14 +490,14 @@ describe('Statement::', function () {
 					SYMBOL: 'BRANCH',
 					CONDITION: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: false
 						}
 					},
 					SEGMENT_TRUE: [
 						{
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'abc'
 							}
 						}
@@ -490,7 +505,7 @@ describe('Statement::', function () {
 					SEGMENT_FALSE: [
 						{
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'def'
 							}
 						}
@@ -513,7 +528,7 @@ describe('Statement::', function () {
 								SYMBOL: 'RETURN',
 								RET: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'xyz'
 									}
 								}
@@ -541,7 +556,7 @@ describe('Statement::', function () {
 					SYMBOL: 'WAIT',
 					DELAY: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 3000
 						}
 					}
@@ -570,13 +585,13 @@ describe('Statement::', function () {
 					SYMBOL: 'ASSERT',
 					TEST: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: false
 						}
 					},
 					LIMIT: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 1000
 						}
 					}
@@ -621,7 +636,7 @@ describe('Statement::', function () {
 					SYMBOL: 'LOG',
 					LOG: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'A log'
 						}
 					}
@@ -699,7 +714,7 @@ describe('Statement::', function () {
 						SYMBOL: 'BROWSER::JUMPTO',
 						URL: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'http://baidu.com'
 							}
 						}
@@ -740,7 +755,7 @@ describe('Statement::', function () {
 						SYMBOL: symbol,
 						SELECTOR: {
 							BODY: {
-								SYMBOL: 'LITERAL',
+								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'body a'
 							}
 						}
@@ -793,13 +808,13 @@ describe('Statement::', function () {
 					SYMBOL: 'ACTION::INPUT',
 					SELECTOR: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'body a'
 						}
 					},
 					VALUE: {
 						BODY: {
-							SYMBOL: 'LITERAL',
+							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'abc'
 						}
 					}

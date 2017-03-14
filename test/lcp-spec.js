@@ -119,7 +119,7 @@ process main () {
 	assert <@"sth"/> in 00000;
 	//assert selector in 3000;
 	log "yes";
-	console "fuck\\\' \\"off";
+	log "fuck\\\' \\"off";
 	1 + 2;
 	return 'success';
 }

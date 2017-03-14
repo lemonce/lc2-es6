@@ -54,6 +54,7 @@ class LoopStatement extends ControlStatement {
 		}
 	}
 }
+
 class BreakStatement extends Statement {
 	constructor ({POSITION}) {
 		super({POSITION});

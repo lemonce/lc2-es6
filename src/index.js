@@ -4,9 +4,8 @@ require('./control/branch');
 require('./control/loop');
 
 // Expression
-require('./expression/value');
 require('./expression/binary'); // 15ES + 2LC
-require('./expression/assignment'); // 5ES
+require('./expression/access'); // 5ES + var + property + literal
 require('./expression/logic'); // ES! ES&& ES||
 require('./expression/condition'); // ES?:
 require('./expression/selector'); // LC7 <* />
