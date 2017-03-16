@@ -1,16 +1,7 @@
 const {Statement} = require('es-vm');
 const {randexp} = require('randexp');
 const moment = require('moment/min/moment.min.js');
-const LCScope = require('../scope');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'CALL',
- *          IDENTIFIER: <string | process name>,
- * 			ARGUMENTS: [<expression,...>]
- * 		}
- * 	}
- */
+
 const native = {
 	number: num => {
 		if(isNaN(num)) {
@@ -36,6 +27,7 @@ const native = {
 	format: (dateString, format) => moment(dateString).format(format),
 	now: Date.now,
 };
+
 class CallStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -47,6 +39,13 @@ class CallStatement extends Statement {
 		}
 	}
 
+	*iterateArgument(vm, scope, callback) {
+		for(let index in this.arguments) {
+			yield* this.arguments[index].doExecution(vm, scope);
+			callback(index);
+		}
+	}
+
 	*execute (vm, parentScope) {
 		const scope = parentScope.$new();
 		const process = vm.processMap && vm.getProcess(this.identifier);
@@ -54,20 +53,16 @@ class CallStatement extends Statement {
 		if (process) {
 			const parameterList = process.parameter;
 			
-			for(let index in this.arguments) {
-				yield* this.arguments[index].doExecution(vm, parentScope);
+			yield* this.iterateArgument(vm, parentScope, index => {
 				scope[parameterList[index]] = vm.ret;
-			}
+			});
 			
-			const invoking = process.doExecution(vm, scope);
-			vm.pushScope({invoking});
-			yield* invoking;
+			yield* process.doExecution(vm, scope);
 		} else {
 			const args = [];
-			for(let index in this.arguments) {
-				yield* this.arguments[index].doExecution(vm, scope);
+			yield* this.iterateArgument(vm, parentScope, () => {
 				args.push(vm.ret);
-			}
+			});
 
 			try {
 				const ret = native[this.identifier].apply(null, args);
@@ -75,7 +70,6 @@ class CallStatement extends Statement {
 			} catch (err) {
 				vm.writeback(err, null).$halt();
 			}
-
 		}
 	}
 }

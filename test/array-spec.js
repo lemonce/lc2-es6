@@ -1,10 +1,10 @@
 'use strict';
 const {link, LCVM} = require('../src');
-const {Statement, signal} = require('es-vm');
+const {Statement} = require('es-vm');
 const assert = require('assert');
 
 const blankVM = new LCVM();
-describe.only('Array-Statement::', function () {
+describe('Array-Statement::', function () {
 	const simpleArray = new Statement.map['LITERAL::ARRAY']({
 		BODY: {
 			SYMBOL: 'LITERAL::ARRAY',

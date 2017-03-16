@@ -64,7 +64,7 @@ function PointerStatementFactory(symbol, {method, action}) {
 					duration: Date.now() - startTime
 				}
 			});
-			yield vm.writeback(null, true);
+			// yield vm.writeback(null, true);
 
 			const autoWait = vm.options.wait;
 			if (vm.options.wait >= 0) {

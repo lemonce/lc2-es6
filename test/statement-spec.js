@@ -454,9 +454,9 @@ describe('Statement::', function () {
 
 	describe('Control::', function () {
 		it('while {...}', function () {
-			const node = new Statement.map['LOOP']({
+			const node = new Statement.map['LOOP::WHILE']({
 				BODY: {
-					SYMBOL: 'LOOP',
+					SYMBOL: 'LOOP::WHILE',
 					CONDITION: {
 						BODY: {
 							SYMBOL: 'LITERAL::SIMPLE',

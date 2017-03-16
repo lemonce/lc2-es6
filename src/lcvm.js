@@ -3,10 +3,6 @@ const LCScope = require('./scope');
 const CallStatement = require('./native/call');
 const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
 
-signal.register('CONTROL_SUSPEND', {interception: true});
-signal.register('CONTROL_STOP', {interception: true});
-signal.register('RETURN');
-
 const defaultOptions = {
 	strict: false,
 	wait: 500,
@@ -43,17 +39,6 @@ class LCVM extends ESVM {
 		});
 
 		this.booterId = -1;
-	}
-	
-	pushScope(scopeObject) {
-		this.callingStack.push(scopeObject);
-		return this;
-	}
-
-	popScope() {
-		// const {invoking} = 
-		this.callingStack.pop();
-		return this;
 	}
 
 	loopEnd () {

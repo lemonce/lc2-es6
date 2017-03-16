@@ -1,13 +1,5 @@
-const {signal} = require('es-vm');
 const {Statement} = require('es-vm');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'RETURN',
- * 			RET: <string | lc2 expression => es statement >,
- * 		}
- * 	}
- */
+
 class ReturnStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -17,11 +9,10 @@ class ReturnStatement extends Statement {
 
 	*execute (vm, scope) {
 		yield* this.ret.doExecution(vm, scope);
+		vm.writeback(null, vm.ret);
 
-		vm.signal = signal.get('RETURN');
-		yield vm.popScope()
-			.writeback(null, vm.ret);
+		yield 'PROCESS::RETURN';
 	}
 }
 
-module.exports = ReturnStatement.register('RETURN');
+ReturnStatement.register('RETURN');

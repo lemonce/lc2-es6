@@ -1,23 +1,76 @@
 const ControlStatement = require('../control');
 const {Statement} = require('es-vm');
-const {signal} = require('es-vm');
 
-signal.register('BREAK');
-signal.register('CONTINUE');
+const LOOP_END = true;
+const LOOP_BREAK = false;
 
-const EXECUTING = signal.get('EXECUTING');
-const BREAK = signal.get('BREAK');
-const CONTINUE = signal.get('CONTINUE');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'LOOP',
- * 			CONDITION: <string | condition expression>,
- *          SEGMENT: [<Statement...>]
- * 		}
- * 	}
- */
 class LoopStatement extends ControlStatement {
+	*executeSegment(vm, scope) {
+		for (let statement of this.segment) {
+			const statementRuntime = statement.doExecution(vm, scope);
+
+			for(let value of statementRuntime) {
+				if (value === 'LOOP::CONTINUE') {
+					return LOOP_END;
+				} else if (value === 'LOOP::BREAK') {
+					return LOOP_BREAK;
+				}
+
+				yield value;
+			}
+		}
+
+		return LOOP_END;
+	}
+}
+
+class IteratorStatement extends LoopStatement {
+	constructor ({POSITION, BODY}) {
+		super({POSITION});
+
+		this.identifier = BODY.IDENTIFIER;
+		this.iterable = this.$linkBySymbol(BODY.ITERABLE);
+		this.segment = this.$linkSegment(BODY.SEGMENT);
+	}
+
+}
+
+class ItemIteratorStatement extends IteratorStatement {
+	*execute(vm, scope) {
+		yield* this.iterable.doExecution(vm, scope);
+		const iterable = vm.ret;
+
+		for(let item of iterable) {
+			scope[this.identifier] = item;
+
+			const nextFlag = yield* this.executeSegment();
+			if (!nextFlag) {
+				return;
+			}
+		}
+	}
+}
+
+class KeyIteratorStatement extends IteratorStatement {
+	*execute(vm, scope) {
+		yield* this.iterable.doExecution(vm, scope);
+		const iterable = vm.ret;
+
+		for(let item in iterable) {
+			scope[this.identifier] = item;
+
+			const nextFlag = yield* this.executeSegment();
+			if (!nextFlag) {
+				return;
+			}
+		}
+	}
+}
+
+ItemIteratorStatement.register('ITERATOR::ITEM');
+KeyIteratorStatement.register('ITERATOR::KEY');
+
+class WhileLoopStatement extends LoopStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
@@ -26,56 +79,36 @@ class LoopStatement extends ControlStatement {
 	}
 
 	*execute (vm, scope) {
-		let loopContinueFlag = true;
-		while (loopContinueFlag) {
+		const CONSTANT_TRUE = true;
+		
+		while (CONSTANT_TRUE) {
 			yield* this.condition.doExecution(vm, scope);
 			// Use to set condition ret for testing.
 			vm.emit('[loop]', vm);
 
-			loopContinueFlag = Boolean(vm.ret);
-			if (loopContinueFlag) {
-				for (let statement of this.segment) {
-					yield* statement.doExecution(vm, scope);
-
-					const $signal = vm.signal;
-					if ($signal === signal.get('RETURN')) {
-						return;
-					} else if ($signal === CONTINUE) {
-						vm.signal = EXECUTING;
-						break;
-					} else if ($signal === BREAK) {
-						vm.signal = EXECUTING;
-						loopContinueFlag = false;
-						break;
-					}
-				}
+			const condition = Boolean(vm.ret);
+			
+			const nextFlag = yield* this.executeSegment();
+			
+			if (!condition || !nextFlag) {
+				return;
 			}
-			/* else break; */
 		}
 	}
 }
 
 class BreakStatement extends Statement {
-	constructor ({POSITION}) {
-		super({POSITION});
-	}
-
-	*execute (vm) {
-		yield vm.signal = signal.get('BREAK');
+	*execute () {
+		yield 'LOOP::BREAK';
 	}
 }
 
 class ContinueStatement extends Statement {
-	constructor ({POSITION}) {
-		super({POSITION});
-	}
-
-	*execute (vm) {
-		yield vm.signal = signal.get('CONTINUE');
+	*execute () {
+		yield 'LOOP::CONTINUE';
 	}
 }
 
-
-module.exports = LoopStatement.register('LOOP');
-module.exports = ContinueStatement.register('CONTINUE');
-module.exports = BreakStatement.register('BREAK');
+WhileLoopStatement.register('LOOP::WHILE');
+ContinueStatement.register('CONTINUE');
+BreakStatement.register('BREAK');
