@@ -1,9 +1,6 @@
 const ControlStatement = require('../control');
 const {Statement} = require('es-vm');
 
-const LOOP_END = true;
-const LOOP_BREAK = false;
-
 class LoopStatement extends ControlStatement {
 	*executeSegment(vm, scope) {
 		for (let statement of this.segment) {
@@ -11,16 +8,24 @@ class LoopStatement extends ControlStatement {
 
 			for(let value of statementRuntime) {
 				if (value === 'LOOP::CONTINUE') {
-					return LOOP_END;
+					return LoopStatement.LOOP_END;
 				} else if (value === 'LOOP::BREAK') {
-					return LOOP_BREAK;
+					return LoopStatement.LOOP_BREAK;
 				}
 
 				yield value;
 			}
 		}
 
-		return LOOP_END;
+		return LoopStatement.LOOP_END;
+	}
+
+	static get LOOP_END() {
+		return true;
+	}
+
+	static get LOOP_BREAK() {
+		return false;
 	}
 }
 
@@ -32,7 +37,6 @@ class IteratorStatement extends LoopStatement {
 		this.iterable = this.$linkBySymbol(BODY.ITERABLE);
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}
-
 }
 
 class ItemIteratorStatement extends IteratorStatement {
@@ -43,7 +47,7 @@ class ItemIteratorStatement extends IteratorStatement {
 		for(let item of iterable) {
 			scope[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment();
+			const nextFlag = yield* this.executeSegment(vm, scope);
 			if (!nextFlag) {
 				return;
 			}
@@ -59,7 +63,7 @@ class KeyIteratorStatement extends IteratorStatement {
 		for(let item in iterable) {
 			scope[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment();
+			const nextFlag = yield* this.executeSegment(vm, scope);
 			if (!nextFlag) {
 				return;
 			}
@@ -88,9 +92,13 @@ class WhileLoopStatement extends LoopStatement {
 
 			const condition = Boolean(vm.ret);
 			
-			const nextFlag = yield* this.executeSegment();
 			
-			if (!condition || !nextFlag) {
+			if (!condition) {
+				return;
+			}
+
+			const nextFlag = yield* this.executeSegment(vm, scope);
+			if(!nextFlag) {
 				return;
 			}
 		}

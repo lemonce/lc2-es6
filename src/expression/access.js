@@ -46,6 +46,43 @@ class SimpleLiteralStatement extends Statement {
 	}
 }
 
+class ObjectLiteralStatement extends Statement {
+	constructor({POSITION, BODY}) {
+		super({POSITION});
+		
+		this.list = [];
+
+		BODY.LIST.forEach(propertyStatement => {
+			this.list.push(this.$linkBySymbol(propertyStatement));
+		});
+	}
+	
+	*execute(vm, scope) {
+		const object = {};
+
+		for(let {identifier, value} of this.list) {
+			yield* value.doExecution(vm, scope);
+
+			object[identifier] = vm.ret;
+		}
+
+		yield vm.writeback(null, object);
+	}
+}
+
+class ObjectLiteralPropertyDefinedStatement extends Statement{
+	constructor({POSITION, BODY}) {
+		super({POSITION});
+		
+		this.identifier = BODY.IDENTIFIER;
+		this.value = this.$linkBySymbol(BODY.VALUE);
+	}
+
+	*execute() {
+		
+	}
+}
+
 class ArrayLiteralStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -72,6 +109,8 @@ class ArrayLiteralStatement extends Statement {
 
 ArrayLiteralStatement.register('LITERAL::ARRAY');
 SimpleLiteralStatement.register('LITERAL::SIMPLE');
+ObjectLiteralStatement.register('LITERAL::OBJECT');
+ObjectLiteralPropertyDefinedStatement.register('LITERAL::OBJECT::PROPERTY');
 
 function AssignmentStatementFactory(symbol, operation) {
 	class AssignmentStatementClass extends Statement {

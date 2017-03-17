@@ -46,11 +46,11 @@ class AssertStatement extends Statement {
 				yield vm.writeback(null, true);
 				return;
 			} else {
-				vm.$block();
 				setTimeout(() => {
 					//Issue: I don't know when the vm lose $runtime.
 					vm.$runtime && vm.$run();
 				}, 50);
+				yield 'VM::BLOCKED';
 			}
 		}
 		

@@ -1,4 +1,3 @@
-
 const DriverStatement = require('../driver');
 
 const pointerSymbolMap = {
@@ -9,50 +8,28 @@ const pointerSymbolMap = {
 	'ACTION::SCROLL': {method: 'doScroll', action: 'scroll'}
 };
 
-/**
- * 	<pointer:action> <selector>
- * 		on <left>, <top>
- * 		in <limit>
- */
+
 function PointerStatementFactory(symbol, {method, action}) {
 	class PointerStatementClass extends DriverStatement {
 		constructor({POSITION, BODY}) {
 			super({POSITION});
 
-			this.selector = this.$linkBySymbol(BODY.SELECTOR || {
-				BODY: {
-					SYMBOL: 'VARIABLE',
-					IDENTIFIER: '$IT'
-				}
-			});
+			this.selector = this.$linkBySymbol(BODY.SELECTOR || DriverStatement.SELECTOR_IT);
 			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 		}
 
 		*execute(vm, scope) {
-			yield* this.selector.doExecution(vm, scope);
-			const selector = vm.ret;
-			if(!selector) {
-				yield vm.writeback(new Error('[LCVM]: Empty selector founded.'), null);
-			}
-			scope.$IT = selector;
+			const selector = yield* this.getSelector(vm, scope);
 			
-			let limit;
-			if (this.limit) {
-				yield* this.limit.doExecution(vm, scope);
-				limit = vm.ret;
-			} else {
-				limit = vm.options.limit;
-			}
-
 			const startTime = Date.now();
 			yield vm.fetch({
 				method,
 				args: {
 					selector,
-					// scope.$BUTTON
+					button: scope.$BUTTON
 					// scope.$OFFSET_X, scope.$OFFSET_Y,
 				}
-			}, limit);
+			}, yield* this.getLimit(vm, scope));
 
 			yield vm.emit('driver', {
 				type: 'action',
@@ -64,13 +41,8 @@ function PointerStatementFactory(symbol, {method, action}) {
 					duration: Date.now() - startTime
 				}
 			});
-			// yield vm.writeback(null, true);
 
-			const autoWait = vm.options.wait;
-			if (vm.options.wait >= 0) {
-				vm.$block();
-				yield setTimeout(() => vm.$run(), autoWait);
-			}
+			yield* this.autowait(vm);
 		}
 	}
 

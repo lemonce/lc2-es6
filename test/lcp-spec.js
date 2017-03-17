@@ -3,7 +3,7 @@ const {link, LCVM} = require('../src');
 const {Statement} = require('es-vm');
 const assert = require('assert');
 
-describe('Testing with compiler::', function () {
+describe.only('Testing with compiler::', function () {
 	this.timeout(10000);
 
 	const vm = new LCVM();
@@ -281,7 +281,7 @@ process main () {
 		vm2.start();
 	});
 
-	it('magic word -E', function(done) {
+	it.only('magic word -E', function(done) {
 		const syntaxTree = {
 			main: {
 				BODY: {
@@ -292,10 +292,15 @@ process main () {
 						{
 							BODY: {
 								SYMBOL: 'ES=',
-								IDENTIFIER: '$IT',
-								SOURCES: {
+								LEFT: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'ACCESS::VARIABLE',
+										IDENTIFIER: '$IT'
+									}
+								},
+								RIGHT: {
+									BODY: {
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: '#btn'
 									}
 								}
@@ -311,7 +316,7 @@ process main () {
 								SYMBOL: 'ACTION::CLICK',
 								SELECTOR: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'body a'
 									}
 								}
@@ -322,7 +327,7 @@ process main () {
 								SYMBOL: 'ACTION::INPUT',
 								VALUE: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 111
 									}
 								}
@@ -333,7 +338,7 @@ process main () {
 								SYMBOL: 'RETURN', 
 								RET: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'success'
 									}
 								}
@@ -380,7 +385,7 @@ process main () {
 								SYMBOL: 'RETURN', 
 								RET: {
 									BODY: {
-										SYMBOL: 'LITERAL',
+										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'success'
 									}
 								}

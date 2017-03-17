@@ -13,7 +13,6 @@ require('./expression/selector'); // LC7 <* />
 // Native
 require('./native/call');
 require('./native/log');
-require('./native/return');
 require('./native/wait');
 require('./native/assert');
 

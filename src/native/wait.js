@@ -17,13 +17,14 @@ class WaitStatement extends Statement {
 	*execute(vm) {
 		yield* this.delay.doExecution(vm);
 		const delay = vm.ret;
-		vm.$block();
+
 		//TODO check vm.ret is Number or not.
-		yield setTimeout(() => {
+		setTimeout(() => {
 			vm.writeback(null, true);
 			vm.emit('[WAIT]', vm);
 			vm.$run();
 		}, delay);
+		yield 'VM::BLOCKED';
 		
 		yield vm.emit('driver', {
 			type: 'wait',
