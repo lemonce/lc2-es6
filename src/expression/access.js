@@ -1,6 +1,6 @@
 const {Statement} = require('es-vm');
 
-class PropertyAccessStatement extends Statement {
+class ExpressionPropertyAccessStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
@@ -19,6 +19,25 @@ class PropertyAccessStatement extends Statement {
 	}
 }
 
+class IdentifierPropertyAccessStatement extends Statement {
+	constructor ({POSITION, BODY}) {
+		super({POSITION});
+
+		this.base = this.$linkBySymbol(BODY.BASE);
+		this.identifier = BODY.IDENTIFIER;
+	}
+
+	*execute(vm, scope) {
+		yield* this.base.doExecution(vm, scope);
+		const base = vm.ret;
+
+		yield vm.writeback(null, base[this.identifier]);
+	}
+}
+
+ExpressionPropertyAccessStatement.register('ACCESS::PROPERTY::EXPRESSION');
+IdentifierPropertyAccessStatement.register('ACCESS::PROPERTY::IDENTIFIER');
+
 class VariableAccessStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -32,7 +51,6 @@ class VariableAccessStatement extends Statement {
 }
 
 VariableAccessStatement.register('ACCESS::VARIABLE');
-PropertyAccessStatement.register('ACCESS::PROPERTY');
 
 class SimpleLiteralStatement extends Statement {
 	constructor ({POSITION, BODY}) {

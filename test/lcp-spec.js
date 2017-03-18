@@ -3,7 +3,7 @@ const {link, LCVM} = require('../src');
 const {Statement} = require('es-vm');
 const assert = require('assert');
 
-describe.only('Testing with compiler::', function () {
+describe('Testing with compiler::', function () {
 	this.timeout(10000);
 
 	const vm = new LCVM();
@@ -281,7 +281,7 @@ process main () {
 		vm2.start();
 	});
 
-	it.only('magic word -E', function(done) {
+	it('magic word -E', function(done) {
 		const syntaxTree = {
 			main: {
 				BODY: {

@@ -211,20 +211,38 @@ process main () {
 		});
 	});
 
-	it('for-in-[2 ,4, 5]-sum', function (done) {
+	it('{a: 1, b:2}', function (done) {
 		codeTest(`
 process main () {
-	sum = 0;
-	array = [2, 4, 5];
-	for (index in array) {
-		sum += array[index];
-	}
-	return sum;
+	return {a:1, b:2};
 }
 		`, vm => {
-			assert.equal(vm.ret, 11);
+			assert.deepEqual(vm.ret, {a: 1, b:2});
 			done();
 		});
-	});	
+	});
+
+	it.only('simulate-data', function (done) {
+		codeTest(`
+process main () {
+	data = {
+		a: 1,
+		b: 2,
+		list: [3, 4, 5]
+	};
+
+	data['list'][1] = false;
+	return data;
+}
+		`, vm => {
+			assert.deepEqual(vm.ret, {
+				a: 1,
+				b: 2,
+				list: [3, false, 5]
+			});
+			done();
+		});
+	});
+
 
 });
