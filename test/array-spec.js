@@ -103,9 +103,9 @@ describe('Array-Statement::', function () {
 	});
 
 	it('access-by-index', function () {
-		let ret = blankVM.run(new Statement.map['ACCESS::PROPERTY']({
+		let ret = blankVM.run(new Statement.map['ACCESS::PROPERTY::EXPRESSION']({
 			BODY: {
-				SYMBOL: 'ACCESS::PROPERTY',
+				SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 				BASE: {
 					BODY: {
 						SYMBOL: 'ACCESS::VARIABLE',
@@ -127,9 +127,9 @@ describe('Array-Statement::', function () {
 	});
 
 	it('access-by-index-expression-"a[index-2]"', function () {
-		let ret = blankVM.run(new Statement.map['ACCESS::PROPERTY']({
+		let ret = blankVM.run(new Statement.map['ACCESS::PROPERTY::EXPRESSION']({
 			BODY: {
-				SYMBOL: 'ACCESS::PROPERTY',
+				SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 				BASE: {
 					BODY: {
 						SYMBOL: 'ACCESS::VARIABLE',
@@ -169,7 +169,7 @@ describe('Array-Statement::', function () {
 				SYMBOL: 'ES=',
 				LEFT: {
 					BODY: {
-						SYMBOL: 'ACCESS::PROPERTY',
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BASE: {
 							BODY: {
 								SYMBOL: 'ACCESS::VARIABLE',
@@ -205,10 +205,10 @@ describe('Array-Statement::', function () {
 				SYMBOL: 'ES=',
 				LEFT: {
 					BODY: {
-						SYMBOL: 'ACCESS::PROPERTY',
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BASE: {
 							BODY: {
-								SYMBOL: 'ACCESS::PROPERTY',
+								SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 								BASE: {
 									BODY: {
 										SYMBOL: 'ACCESS::VARIABLE',

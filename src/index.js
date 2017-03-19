@@ -5,7 +5,8 @@ require('./control/loop');
 
 // Expression
 require('./expression/binary'); // 15ES + 2LC
-require('./expression/access'); // 5ES + var + property + literal
+require('./expression/access'); // 5ES + var + property
+require('./expression/literal');
 require('./expression/logic'); // ES! ES&& ES||
 require('./expression/condition'); // ES?:
 require('./expression/selector'); // LC7 <* />

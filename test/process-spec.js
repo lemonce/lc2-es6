@@ -222,7 +222,7 @@ process main () {
 		});
 	});
 
-	it.only('simulate-data', function (done) {
+	it('simulate-data', function (done) {
 		codeTest(`
 process main () {
 	data = {
@@ -231,7 +231,7 @@ process main () {
 		list: [3, 4, 5]
 	};
 
-	data['list'][1] = false;
+	data.list[1] = false;
 	return data;
 }
 		`, vm => {
@@ -244,5 +244,29 @@ process main () {
 		});
 	});
 
+	it('object-for-sum', function (done) {
+		codeTest(`
+process main () {
+	data = {
+		a: 1,
+		b: 2,
+		c: 3
+	};
 
+	keystr = '';
+	sum = 0;
+
+	for(key in data) {
+		keystr += key;
+		sum += data[key];
+	}
+
+	return keystr + sum;
+}
+		`, vm => {
+			assert.equal(vm.ret, 'abc6');
+			done();
+		});
+
+	});
 });
