@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {LC2Statement} = require('../lc2');
 const {randexp} = require('randexp');
 const moment = require('moment/min/moment.min.js');
 
@@ -28,48 +28,42 @@ const native = {
 	now: Date.now,
 };
 
-class CallStatement extends Statement {
+class CallStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
 		this.identifier = BODY.IDENTIFIER;
-		this.arguments = [];
-		for(let statement of BODY.ARGUMENTS) {
-			this.arguments.push(this.$linkBySymbol(statement));
-		}
+		this.arguments = this.$linkSegment(BODY.ARGUMENTS || []);
 	}
 
-	*iterateArgument(vm, scope, callback) {
+	*iterateArgument($, callback) {
 		for(let index in this.arguments) {
-			yield* this.arguments[index].doExecution(vm, scope);
-			callback(index);
+			callback(index, yield* this.arguments[index].doExecution($));
 		}
 	}
 
-	*execute (vm, parentScope) {
-		const scope = parentScope.$new();
-		const process = vm.processMap && vm.getProcess(this.identifier);
+	*execute($) {
+		const parentScope = $.scope;
+		const childScope = parentScope.$new();
+		const process = $.vm.processMap && $.vm.getProcess(this.identifier);
+
+		const $$ = {vm: $.vm, childScope};
 		
 		if (process) {
 			const parameterList = process.parameter;
 			
-			yield* this.iterateArgument(vm, parentScope, index => {
-				scope[parameterList[index]] = vm.ret;
+			yield* this.iterateArgument($$, (index, ret) => {
+				childScope[parameterList[index]] = ret;
 			});
 			
-			yield* process.doExecution(vm, scope);
+			return yield* process.doExecution($$);
 		} else {
 			const args = [];
-			yield* this.iterateArgument(vm, parentScope, () => {
-				args.push(vm.ret);
+			yield* this.iterateArgument($$, (index, ret) => {
+				args.push(ret);
 			});
 
-			try {
-				const ret = native[this.identifier].apply(null, args);
-				yield vm.writeback(null, ret);				
-			} catch (err) {
-				vm.writeback(err, null).$halt();
-			}
+			return native[this.identifier].apply(null, args);
 		}
 	}
 }

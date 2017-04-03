@@ -5,65 +5,6 @@ const assert = require('assert');
 
 const blankVM = new LCVM();
 describe('Array-Statement::', function () {
-	const simpleArray = new Statement.map['LITERAL::ARRAY']({
-		BODY: {
-			SYMBOL: 'LITERAL::ARRAY',
-			LIST: [
-				{
-					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
-						DESTINATION: 1
-					}
-				},
-				{
-					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
-						DESTINATION: 2
-					}
-				},
-			]
-		}
-	});
-
-	it('simple-init', function () {
-		let ret = blankVM.run(simpleArray);
-		assert.deepEqual(ret, [1, 2]);
-	});
-
-	it('object-init', function () {
-		let ret = blankVM.run(new Statement.map['LITERAL::OBJECT']({
-			BODY: {
-				SYMBOL: 'LITERAL::OBJECT',
-				LIST: [
-					{
-						BODY: {
-							SYMBOL: 'LITERAL::OBJECT::PROPERTY',
-							IDENTIFIER: 'a',
-							VALUE: {
-								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
-									DESTINATION: 2
-								}
-							},
-						}
-					},
-					{
-						BODY: {
-							SYMBOL: 'LITERAL::OBJECT::PROPERTY',
-							IDENTIFIER: 'b',
-							VALUE: {
-								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
-									DESTINATION: 1
-								}
-							},
-						}
-					}
-				]
-			}
-		}));
-		assert.deepEqual(ret, {a: 2, b: 1});
-	});
 
 	it('init-with-expression', function () {
 		let ret = blankVM.run(new Statement.map['LITERAL::ARRAY']({

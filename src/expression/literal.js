@@ -1,8 +1,8 @@
 const {Statement} = require('es-vm');
 
 class LiteralStatement extends Statement {
-	*execute(vm, scope) {
-		yield vm.writeback(null, yield* this.getBase(vm, scope));
+	*execute($) {
+		return yield* this.getBase($);
 	}
 }
 
@@ -14,7 +14,6 @@ class SimpleLiteralStatement extends LiteralStatement {
 	}
 
 	*getBase() {
-		yield;
 		return this.destination;
 	}
 }
@@ -30,13 +29,11 @@ class ObjectLiteralStatement extends LiteralStatement {
 		});
 	}
 
-	*getBase(vm, scope) {
+	*getBase($) {
 		const object = {};
 
 		for(let {identifier, value} of this.list) {
-			yield* value.doExecution(vm, scope);
-
-			object[identifier] = vm.ret;
+			object[identifier] = yield* value.doExecution($);
 		}
 
 		return object;
@@ -49,10 +46,6 @@ class ObjectLiteralPropertyDefinedStatement extends Statement{
 		
 		this.identifier = BODY.IDENTIFIER;
 		this.value = this.$linkBySymbol(BODY.VALUE);
-	}
-
-	*execute() {
-		
 	}
 }
 
@@ -67,12 +60,11 @@ class ArrayLiteralStatement extends LiteralStatement {
 		});
 	}
 
-	*getBase(vm, scope) {
+	*getBase($) {
 		const array = [];
 
 		for(let element of this.list) {
-			yield* element.doExecution(vm, scope);
-			array.push(vm.ret);
+			array.push(yield* element.doExecution($));
 		}
 
 		return array;
@@ -82,4 +74,4 @@ class ArrayLiteralStatement extends LiteralStatement {
 ArrayLiteralStatement.register('LITERAL::ARRAY');
 SimpleLiteralStatement.register('LITERAL::SIMPLE');
 ObjectLiteralStatement.register('LITERAL::OBJECT');
-ObjectLiteralPropertyDefinedStatement.register('LITERAL::OBJECT::PROPERTY');
+ObjectLiteralPropertyDefinedStatement.register('LITERAL::OBJECT::PROPERTY', false);

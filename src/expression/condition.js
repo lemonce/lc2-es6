@@ -1,12 +1,5 @@
 const {Statement} = require('es-vm');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'ES?:'
- *          SOURCES: <expression | the left >
- * 		}
- * 	}
- */
+
 class ESConditionStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -16,17 +9,10 @@ class ESConditionStatement extends Statement {
 		this.false = this.$linkBySymbol(BODY.FALSE);
 	}
 	
-	*execute(vm, scope) {
-		yield* this.condition.doExecution(vm, scope);
-		const condition = vm.ret;
+	*execute($) {
+		const condition = yield* this.condition.doExecution($);
 
-		if (condition) {
-			yield* this.true.doExecution(vm, scope);
-		} else {
-			yield* this.false.doExecution(vm, scope);
-		}
-
-		yield vm.writeback(null, vm.ret);
+		return yield* this[Boolean(condition)].doExecution($);
 	}
 }
 ESConditionStatement.register('ES?:');

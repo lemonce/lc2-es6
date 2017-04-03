@@ -6,7 +6,6 @@ export function link(syntaxTree: Object): Object;
  * virtual machine instance
  */
 export class LCVM {
-	processMap: Object;
 	options: Object;
 	loop: number;
 

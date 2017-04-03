@@ -19,17 +19,12 @@ function SelectorStatementFactory(symbol, method) {
 			this.selector = this.$linkBySymbol(BODY.SELECTOR);
 		}
 		
-		*execute(vm, scope) {
-			yield* this.selector.doExecution(vm, scope);
-			yield vm.fetch({method,
-				args: {
-					selector: vm.ret
-				}
-			}, config.get('MAX_RPC_LIMIT'), () => {
-				vm.writeback(null, false);
-				vm.$run();
-			});
-			yield vm.writeback(null, vm.ret);
+		*execute($) {
+			const selector = yield* this.selector.doExecution($);
+			
+			return yield $.vm.fetch({method,
+				args: {selector}
+			}, config.get('MAX_RPC_LIMIT'));
 		}
 	}
 
@@ -39,4 +34,3 @@ function SelectorStatementFactory(symbol, method) {
 for(let symbol in methodSymbolMap) {
 	SelectorStatementFactory(symbol, methodSymbolMap[symbol]);
 }
-module.exports = SelectorStatementFactory;

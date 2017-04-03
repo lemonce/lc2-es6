@@ -1,4 +1,4 @@
-const DriverStatement = require('../driver');
+const {DriverStatement} = require('../lc2');
 
 const pointerSymbolMap = {
 	'ACTION::CLICK': {method: 'doClick', action: 'click'},
@@ -8,41 +8,36 @@ const pointerSymbolMap = {
 	'ACTION::SCROLL': {method: 'doScroll', action: 'scroll'}
 };
 
-
 function PointerStatementFactory(symbol, {method, action}) {
 	class PointerStatementClass extends DriverStatement {
 		constructor({POSITION, BODY}) {
 			super({POSITION});
 
-			this.selector = this.$linkBySymbol(BODY.SELECTOR || DriverStatement.SELECTOR_IT);
+			this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
 			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 		}
 
-		*execute(vm, scope) {
-			const selector = yield* this.getSelector(vm, scope);
+		*execute($) {
+			yield* this.autowait($.vm);
 			
+			const selector = yield* this.getSelector($);
 			const startTime = Date.now();
-			yield vm.fetch({
+
+			yield $.vm.fetch({
 				method,
 				args: {
 					selector,
-					button: scope.$BUTTON
+					button: $.scope.$BUTTON
 					// scope.$OFFSET_X, scope.$OFFSET_Y,
 				}
-			}, yield* this.getLimit(vm, scope));
+			}, yield* this.getLimit($));
 
-			yield vm.emit('driver', {
-				type: 'action',
-				data: {
-					action, selector,
-					line: this.position && this.position.LINE,
-					success: true,
-					param: null,
-					duration: Date.now() - startTime
-				}
+			this.output($, 'action', {
+				action, selector,
+				success: true,
+				param: null,
+				duration: Date.now() - startTime
 			});
-
-			yield* this.autowait(vm);
 		}
 	}
 
@@ -61,20 +56,20 @@ class MouseDropStatement extends DriverStatement {
 		super({POSITION});
 	}
 
-	*execute(vm) {
+	*execute($) {
 		const startTime = Date.now();
-		yield vm.fetch({method: 'doDrop', args: {}});
-		yield vm.emit('driver', {
+		yield $.vm.fetch({method: 'doDrop', args: {}});
+		yield $.vm.emit('driver', {
 			type: 'action',
 			data: {
 				action: 'drop',
-				line: this.position && this.position.LINE,
+				line: this.position,
 				success: true,
 				param: null,
 				duration: Date.now() - startTime
 			}
 		});
-		yield vm.writeback(null, true);
+		yield $.vm.writeback(null, true);
 	}
 }
 MouseDropStatement.register('ACTION::DROP');

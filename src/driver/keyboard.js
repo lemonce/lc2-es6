@@ -1,45 +1,35 @@
-const DriverStatement = require('../driver');
-/**
- *  input <selector>
- *      [by <value>],
- *      [in <limitation>]
- */
+const {DriverStatement} = require('../lc2');
+
 class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
 		super({POSITION});
 
-		this.selector = this.$linkBySymbol(BODY.SELECTOR || DriverStatement.SELECTOR_IT);
+		this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
 		this.value = this.$linkBySymbol(BODY.VALUE);
 		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
-	*execute(vm, scope) {
-		const selector = yield* this.getSelector(vm, scope);
+	*execute($) {
+		yield* this.autowait($.vm);
 
-		yield* this.value.doExecution(vm, scope);
-		const value = vm.ret;
-
+		const selector = yield* this.getSelector($);
+		const value = yield* this.value.doExecution($);
 		const startTime = Date.now();
-		yield vm.fetch({
+
+		yield $.vm.fetch({
 			method: 'doInput',
 			args: {selector, value}
-		}, yield* this.getLimit(vm));
+		}, yield* this.getLimit($));
 
-		yield vm.emit('driver', {
-			type: 'action',
-			data: {
-				selector,
-				action: 'input',
-				line: this.position && this.position.LINE,
-				success: true,
-				param: value,
-				duration: Date.now() - startTime
-			}
+		this.output($, 'action', {
+			selector,
+			action: 'input',
+			success: true,
+			param: value,
+			duration: Date.now() - startTime
 		});
 
-		yield vm.writeback(null, true);
-
-		yield* this.autowait(vm);
+		return true;
 	}
 }
 

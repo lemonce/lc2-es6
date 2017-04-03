@@ -1,10 +1,10 @@
-const ControlStatement = require('../control');
+const {ControlStatement} = require('../lc2');
 const {Statement} = require('es-vm');
 
 class LoopStatement extends ControlStatement {
-	*executeSegment(vm, scope) {
+	*executeSegment($) {
 		for (let statement of this.segment) {
-			const statementRuntime = statement.doExecution(vm, scope);
+			const statementRuntime = statement.doExecution($);
 
 			for(let value of statementRuntime) {
 				if (value === 'LOOP::CONTINUE') {
@@ -40,14 +40,13 @@ class IteratorStatement extends LoopStatement {
 }
 
 class ItemIteratorStatement extends IteratorStatement {
-	*execute(vm, scope) {
-		yield* this.iterable.doExecution(vm, scope);
-		const iterable = vm.ret;
+	*execute($) {
+		const iterable = yield* this.iterable.doExecution($);
 
 		for(let item of iterable) {
-			scope[this.identifier] = item;
+			$[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment(vm, scope);
+			const nextFlag = yield* this.executeSegment($);
 			if (!nextFlag) {
 				return;
 			}
@@ -56,14 +55,14 @@ class ItemIteratorStatement extends IteratorStatement {
 }
 
 class KeyIteratorStatement extends IteratorStatement {
-	*execute(vm, scope) {
-		yield* this.iterable.doExecution(vm, scope);
-		const iterable = vm.ret;
+	*execute($) {
+		yield* this.iterable.doExecution($);
+		const iterable = $.vm.ret;
 
 		for(let item in iterable) {
-			scope[this.identifier] = item;
+			$.scope[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment(vm, scope);
+			const nextFlag = yield* this.executeSegment($);
 			if (!nextFlag) {
 				return;
 			}
@@ -82,22 +81,17 @@ class WhileLoopStatement extends LoopStatement {
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}
 
-	*execute (vm, scope) {
+	*execute($) {
 		const CONSTANT_TRUE = true;
 		
 		while (CONSTANT_TRUE) {
-			yield* this.condition.doExecution(vm, scope);
-			// Use to set condition ret for testing.
-			vm.emit('[loop]', vm);
-
-			const condition = Boolean(vm.ret);
-			
+			const condition = Boolean(yield* this.condition.doExecution($));
 			
 			if (!condition) {
 				return;
 			}
 
-			const nextFlag = yield* this.executeSegment(vm, scope);
+			const nextFlag = yield* this.executeSegment($);
 			if(!nextFlag) {
 				return;
 			}
@@ -106,13 +100,13 @@ class WhileLoopStatement extends LoopStatement {
 }
 
 class BreakStatement extends Statement {
-	*execute () {
+	*execute() {
 		yield 'LOOP::BREAK';
 	}
 }
 
 class ContinueStatement extends Statement {
-	*execute () {
+	*execute() {
 		yield 'LOOP::CONTINUE';
 	}
 }

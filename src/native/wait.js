@@ -1,38 +1,24 @@
-const {Statement} = require('es-vm');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'WAIT',
- *          WAIT: <string | lc2 expression>
- * 		}
- * 	}
- */
-class WaitStatement extends Statement {
+const {LC2Statement} = require('../lc2');
+
+class WaitStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
 		this.delay = this.$linkBySymbol(BODY.DELAY);
 	}
 	
-	*execute(vm) {
-		yield* this.delay.doExecution(vm);
-		const delay = vm.ret;
+	*execute($) {
+		const delay = Number(yield* this.delay.doExecution($));
 
-		//TODO check vm.ret is Number or not.
-		setTimeout(() => {
-			vm.writeback(null, true);
-			vm.emit('[WAIT]', vm);
-			vm.$run();
-		}, delay);
+		if (isNaN(delay)) {
+			throw new Error('[LCVM]: Delay is not a number');
+		}
+
+		$.vm.$setTimeout(() => $.vm.$run(), delay);
+		this.output($, 'wait', {delay});
 		yield 'VM::BLOCKED';
-		
-		yield vm.emit('driver', {
-			type: 'wait',
-			data: {
-				line: this.position && this.position.LINE,
-				delay
-			}
-		});
+
+		return yield true;
 	}
 }
 module.exports = WaitStatement.register('WAIT');

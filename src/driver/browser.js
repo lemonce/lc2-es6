@@ -1,4 +1,4 @@
-const DriverStatement = require('../driver');
+const {DriverStatement} = require('../lc2');
 const config = require('../config');
 
 const browserActionMap = {
@@ -13,15 +13,12 @@ function BrowserStatementFactory(symbol, method) {
 			super({POSITION});
 		}
 		
-		*execute(vm) {
-			yield vm.fetch({method, args: {}}, config.get('MAX_RPC_LIMIT'));
-			yield vm.emit('driver', {
-				type: method,
-				data: {
-					line: this.position && this.position.LINE,
-				}
-			});
-			yield vm.writeback(null, true);
+		*execute($) {
+			yield $.vm.fetch({method, args: {}}, config.get('MAX_RPC_LIMIT'));
+			
+			this.output($, method);
+
+			return true;
 		}
 	}
 	BrowserSimpleStatementClass.register(symbol);
@@ -38,23 +35,17 @@ class JumptoStatement extends DriverStatement {
 		this.url = this.$linkBySymbol(BODY.URL);
 	}
 	
-	*execute(vm, scope) {
-		yield* this.url.doExecution(vm, scope);
-		const url = vm.ret;
+	*execute($) {
+		const url = yield* this.url.doExecution($);
 
-		yield vm.fetch({
+		yield $.vm.fetch({
 			method: 'jumpto',
 			args: { url }
 		}, config.get('MAX_RPC_LIMIT'));
-		yield vm.emit('driver', {
-			type: 'jumpto',
-			data: {
-				line: this.position && this.position.LINE,
-				url
-			}
-		});
 
-		yield vm.writeback(null, true);
+		this.output($, 'jumpto', {url});
+
+		return true;
 	}
 }
 JumptoStatement.register('BROWSER::JUMPTO');
@@ -67,21 +58,16 @@ class ResizeStatement extends DriverStatement {
 		this.height = this.$linkBySymbol(BODY.HEIGHT);
 	}
 	
-	*execute(vm, scope) {
-		yield* this.width.doExecution(vm, scope);
-		const width = vm.ret;
+	*execute($) {
+		const width = yield* this.width.doExecution($);
+		const height = yield* this.height.doExecution($);
 
-		yield* this.height.doExecution(vm, scope);
-		const height = vm.ret;
-
-
-		//TODO
-		yield vm.fetch({
+		yield $.vm.fetch({
 			method: 'resize',
 			args: { width, height }
 		});
 
-		yield vm.writeback(null, true);
+		return true;
 	}
 }
 ResizeStatement.register('BROWSER::RESIZE');

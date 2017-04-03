@@ -1,4 +1,4 @@
-const {ESVM, signal, Statement} = require('es-vm');
+const {ESVM, Statement} = require('es-vm');
 const LCScope = require('./scope');
 const CallStatement = require('./native/call');
 const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
@@ -23,7 +23,6 @@ class LCVM extends ESVM {
 		this.options = Object.assign({}, defaultOptions, options);
 		this.rootScope = new LCScope();
 		this.loop = 0;
-		this.callingStack = [];
 
 		this.on('program-end', () => this.loopEnd());
 		this.on('program-start', () => {
@@ -37,8 +36,6 @@ class LCVM extends ESVM {
 				for(let tick of run);
 			});
 		});
-
-		this.booterId = -1;
 	}
 
 	loopEnd () {
@@ -46,8 +43,7 @@ class LCVM extends ESVM {
 
 		this.loop += 1;
 		if (this.loop < this.options.times) {
-			this.signal = signal.get('BOOTING');
-			this.booterId = setTimeout(() => {
+			this.$setTimeout(() => {
 				this.callMainProcess();
 			}, this.options.interval);
 		} else {
@@ -71,22 +67,17 @@ class LCVM extends ESVM {
 	}
 
 	run(executionNode, scope) {
-		this.loadProgram(executionNode);
-		Object.assign(this.rootScope, scope);
-		this.$run();
-
-		return this.ret;
-	}
-	
-	loadProgram(statement) {
-		if (!(statement instanceof Statement)) {
-			throw new Error('[ESVM-DEV]: Invalid statement.');
-		}
-		this.$runtime = statement.doExecution(this, this.rootScope = new LCScope());
+		this.$loadProgram(executionNode, {
+			scope: Object.assign(this.rootScope, scope)
+		});
+		
+		return this.$run();
 	}
 
 	callMainProcess() {
-		this.loadProgram(callMain);
+		this.$loadProgram(callMain, {
+			scope: this.rootScope = new LCScope()
+		});
 		this.$launch();
 
 		return this;
@@ -95,9 +86,11 @@ class LCVM extends ESVM {
 	get state() { return this.$state; }
 	getPosition() { return this.position; }
 	start() {
-		this.$bootstrap();
 		this.$state = 'running';
-		this.booterId = setTimeout(() => this.callMainProcess(), this.options.interval);
+
+		this.$setTimeout(() => {
+			this.callMainProcess();
+		}, this.options.interval);
 
 		return this;
 	}
@@ -110,12 +103,8 @@ class LCVM extends ESVM {
 	}
 
 	stop() {
-		if (this.signal === signal.get('IDLE')) {
-			return this;
-		}
 		this.$halt();
 		this.$state = 'ready';
-		clearTimeout(this.booterId);
 
 		return this;
 	}

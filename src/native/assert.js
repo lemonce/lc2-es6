@@ -1,17 +1,6 @@
-const {Statement} = require('es-vm');
-/**
- * 	assert <expression>
- * 		in <expression>
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'ACTION',
- * 			TEST: <expression | a lc2 expression witch to test>,
- * 			LIMIT: <expression>
- * 		}
- * 	}
- */
+const {LC2Statement} = require('../lc2');
 
-class AssertStatement extends Statement {
+class AssertStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
@@ -19,50 +8,32 @@ class AssertStatement extends Statement {
 		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
 	}
 
-	*execute(vm, scope) {
-		let limit;
-		if (this.limit) {
-			yield* this.limit.doExecution(vm, scope);
-			limit = vm.ret;
-		} else {
-			limit = vm.options.limit;
-		}
-		
+	*execute($) {
+		const limit = yield* this.getLimit($);
 		const cycleTestStart = Date.now();
+		
 		while (Date.now() - cycleTestStart <= limit) {
-			yield* this.test.doExecution(vm, scope);
-			vm.emit('[ASSERT]', vm);
-			let test = Boolean(vm.ret);
+			const test = Boolean(yield* this.test.doExecution($));
 			
 			if (test === true) {
-				yield vm.emit('driver', {
-					type: 'assert',
-					data: {
-						line: this.position && this.position.LINE,
-						success: true,
-						duration: Date.now() - cycleTestStart
-					}
+				this.output($, 'assert', {
+					success: true,
+					duration: Date.now() - cycleTestStart
 				});
-				yield vm.writeback(null, true);
-				return;
+				
+				return true;
 			} else {
-				setTimeout(() => {
-					//Issue: I don't know when the vm lose $runtime.
-					vm.$runtime && vm.$run();
-				}, 50);
+				$.vm.$setTimeout(() => $.vm.$run(), 50);
 				yield 'VM::BLOCKED';
 			}
 		}
 		
-		yield vm.emit('driver', {
-			type: 'assert',
-			data: {
-				line: this.position && this.position.LINE,
-				success: false,
-				duration: Date.now() - cycleTestStart
-			}
+		this.output($, 'assert', {
+			success: false,
+			duration: Date.now() - cycleTestStart
 		});
-		yield vm.writeback(new Error('[LCVM-ASSERT]: Assertion Failure.'), false);
+
+		throw new Error('[LCVM]: Assertion Failure.');
 	}
 }
 module.exports = AssertStatement.register('ASSERT');

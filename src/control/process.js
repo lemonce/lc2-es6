@@ -1,4 +1,4 @@
-const ControlStatement = require('../control');
+const {ControlStatement} = require('../lc2');
 const {Statement} = require('es-vm');
 
 class ProcessStatement extends ControlStatement {
@@ -11,11 +11,11 @@ class ProcessStatement extends ControlStatement {
 		this.segment = this.$linkSegment(BODY.SEGMENT);
 	}
 
-	*execute (vm, scope) {
+	*execute($) {
 		for (let statement of this.segment) {
-			for(let value of statement.doExecution(vm, scope)) {
+			for(let value of statement.doExecution($)) {
 				if (value === 'PROCESS::RETURN') {
-					return;
+					return $.scope['<RETURN>'];
 				}
 				
 				yield value;
@@ -31,9 +31,8 @@ class ReturnStatement extends Statement {
 		this.ret = this.$linkBySymbol(BODY.RET);
 	}
 
-	*execute (vm, scope) {
-		yield* this.ret.doExecution(vm, scope);
-		vm.writeback(null, vm.ret);
+	*execute($) {
+		$.scope['<RETURN>'] = yield* this.ret.doExecution($);
 
 		yield 'PROCESS::RETURN';
 	}

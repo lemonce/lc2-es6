@@ -9,7 +9,6 @@ require('./expression/access'); // 5ES + var + property
 require('./expression/literal');
 require('./expression/logic'); // ES! ES&& ES||
 require('./expression/condition'); // ES?:
-require('./expression/selector'); // LC7 <* />
 
 // Native
 require('./native/call');
@@ -18,6 +17,7 @@ require('./native/wait');
 require('./native/assert');
 
 // Driver
+require('./driver/selector'); // LC7 <* />
 require('./driver/browser');
 require('./driver/mouse');
 require('./driver/keyboard');

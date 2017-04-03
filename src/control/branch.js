@@ -1,14 +1,5 @@
-const ControlStatement = require('../control');
-/**
- * 	{
- * 		BODY: {
- * 			SYMBOL: 'BRANCH',
- * 			CONDITION: <string | condition expression>,
- *          SEGMENT_TRUE: [<Statement...>],
- *          SEGMENT_FALSE: [<Statement...>]
- * 		}
- * 	}
- */
+const {ControlStatement} = require('../lc2');
+
 class BranchStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -19,12 +10,13 @@ class BranchStatement extends ControlStatement {
 		this.segmentFalse = this.$linkSegment(BODY.SEGMENT_FALSE || []);
 	}
 
-	*execute (vm, scope) {
-		yield* this.condition.doExecution(vm, scope);
+	*execute($) {
+		const condition = yield* this.condition.doExecution($);
 
-		const segment = vm.ret ? this.segmentTrue : this.segmentFalse;
+		const segment = condition ? this.segmentTrue : this.segmentFalse;
+
 		for (let statement of segment) {
-			yield* statement.doExecution(vm, scope);
+			yield* statement.doExecution($);
 		}
 	}
 }

@@ -9,18 +9,11 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 			this.right = this.$linkBySymbol(BODY.RIGHT);
 		}
 
-		*execute(vm, scope) {
-			yield* this.left.doExecution(vm, scope);
-			const left = vm.ret;
+		*execute($) {
+			const left = yield* this.left.doExecution($);
+			const right = yield* this.right.doExecution($);
 
-			yield* this.right.doExecution(vm, scope);
-			const right = vm.ret;
-
-			try {
-				yield vm.writeback(null, operation(left, right));	
-			} catch (err) {
-				vm.writeback(err, null).$halt();
-			}
+			return operation(left, right);	
 		}
 	}
 

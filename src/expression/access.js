@@ -1,19 +1,11 @@
 const {Statement} = require('es-vm');
 
 class AccessStatement extends Statement {
-	*getBase() {
-		throw yield new Error('[LCVM-DEV]: Need defination to base.');
-	}
+	*execute($) {
+		const base = yield* this.getBase($);
+		const destination = yield* this.getDestination($);
 
-	*getDestination() {
-		throw yield new Error('[LCVM-DEV]: Need defination to destination.');
-	}
-
-	*execute(vm, scope) {
-		const base = yield* this.getBase(vm, scope);
-		const destination = yield* this.getDestination(vm, scope);
-
-		yield vm.writeback(null, base[destination]);
+		return base[destination];
 	}
 }
 
@@ -24,13 +16,11 @@ class VariableAccessStatement extends AccessStatement {
 		this.identifier = BODY.IDENTIFIER;
 	}
 
-	*getBase(vm, scope) {
-		yield;
-		return scope;
+	*getBase($) {
+		return $.scope;
 	}
 
 	*getDestination() {
-		yield;
 		return this.identifier;
 	}
 }
@@ -43,14 +33,12 @@ class ExpressionPropertyAccessStatement extends AccessStatement {
 		this.destination = this.$linkBySymbol(BODY.DESTINATION);
 	}
 
-	*getBase(vm, scope) {
-		yield* this.base.doExecution(vm, scope);
-		return vm.ret;
+	*getBase($) {
+		return yield* this.base.doExecution($);
 	}
 
-	*getDestination(vm, scope) {
-		yield* this.destination.doExecution(vm, scope);
-		return vm.ret;
+	*getDestination($) {
+		return yield* this.destination.doExecution($);
 	}
 }
 
@@ -62,13 +50,11 @@ class IdentifierPropertyAccessStatement extends AccessStatement {
 		this.identifier = BODY.IDENTIFIER;
 	}
 	
-	*getBase(vm, scope) {
-		yield* this.base.doExecution(vm, scope);
-		return vm.ret;
+	*getBase($) {
+		return yield* this.base.doExecution($);
 	}
 	
 	*getDestination() {
-		yield;
 		return this.identifier;
 	}
 }
@@ -86,18 +72,12 @@ function AssignmentStatementFactory(symbol, operation) {
 			this.right = this.$linkBySymbol(BODY.RIGHT);
 		}
 		
-		*execute(vm, scope) {
-			const base = yield* this.left.getBase(vm, scope);
-			const destination = yield* this.left.getDestination(vm, scope);
-			
-			yield* this.right.doExecution(vm, scope);
-			const right = vm.ret;
+		*execute($) {
+			const base = yield* this.left.getBase($);
+			const destination = yield* this.left.getDestination($);
+			const right = yield* this.right.doExecution($);
 
-			try {				
-				yield vm.writeback(null, doOperation(operation, base, destination, right));	
-			} catch (err) {
-				vm.writeback(err, null).$halt();
-			}
+			return doOperation(operation, base, destination, right);
 		}
 	}
 
@@ -107,7 +87,7 @@ function AssignmentStatementFactory(symbol, operation) {
 function doOperation(operation, base, destination, value) {
 	const ret = operation(base, destination, value);
 
-	if(typeof ret === 'number' && !isFinite(ret)) {
+	if(typeof ret === 'number' && !isFinite(ret) || isNaN(ret)) {
 		throw new Error(`[LCVM]: Invalid operand: ${ret}.`);
 	}
 
