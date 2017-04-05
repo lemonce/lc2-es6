@@ -38,6 +38,8 @@ function PointerStatementFactory(symbol, {method, action}) {
 				param: null,
 				duration: Date.now() - startTime
 			});
+
+			return true;
 		}
 	}
 
@@ -48,28 +50,22 @@ for(let symbol in pointerSymbolMap) {
 	PointerStatementFactory(symbol, pointerSymbolMap[symbol]);
 }
 
-/**
- * 	move <[to <left>, <right>] | [on <selector>]>
- */
 class MouseDropStatement extends DriverStatement {
-	constructor({POSITION}) {
-		super({POSITION});
-	}
-
 	*execute($) {
+		yield* this.autowait($.vm);
+		
 		const startTime = Date.now();
+
 		yield $.vm.fetch({method: 'doDrop', args: {}});
-		yield $.vm.emit('driver', {
-			type: 'action',
-			data: {
-				action: 'drop',
-				line: this.position,
-				success: true,
-				param: null,
-				duration: Date.now() - startTime
-			}
+
+		this.output($, 'action', {
+			action: 'drop',
+			success: true,
+			param: null,
+			duration: Date.now() - startTime
 		});
-		yield $.vm.writeback(null, true);
+		
+		return true;
 	}
 }
 MouseDropStatement.register('ACTION::DROP');

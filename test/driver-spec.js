@@ -117,7 +117,7 @@ describe('DRIVER::', function () {
 		}
 
 		for(let symbol in pointerSymbolMap) {
-			it(symbol, function () {
+			it(symbol, function (done) {
 				const vm = new LCVM();
 				vm.on('fetch', (rpc, invoking) =>  {
 					if (invoking.method === 'doDrop') {
@@ -125,6 +125,8 @@ describe('DRIVER::', function () {
 							method: 'doDrop',
 							args: {}
 						});
+
+						done();
 						return;
 					}
 
@@ -135,45 +137,149 @@ describe('DRIVER::', function () {
 							selector: 'body a'
 						}
 					});
+
+					done();
 				});
 				
 				vm.run(genNode(symbol));
 			});
 		}
 
-	});
-
-	it('ACTION::INPUT', function () {
-		const vm = new LCVM();
-		vm.on('fetch', (rpc, invoking) => {
-			assert.deepEqual(invoking, {
-				method: 'doInput',
-				args: {
-					selector: 'body a',
-					value: 'abc'
+		it('ACTION::INPUT', function (done) {
+			const vm = new LCVM();
+			vm.on('fetch', (rpc, invoking) => {
+				assert.deepEqual(invoking, {
+					method: 'doInput',
+					args: {
+						selector: 'body a',
+						value: 'abc'
+					}
+				});
+				done();
+			});
+			
+			const node = Statement.linkNode({
+				BODY: {
+					SYMBOL: 'ACTION::INPUT',
+					SELECTOR: {
+						BODY: {
+							SYMBOL: 'LITERAL::SIMPLE',
+							DESTINATION: 'body a'
+						}
+					},
+					VALUE: {
+						BODY: {
+							SYMBOL: 'LITERAL::SIMPLE',
+							DESTINATION: 'abc'
+						}
+					}
 				}
 			});
+			vm.run(node);
 		});
-		
-		const node = new Statement.map['ACTION::INPUT']({
-			BODY: {
-				SYMBOL: 'ACTION::INPUT',
-				SELECTOR: {
+
+		describe('UPLOAD', function () {
+			it('success with correct file list arguments.', function (done) {
+				const vm = new LCVM();
+				const upload = Statement.linkNode({
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
-						DESTINATION: 'body a'
+						SYMBOL: 'ACTION::UPLOAD',
+						FILE_LIST: {
+							BODY: {
+								SYMBOL: 'LITERAL::ARRAY',
+								LIST: [
+									{
+										BODY: {
+											SYMBOL: 'LITERAL::SIMPLE',
+											DESTINATION: 'jpg'
+										}
+									},
+									{
+										BODY: {
+											SYMBOL: 'LITERAL::SIMPLE',
+											DESTINATION: 'png'
+										}
+									}
+								]
+							}
+						}
 					}
-				},
-				VALUE: {
+				});
+
+				vm.on('fetch', (rpc, invoking) => {
+					assert.deepEqual(invoking, {
+						method: 'doUpload',
+						args: {
+							fileList: ['jpg', 'png']
+						}
+					});
+					done();
+				});
+
+				vm.run(upload);
+			});
+
+			it('fail with incorrect file list.', function (done) {
+				const vm = new LCVM();
+				const upload = Statement.linkNode({
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
-						DESTINATION: 'abc'
+						SYMBOL: 'ACTION::UPLOAD',
+						FILE_LIST: {
+							BODY: {
+								SYMBOL: 'LITERAL::SIMPLE',
+								DESTINATION: 'jpg'
+							}
+						}
 					}
-				}
-			}
+				});
+
+				vm.on('error', err => {
+					assert.equal(err.message, '[LCVM]: Upload statement except [<string>,...].');
+					done();
+				});
+
+				vm.run(upload);
+			});
+
 		});
-		vm.run(node);
 	});
 
-	it('upload');
+	describe('SELECTOR::', function () {
+		const selectorList = {
+			'LC<!': 'isDisplay',
+			'LC<#': 'getLength',
+			'LC<@': 'getText',
+			'LC<-': 'getWidth',
+			'LC<|': 'getHeigth',
+			'LC<<': 'getLeft',
+			'LC<^': 'getTop',
+		};
+
+		for(let OP in selectorList) {
+			it(OP, function (done) {
+				const vm = new LCVM();
+				const node = Statement.linkNode({
+					BODY: {
+						SYMBOL: OP,
+						SELECTOR: {
+							BODY: {
+								SYMBOL: 'LITERAL::SIMPLE',
+								DESTINATION: 'body a'
+							}
+						}
+					}
+				});
+
+				vm.on('fetch', (rpc, invoking) => {
+					assert.deepEqual(invoking, {
+						method: selectorList[OP],
+						args: { selector: 'body a' }
+					});
+					done();
+				});
+
+				vm.run(node);
+			});
+		}
+	});
 });

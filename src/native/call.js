@@ -1,6 +1,6 @@
 const {LC2Statement} = require('../lc2');
 const {randexp} = require('randexp');
-const moment = require('moment/min/moment.min.js');
+const dateFormat = require('dateformat');
 
 const native = {
 	number: num => {
@@ -24,7 +24,7 @@ const native = {
 	ceil: Math.ceil,
 	floor: Math.floor,
 	round: Math.round,
-	format: (dateString, format) => moment(dateString).format(format),
+	format: (date, format) => dateFormat(date, format),
 	now: Date.now,
 };
 
@@ -47,7 +47,7 @@ class CallStatement extends LC2Statement {
 		const childScope = parentScope.$new();
 		const process = $.vm.processMap && $.vm.getProcess(this.identifier);
 
-		const $$ = {vm: $.vm, childScope};
+		const $$ = {vm: $.vm, scope: childScope};
 		
 		if (process) {
 			const parameterList = process.parameter;
@@ -56,7 +56,7 @@ class CallStatement extends LC2Statement {
 				childScope[parameterList[index]] = ret;
 			});
 			
-			return yield* process.doExecution($$);
+			return parentScope['<CHILD_RETURN>'] = yield* process.doExecution($$);
 		} else {
 			const args = [];
 			yield* this.iterateArgument($$, (index, ret) => {
@@ -67,5 +67,6 @@ class CallStatement extends LC2Statement {
 		}
 	}
 }
+CallStatement.native = native;
 
 module.exports = CallStatement.register('CALL');

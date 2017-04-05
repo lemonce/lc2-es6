@@ -8,7 +8,7 @@ class LoopStatement extends ControlStatement {
 
 			for(let value of statementRuntime) {
 				if (value === 'LOOP::CONTINUE') {
-					return LoopStatement.LOOP_END;
+					return LoopStatement.LOOP_CONTINIU;
 				} else if (value === 'LOOP::BREAK') {
 					return LoopStatement.LOOP_BREAK;
 				}
@@ -17,10 +17,10 @@ class LoopStatement extends ControlStatement {
 			}
 		}
 
-		return LoopStatement.LOOP_END;
+		return LoopStatement.LOOP_CONTINIU;
 	}
 
-	static get LOOP_END() {
+	static get LOOP_CONTINIU() {
 		return true;
 	}
 
@@ -44,7 +44,7 @@ class ItemIteratorStatement extends IteratorStatement {
 		const iterable = yield* this.iterable.doExecution($);
 
 		for(let item of iterable) {
-			$[this.identifier] = item;
+			$.scope[this.identifier] = item;
 
 			const nextFlag = yield* this.executeSegment($);
 			if (!nextFlag) {
@@ -56,8 +56,7 @@ class ItemIteratorStatement extends IteratorStatement {
 
 class KeyIteratorStatement extends IteratorStatement {
 	*execute($) {
-		yield* this.iterable.doExecution($);
-		const iterable = $.vm.ret;
+		const iterable = yield* this.iterable.doExecution($);
 
 		for(let item in iterable) {
 			$.scope[this.identifier] = item;

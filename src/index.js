@@ -21,6 +21,7 @@ require('./driver/selector'); // LC7 <* />
 require('./driver/browser');
 require('./driver/mouse');
 require('./driver/keyboard');
+require('./driver/upload');
 
 /**
  * 	{

@@ -87,7 +87,7 @@ function AssignmentStatementFactory(symbol, operation) {
 function doOperation(operation, base, destination, value) {
 	const ret = operation(base, destination, value);
 
-	if(typeof ret === 'number' && !isFinite(ret) || isNaN(ret)) {
+	if(typeof ret === 'number' && !isFinite(ret)) {
 		throw new Error(`[LCVM]: Invalid operand: ${ret}.`);
 	}
 

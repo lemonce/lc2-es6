@@ -1,10 +1,10 @@
 const {Statement} = require('es-vm');
 
 class LC2Statement extends Statement {
-	*autowait($) {
-		const autoWait = $.vm.options.wait;
+	*autowait(vm) {
+		const autoWait = vm.options.wait;
 		if (autoWait >= 0) {
-			$.vm.$setTimeout(() => $.vm.$run(), autoWait);
+			vm.$setTimeout(() => vm.$run(), autoWait);
 			yield 'VM::BLOCKED';
 		}
 	}
@@ -64,7 +64,7 @@ class DriverStatement extends LC2Statement {
 	}
 }
 
-class ControlStatement extends Statement {
+class ControlStatement extends LC2Statement {
 }
 
 exports.ControlStatement = ControlStatement;

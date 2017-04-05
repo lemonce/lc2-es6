@@ -1,6 +1,6 @@
 {
   "name": "lc2-es6-vm",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "LemonCase2 Engine by ECMAScript 6",
   "main": "index.js",
   "scripts": {
@@ -15,14 +15,14 @@
   "author": "ChaosLee",
   "license": "GPL-3.0",
   "dependencies": {
-    "es-vm": "^1.1.2",
-    "moment": "^2.18.0",
+    "dateformat": "^2.0.0",
+    "es-vm": "^1.2.0",
     "randexp": "^0.4.5"
   },
   "devDependencies": {
     "jsdoc": "^3.4.3",
-    "lc2-compiler": "^1.1.37",
-    "mocha": "^3.1.2"
+    "lc2-compiler": "^2.0.1",
+    "mocha": "^3.2.0"
   },
   "typings": "index.d.ts"
 }
