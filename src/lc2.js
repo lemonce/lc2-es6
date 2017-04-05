@@ -4,7 +4,7 @@ class LC2Statement extends Statement {
 	*autowait(vm) {
 		const autoWait = vm.options.wait;
 		if (autoWait >= 0) {
-			vm.$setTimeout(() => vm.$run(), autoWait);
+			yield vm.$setTimeout(() => vm.$run(), autoWait);
 			yield 'VM::BLOCKED';
 		}
 	}

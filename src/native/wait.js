@@ -14,7 +14,7 @@ class WaitStatement extends LC2Statement {
 			throw new Error('[LCVM]: Delay is not a number');
 		}
 
-		$.vm.$setTimeout(() => $.vm.$run(), delay);
+		yield $.vm.$setTimeout(() => $.vm.$run(), delay);
 		this.output($, 'wait', {delay});
 		yield 'VM::BLOCKED';
 

@@ -23,7 +23,7 @@ class AssertStatement extends LC2Statement {
 				
 				return true;
 			} else {
-				$.vm.$setTimeout(() => $.vm.$run(), 50);
+				yield $.vm.$setTimeout(() => $.vm.$run(), 50);
 				yield 'VM::BLOCKED';
 			}
 		}
