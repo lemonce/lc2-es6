@@ -4,16 +4,26 @@ const {Statement} = require('es-vm');
 class LoopStatement extends ControlStatement {
 	*executeSegment($) {
 		for (let statement of this.segment) {
-			const statementRuntime = statement.doExecution($);
+			const runtime = statement.doExecution($);
+			
+			let ret = {}, $done = false;
+			while (!$done) {
+				const {done, value} =
+					ret.err ? runtime.throw(ret.err) : runtime.next(ret.data);
 
-			for(let value of statementRuntime) {
 				if (value === 'LOOP::CONTINUE') {
 					return LoopStatement.LOOP_CONTINIU;
 				} else if (value === 'LOOP::BREAK') {
 					return LoopStatement.LOOP_BREAK;
 				}
+				
+				$done = done;
 
-				yield value;
+				try {
+					ret = {data: yield value};
+				} catch (err) {
+					ret = {err}
+				}
 			}
 		}
 

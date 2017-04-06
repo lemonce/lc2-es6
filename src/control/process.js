@@ -13,12 +13,24 @@ class ProcessStatement extends ControlStatement {
 
 	*execute($) {
 		for (let statement of this.segment) {
-			for(let value of statement.doExecution($)) {
+			const runtime = statement.doExecution($);
+			
+			let ret = {}, $done = false;
+			while (!$done) {
+				const {done, value} =
+					ret.err ? runtime.throw(ret.err) : runtime.next(ret.data);
+
 				if (value === 'PROCESS::RETURN') {
 					return $.scope['<RETURN>'];
 				}
 				
-				yield value;
+				$done = done;
+
+				try {
+					ret = {data: yield value};
+				} catch (err) {
+					ret = {err}
+				}
 			}
 		}
 	}
