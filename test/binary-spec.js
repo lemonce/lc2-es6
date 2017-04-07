@@ -112,6 +112,11 @@ describe('BinaryOperator::', function () {
 			'LC!~': [
 				{ left: 'abc', right: 'b', ret: false },
 				{ left: 'abc', right: 'd', ret: true }
+			],
+			'LC=*=': [
+				{ left: {}, right: {}, ret: true},
+				{ left: [], right: [], ret: true},
+				{ left: {a:1}, right: {b:2}, ret: false},
 			]
 		};
 

@@ -22,9 +22,13 @@ function SelectorStatementFactory(symbol, method) {
 		*execute($) {
 			const selector = yield* this.selector.doExecution($);
 			
-			return yield $.vm.fetch({method,
-				args: {selector}
-			}, config.get('MAX_RPC_LIMIT'));
+			try {
+				return yield $.vm.fetch({method,
+					args: {selector}
+				}, config.get('MAX_RPC_LIMIT'));
+			} catch (err) {
+				return null;
+			}
 		}
 	}
 

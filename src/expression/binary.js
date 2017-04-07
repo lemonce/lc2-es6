@@ -1,4 +1,5 @@
 const {Statement} = require('es-vm');
+const assert = require('assert');
 
 function BinaryOperatorStatementFactory(symbol, operation) {
 	class BinaryOperatorStatementClass extends Statement {
@@ -52,6 +53,14 @@ const operationSymbolMap = {
 	'ES<=': (left, right) => left <= right,
 	'LC~~': (left, right) => match(left, right),
 	'LC!~': (left, right) => !match(left, right),
+	'LC=*=': (left, right) => {
+		try {
+			assert.deepEqual(left, right);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
 };
 
 for(let symbol in operationSymbolMap) {
