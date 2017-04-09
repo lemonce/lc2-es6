@@ -19,7 +19,7 @@ class UploadStatement extends DriverStatement {
 		yield $.vm.fetch({
 			method: 'doUpload',
 			args: {fileList}
-		});
+		}, yield* this.getLimit($));
 
 		this.output($, 'action', {
 			action: 'upload',
