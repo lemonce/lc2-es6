@@ -32,7 +32,7 @@ class LCVM extends ESVM {
 			});
 
 			global && global.forEach(statement => {
-				const run = Statement.linkNode(statement).doExecution(this, this.rootScope);
+				const run = Statement.linkNode(statement).doExecution({vm: this, scope: this.rootScope});
 				for(let tick of run);
 			});
 		});
