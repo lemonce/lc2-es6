@@ -11,14 +11,14 @@ describe('BinaryOperator::', function () {
 				BODY: {
 					SYMBOL: operator,
 					LEFT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: left
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: right
 						}
 					}
@@ -134,17 +134,17 @@ describe('BinaryOperator::', function () {
 	describe('NoState +E::', function () {
 		function generateNode(left, right, operator) {
 			return new Statement.map[operator]({
+				SYMBOL: operator,
 				BODY: {
-					SYMBOL: operator,
 					LEFT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: left
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: right
 						}
 					}

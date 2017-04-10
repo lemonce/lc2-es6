@@ -27,7 +27,7 @@ class LC2Statement extends Statement {
 		});
 	}
 	
-	$linkSegment(segment) {
+	linkSegment(segment) {
 		if (!Array.isArray(segment)) {
 			throw new Error('[LCVM-DEV]: Invalid segment.');
 		}
@@ -35,7 +35,7 @@ class LC2Statement extends Statement {
 		const linkedSegment = [];
 
 		segment.forEach(statement => {
-			linkedSegment.push(this.$linkBySymbol(statement));
+			linkedSegment.push(this.linkNode(statement));
 		});
 
 		return linkedSegment;

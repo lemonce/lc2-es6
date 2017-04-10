@@ -13,8 +13,8 @@ function PointerStatementFactory(symbol, {method, action}) {
 		constructor({POSITION, BODY}) {
 			super({POSITION});
 
-			this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
-			this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
+			this.selector = BODY.SELECTOR && this.linkNode(BODY.SELECTOR);
+			this.limit = BODY.LIMIT && this.linkNode(BODY.LIMIT);
 		}
 
 		*execute($) {

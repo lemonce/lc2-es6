@@ -6,23 +6,23 @@ const assert = require('assert');
 it('ES?:', function () {
 	const vm = new LCVM();
 	const node = Statement.linkNode({
+		SYMBOL: 'ES?:',
 		BODY: {
-			SYMBOL: 'ES?:',
 			CONDITION: {
+				SYMBOL: 'LITERAL::SIMPLE',
 				BODY: {
-					SYMBOL: 'LITERAL::SIMPLE',
 					DESTINATION: false
 				}
 			},
 			TRUE: {
+				SYMBOL: 'LITERAL::SIMPLE',
 				BODY: {
-					SYMBOL: 'LITERAL::SIMPLE',
 					DESTINATION: 123
 				}
 			},
 			FALSE: {
+				SYMBOL: 'LITERAL::SIMPLE',
 				BODY: {
-					SYMBOL: 'LITERAL::SIMPLE',
 					DESTINATION: 456
 				}
 			}

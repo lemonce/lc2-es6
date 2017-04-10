@@ -4,7 +4,7 @@ class LogStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.log = this.$linkBySymbol(BODY.LOG);
+		this.log = this.linkNode(BODY.LOG);
 	}
 
 	*execute($) {

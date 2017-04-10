@@ -33,7 +33,7 @@ class CallStatement extends LC2Statement {
 		super({POSITION});
 
 		this.identifier = BODY.IDENTIFIER;
-		this.arguments = this.$linkSegment(BODY.ARGUMENTS || []);
+		this.arguments = this.linkSegment(BODY.ARGUMENTS || []);
 	}
 
 	*iterateArgument($, callback) {

@@ -4,8 +4,8 @@ class AssertStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.test = this.$linkBySymbol(BODY.TEST);
-		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
+		this.test = this.linkNode(BODY.TEST);
+		this.limit = BODY.LIMIT && this.linkNode(BODY.LIMIT);
 	}
 
 	*execute($) {

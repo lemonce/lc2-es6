@@ -6,8 +6,8 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 		constructor ({POSITION, BODY}) {
 			super({POSITION});
 
-			this.left = this.$linkBySymbol(BODY.LEFT);
-			this.right = this.$linkBySymbol(BODY.RIGHT);
+			this.left = this.linkNode(BODY.LEFT);
+			this.right = this.linkNode(BODY.RIGHT);
 		}
 
 		*execute($) {

@@ -4,7 +4,7 @@ class WaitStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.delay = this.$linkBySymbol(BODY.DELAY);
+		this.delay = this.linkNode(BODY.DELAY);
 	}
 	
 	*execute($) {

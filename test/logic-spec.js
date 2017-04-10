@@ -8,26 +8,26 @@ describe('LOGIC::', function () {
 
 	it('ES|| @0||a=1;', function () {
 		const test = Statement.linkNode({
+			SYMBOL: 'ES||',
 			BODY: {
-				SYMBOL: 'ES||',
 				LEFT: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 0
 					}
 				},
 				RIGHT: {
+					SYMBOL: 'ES=',
 					BODY: {
-						SYMBOL: 'ES=',
 						LEFT: {
+							SYMBOL: 'ACCESS::VARIABLE',
 							BODY: {
-								SYMBOL: 'ACCESS::VARIABLE',
 								IDENTIFIER: 'a'
 							}
 						},
 						RIGHT: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 1
 							}
 						}
@@ -42,26 +42,26 @@ describe('LOGIC::', function () {
 
 	it('ES|| @1||a=2;', function () {
 		const test = Statement.linkNode({
+			SYMBOL: 'ES||',
 			BODY: {
-				SYMBOL: 'ES||',
 				LEFT: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 0
 					}
 				},
 				RIGHT: {
+					SYMBOL: 'ES=',
 					BODY: {
-						SYMBOL: 'ES=',
 						LEFT: {
+							SYMBOL: 'ACCESS::VARIABLE',
 							BODY: {
-								SYMBOL: 'ACCESS::VARIABLE',
 								IDENTIFIER: 'a'
 							}
 						},
 						RIGHT: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 1
 							}
 						}
@@ -76,26 +76,26 @@ describe('LOGIC::', function () {
 
 	it('ES&& @0&&a=1;', function () {
 		const test = Statement.linkNode({
+			SYMBOL: 'ES&&',
 			BODY: {
-				SYMBOL: 'ES&&',
 				LEFT: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 0
 					}
 				},
 				RIGHT: {
+					SYMBOL: 'ES=',
 					BODY: {
-						SYMBOL: 'ES=',
 						LEFT: {
+							SYMBOL: 'ACCESS::VARIABLE',
 							BODY: {
-								SYMBOL: 'ACCESS::VARIABLE',
 								IDENTIFIER: 'a'
 							}
 						},
 						RIGHT: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 1
 							}
 						}
@@ -110,26 +110,26 @@ describe('LOGIC::', function () {
 
 	it('ES&& @1&&a=2;', function () {
 		const test = Statement.linkNode({
+			SYMBOL: 'ES&&',
 			BODY: {
-				SYMBOL: 'ES&&',
 				LEFT: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 1
 					}
 				},
 				RIGHT: {
+					SYMBOL: 'ES=',
 					BODY: {
-						SYMBOL: 'ES=',
 						LEFT: {
+							SYMBOL: 'ACCESS::VARIABLE',
 							BODY: {
-								SYMBOL: 'ACCESS::VARIABLE',
 								IDENTIFIER: 'a'
 							}
 						},
 						RIGHT: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 2
 							}
 						}
@@ -144,11 +144,11 @@ describe('LOGIC::', function () {
 
 	it('ES! @!0;', function () {
 		const test = Statement.linkNode({
+			SYMBOL: 'ES!',
 			BODY: {
-				SYMBOL: 'ES!',
 				SOURCES: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 0
 					}
 				}

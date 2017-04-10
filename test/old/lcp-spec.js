@@ -284,61 +284,60 @@ process main () {
 	it('magic word -E', function(done) {
 		const syntaxTree = {
 			main: {
+				SYMBOL: 'PROCESS',
 				BODY: {
-					SYMBOL: 'PROCESS',
 					IDENTIFIER: 'main',
 					PARAMETER: [],
 					SEGMENT: [
 						{
+							SYMBOL: 'ES=',
 							BODY: {
-								SYMBOL: 'ES=',
 								LEFT: {
+									SYMBOL: 'ACCESS::VARIABLE',
 									BODY: {
-										SYMBOL: 'ACCESS::VARIABLE',
 										IDENTIFIER: '$IT'
 									}
 								},
 								RIGHT: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: '#btn'
 									}
 								}
 							}
 						},
 						{
-							BODY: {
-								SYMBOL: 'ACTION::CLICK',
-							}
+							SYMBOL: 'ACTION::CLICK',
+							BODY: {}
 						},
 						{
+							SYMBOL: 'ACTION::CLICK',
 							BODY: {
-								SYMBOL: 'ACTION::CLICK',
+								SYMBOL: 'LITERAL::SIMPLE',
 								SELECTOR: {
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'body a'
 									}
 								}
 							}
 						},
 						{
+							SYMBOL: 'ACTION::INPUT',
 							BODY: {
-								SYMBOL: 'ACTION::INPUT',
 								VALUE: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 111
 									}
 								}
 							}
 						},
 						{
+							SYMBOL: 'RETURN', 
 							BODY: {
-								SYMBOL: 'RETURN', 
 								RET: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'success'
 									}
 								}
@@ -370,22 +369,21 @@ process main () {
 	it('magic word with empty selector', function(done) {
 		const syntaxTree = {
 			main: {
+				SYMBOL: 'PROCESS',
 				BODY: {
-					SYMBOL: 'PROCESS',
 					IDENTIFIER: 'main',
 					PARAMETER: [],
 					SEGMENT: [
 						{
-							BODY: {
-								SYMBOL: 'ACTION::CLICK',
-							}
+							SYMBOL: 'ACTION::CLICK',
+							BODY: {}
 						},
 						{
+							SYMBOL: 'RETURN', 
 							BODY: {
-								SYMBOL: 'RETURN', 
 								RET: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 'success'
 									}
 								}

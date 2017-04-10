@@ -44,8 +44,8 @@ class IteratorStatement extends LoopStatement {
 		super({POSITION});
 
 		this.identifier = BODY.IDENTIFIER;
-		this.iterable = this.$linkBySymbol(BODY.ITERABLE);
-		this.segment = this.$linkSegment(BODY.SEGMENT);
+		this.iterable = this.linkNode(BODY.ITERABLE);
+		this.segment = this.linkSegment(BODY.SEGMENT);
 	}
 }
 
@@ -86,8 +86,8 @@ class WhileLoopStatement extends LoopStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.condition = this.$linkBySymbol(BODY.CONDITION);
-		this.segment = this.$linkSegment(BODY.SEGMENT);
+		this.condition = this.linkNode(BODY.CONDITION);
+		this.segment = this.linkSegment(BODY.SEGMENT);
 	}
 
 	*execute($) {

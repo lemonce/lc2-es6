@@ -4,7 +4,7 @@ class ESNotStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.sources = this.$linkBySymbol(BODY.SOURCES);
+		this.sources = this.linkNode(BODY.SOURCES);
 	}
 	
 	*execute($) {
@@ -19,8 +19,8 @@ class ESAndStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.left = this.$linkBySymbol(BODY.LEFT);
-		this.right = this.$linkBySymbol(BODY.RIGHT);
+		this.left = this.linkNode(BODY.LEFT);
+		this.right = this.linkNode(BODY.RIGHT);
 	}
 
 	*execute($) {
@@ -41,8 +41,8 @@ class ESORStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.left = this.$linkBySymbol(BODY.LEFT);
-		this.right = this.$linkBySymbol(BODY.RIGHT);
+		this.left = this.linkNode(BODY.LEFT);
+		this.right = this.linkNode(BODY.RIGHT);
 	}
 
 	*execute($) {

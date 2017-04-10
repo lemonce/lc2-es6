@@ -4,9 +4,9 @@ class ESConditionStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.condition = this.$linkBySymbol(BODY.CONDITION);
-		this.true = this.$linkBySymbol(BODY.TRUE);
-		this.false = this.$linkBySymbol(BODY.FALSE);
+		this.condition = this.linkNode(BODY.CONDITION);
+		this.true = this.linkNode(BODY.TRUE);
+		this.false = this.linkNode(BODY.FALSE);
 	}
 	
 	*execute($) {

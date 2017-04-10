@@ -7,8 +7,8 @@ describe('LITERAL::',function () {
 	const statementList = [
 		{
 			syntax: {
+				SYMBOL: 'LITERAL::SIMPLE',
 				BODY: {
-					SYMBOL: 'LITERAL::SIMPLE',
 					DESTINATION: 'test'
 				}
 			},
@@ -16,12 +16,12 @@ describe('LITERAL::',function () {
 		},
 		{
 			syntax: {
+				SYMBOL: 'LITERAL::ARRAY',
 				BODY: {
-					SYMBOL: 'LITERAL::ARRAY',
 					LIST: [
 						{
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 1
 							}
 						}
@@ -32,16 +32,16 @@ describe('LITERAL::',function () {
 		},
 		{
 			syntax: {
+				SYMBOL: 'LITERAL::OBJECT',
 				BODY: {
-					SYMBOL: 'LITERAL::OBJECT',
 					LIST: [
 						{
+							SYMBOL: 'LITERAL::OBJECT::PROPERTY',
 							BODY: {
-								SYMBOL: 'LITERAL::OBJECT::PROPERTY',
 								IDENTIFIER: 'a',
 								VALUE: {
+									SYMBOL: 'LITERAL::SIMPLE',
 									BODY: {
-										SYMBOL: 'LITERAL::SIMPLE',
 										DESTINATION: 2
 									}
 								},
@@ -56,7 +56,7 @@ describe('LITERAL::',function () {
 
 	for(let node of statementList) {
 		const {syntax, ret} = node;
-		it(syntax.BODY.SYMBOL, function () {
+		it(syntax.SYMBOL, function () {
 			const vm = new LCVM();
 			const statement = Statement.linkNode(syntax);
 

@@ -29,8 +29,8 @@ class ExpressionPropertyAccessStatement extends AccessStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.base = this.$linkBySymbol(BODY.BASE);
-		this.destination = this.$linkBySymbol(BODY.DESTINATION);
+		this.base = this.linkNode(BODY.BASE);
+		this.destination = this.linkNode(BODY.DESTINATION);
 	}
 
 	*getBase($) {
@@ -46,7 +46,7 @@ class IdentifierPropertyAccessStatement extends AccessStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.base = this.$linkBySymbol(BODY.BASE);
+		this.base = this.linkNode(BODY.BASE);
 		this.identifier = BODY.IDENTIFIER;
 	}
 	
@@ -68,8 +68,8 @@ function AssignmentStatementFactory(symbol, operation) {
 		constructor ({POSITION, BODY}) {
 			super({POSITION});
 
-			this.left = this.$linkBySymbol(BODY.LEFT);
-			this.right = this.$linkBySymbol(BODY.RIGHT);
+			this.left = this.linkNode(BODY.LEFT);
+			this.right = this.linkNode(BODY.RIGHT);
 		}
 		
 		*execute($) {

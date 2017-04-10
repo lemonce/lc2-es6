@@ -8,12 +8,12 @@ describe('NATIVE::', function () {
 		it('call a native process', function () {
 			const vm = new LCVM();
 			const call = Statement.linkNode({
+				SYMBOL: 'CALL',
 				BODY: {
-					SYMBOL: 'CALL',
 					IDENTIFIER: 'random',
 					ARGUMENTS: [{
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: /\d{4}/
 						}
 					}]
@@ -29,11 +29,11 @@ describe('NATIVE::', function () {
 	it('LOG', function (done) {
 		const vm = new LCVM();
 		const wait = Statement.linkNode({
+			SYMBOL: 'LOG',
 			BODY: {
-				SYMBOL: 'LOG',
 				LOG: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 4
 					}
 				}
@@ -59,11 +59,11 @@ describe('NATIVE::', function () {
 		it('can block the following statement', function (done) {
 			const vm = new LCVM();
 			const wait = Statement.linkNode({
+				SYMBOL: 'WAIT',
 				BODY: {
-					SYMBOL: 'WAIT',
 					DELAY: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: '300'
 						}
 					}
@@ -85,11 +85,11 @@ describe('NATIVE::', function () {
 			let eventEmited = false;
 			const vm = new LCVM();
 			const wait = Statement.linkNode({
+				SYMBOL: 'WAIT',
 				BODY: {
-					SYMBOL: 'WAIT',
 					DELAY: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: '300'
 						}
 					}
@@ -117,11 +117,11 @@ describe('NATIVE::', function () {
 		it('return true when success', function () {
 			const vm = new LCVM();
 			const assertStatement = Statement.linkNode({
+				SYMBOL: 'ASSERT',
 				BODY: {
-					SYMBOL: 'ASSERT',
 					TEST: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 1
 						}
 					}
@@ -134,11 +134,11 @@ describe('NATIVE::', function () {
 		it('throw error when fail in default limit.', function (done) {
 			const vm = new LCVM();
 			const assertStatement = Statement.linkNode({
+				SYMBOL: 'ASSERT',
 				BODY: {
-					SYMBOL: 'ASSERT',
 					TEST: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 0
 						}
 					}
@@ -156,17 +156,17 @@ describe('NATIVE::', function () {
 		it('throw error when fail in assigned limit. 1000ms', function (done) {
 			const vm = new LCVM();
 			const assertStatement = Statement.linkNode({
+				SYMBOL: 'ASSERT',
 				BODY: {
-					SYMBOL: 'ASSERT',
 					TEST: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 0
 						}
 					},
 					LIMIT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 1000
 						}
 					}
@@ -184,11 +184,11 @@ describe('NATIVE::', function () {
 		it('test success at 300ms', function (done) {
 			const vm = new LCVM();
 			const assertStatement = Statement.linkNode({
+				SYMBOL: 'ASSERT',
 				BODY: {
-					SYMBOL: 'ASSERT',
 					TEST: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'a'
 						}
 					}
@@ -214,17 +214,17 @@ describe('NATIVE::', function () {
 		it('halt when testing at 500ms', function (done) {
 			const vm = new LCVM();
 			const assertStatement = Statement.linkNode({
+				SYMBOL: 'ASSERT',
 				BODY: {
-					SYMBOL: 'ASSERT',
 					TEST: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 0
 						}
 					},
 					LIMIT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 1000
 						}
 					}

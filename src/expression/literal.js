@@ -25,7 +25,7 @@ class ObjectLiteralStatement extends LiteralStatement {
 		this.list = [];
 
 		BODY.LIST.forEach(propertyStatement => {
-			this.list.push(this.$linkBySymbol(propertyStatement));
+			this.list.push(this.linkNode(propertyStatement));
 		});
 	}
 
@@ -45,7 +45,7 @@ class ObjectLiteralPropertyDefinedStatement extends Statement{
 		super({POSITION});
 		
 		this.identifier = BODY.IDENTIFIER;
-		this.value = this.$linkBySymbol(BODY.VALUE);
+		this.value = this.linkNode(BODY.VALUE);
 	}
 }
 
@@ -56,7 +56,7 @@ class ArrayLiteralStatement extends LiteralStatement {
 		this.list = [];
 
 		BODY.LIST.forEach(statement => {
-			this.list.push(this.$linkBySymbol(statement));
+			this.list.push(this.linkNode(statement));
 		});
 	}
 

@@ -8,20 +8,20 @@ describe('CONTROL::', function () {
 		const vm = new LCVM();
 		const scope = { index: 0 };
 		const node = Statement.linkNode({
+			SYMBOL: 'LOOP::WHILE',
 			BODY: {
-				SYMBOL: 'LOOP::WHILE',
 				CONDITION: {
+					SYMBOL: 'ES<',
 					BODY: {
-						SYMBOL: 'ES<',
 						LEFT: {
+							SYMBOL: 'ACCESS::VARIABLE',
 							BODY: {
-								SYMBOL: 'ACCESS::VARIABLE',
 								IDENTIFIER: 'index'
 							}
 						},
 						RIGHT: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 5
 							}
 						}
@@ -29,17 +29,17 @@ describe('CONTROL::', function () {
 				},
 				SEGMENT: [
 					{
+						SYMBOL: 'ES+=',
 						BODY: {
-							SYMBOL: 'ES+=',
 							LEFT: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'index'
 								}
 							},
 							RIGHT: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 1
 								}
 							}
@@ -56,27 +56,27 @@ describe('CONTROL::', function () {
 	it('BRANCH', function () {
 		const vm = new LCVM();
 		const node =  Statement.linkNode({
+			SYMBOL: 'BRANCH',
 			BODY: {
-				SYMBOL: 'BRANCH',
 				CONDITION: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: false
 					}
 				},
 				SEGMENT_TRUE: [
 					{
+						SYMBOL: 'ES=',
 						BODY: {
-							SYMBOL: 'ES=',
 							LEFT: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'ret'
 								}
 							},
 							RIGHT: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 'abc'
 								}
 							}
@@ -85,17 +85,17 @@ describe('CONTROL::', function () {
 				],
 				SEGMENT_FALSE: [
 					{
+						SYMBOL: 'ES=',
 						BODY: {
-							SYMBOL: 'ES=',
 							LEFT: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'ret'
 								}
 							},
 							RIGHT: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 'def'
 								}
 							}
@@ -111,17 +111,17 @@ describe('CONTROL::', function () {
 	it('PROCESS', function () {
 		const vm = new LCVM();
 		const process = Statement.linkNode({
+			SYMBOL: 'PROCESS',
 			BODY: {
-				SYMBOL: 'PROCESS',
 				IDENTIFIER: 'main',
 				PARAMETER: [],
 				SEGMENT: [
 					{
+						SYMBOL: 'RETURN',
 						BODY: {
-							SYMBOL: 'RETURN',
 							RET: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 'xyz'
 								}
 							}

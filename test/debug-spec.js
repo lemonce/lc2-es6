@@ -1,15 +1,15 @@
 const a = {
+	'SYMBOL': 'PROCESS',
 	'BODY': {
-		'SYMBOL': 'PROCESS',
 		'IDENTIFIER': 'main',
 		'PARAMETER': [],
 		'SEGMENT': [
 			{
+				'SYMBOL': 'LC<@',
 				'BODY': {
-					'SYMBOL': 'LC<@',
 					'SELECTOR': {
+						'SYMBOL': 'LITERAL::SIMPLE',
 						'BODY': {
-							'SYMBOL': 'LITERAL::SIMPLE',
 							'DESTINATION': 'title',
 						}
 					}

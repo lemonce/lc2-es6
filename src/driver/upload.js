@@ -4,7 +4,7 @@ class UploadStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
 		super({POSITION});
 
-		this.fileList = this.$linkBySymbol(BODY.FILE_LIST);
+		this.fileList = this.linkNode(BODY.FILE_LIST);
 	}
 
 	*execute($) {

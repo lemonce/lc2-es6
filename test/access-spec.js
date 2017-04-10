@@ -7,8 +7,8 @@ describe('ACCESS::', function () {
 	it('VARIABLE', () => {
 		const vm = new LCVM();
 		const syntax = {
+			SYMBOL: 'ACCESS::VARIABLE',
 			BODY: {
-				SYMBOL: 'ACCESS::VARIABLE',
 				IDENTIFIER: 'abc'
 			}
 		};
@@ -21,11 +21,11 @@ describe('ACCESS::', function () {
 	it('PROPERTY::IDENTIFIER', function () {
 		const vm = new LCVM();
 		const syntax = {
+			SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 			BODY: {
-				SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 				BASE: {
+					SYMBOL: 'ACCESS::VARIABLE',
 					BODY: {
-						SYMBOL: 'ACCESS::VARIABLE',
 						IDENTIFIER: 'object'
 					}
 				},
@@ -41,17 +41,17 @@ describe('ACCESS::', function () {
 	it('PROPERTY::EXPRESSION', function () {
 		const vm = new LCVM();
 		const syntax = {
+			SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 			BODY: {
-				SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 				BASE: {
+					SYMBOL: 'ACCESS::VARIABLE',
 					BODY: {
-						SYMBOL: 'ACCESS::VARIABLE',
 						IDENTIFIER: 'object'
 					}
 				},
 				DESTINATION: {
+					SYMBOL: 'LITERAL::SIMPLE',
 					BODY: {
-						SYMBOL: 'LITERAL::SIMPLE',
 						DESTINATION: 'test'
 					}
 				}
@@ -69,17 +69,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES=',
 				BODY: {
-					SYMBOL: 'ES=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 45
 						}
 					}
@@ -92,28 +92,28 @@ describe('ACCESS::', function () {
 		it('ES= @a[0] = false', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES=',
 				BODY: {
-					SYMBOL: 'ES=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: false
 						}
 					}
@@ -129,14 +129,14 @@ describe('ACCESS::', function () {
 		it('ES= @a.b = 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES=',
 				BODY: {
-					SYMBOL: 'ES=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -144,8 +144,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -162,17 +162,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES+=',
 				BODY: {
-					SYMBOL: 'ES+=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 45
 						}
 					}
@@ -184,28 +184,28 @@ describe('ACCESS::', function () {
 		it('ES+= @a[0] += 54', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES+=',
 				BODY: {
-					SYMBOL: 'ES+=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 54
 						}
 					}
@@ -221,14 +221,14 @@ describe('ACCESS::', function () {
 		it('ES+= @a.b += 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES+=',
 				BODY: {
-					SYMBOL: 'ES+=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -236,8 +236,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -253,14 +253,14 @@ describe('ACCESS::', function () {
 		it('ES+= NaN Exception @a.b += 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES+=',
 				BODY: {
-					SYMBOL: 'ES+=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -268,8 +268,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -289,17 +289,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES-=',
 				BODY: {
-					SYMBOL: 'ES-=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 45
 						}
 					}
@@ -311,28 +311,28 @@ describe('ACCESS::', function () {
 		it('ES-= @a[0] -= 54', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES-=',
 				BODY: {
-					SYMBOL: 'ES-=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 54
 						}
 					}
@@ -348,14 +348,14 @@ describe('ACCESS::', function () {
 		it('ES-= @a.b -= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES-=',
 				BODY: {
-					SYMBOL: 'ES-=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -363,8 +363,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -380,14 +380,14 @@ describe('ACCESS::', function () {
 		it('ES-= NaN Exception @a.b -= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES-=',
 				BODY: {
-					SYMBOL: 'ES-=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -395,8 +395,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -416,17 +416,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 2 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES*=',
 				BODY: {
-					SYMBOL: 'ES*=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 45
 						}
 					}
@@ -439,28 +439,28 @@ describe('ACCESS::', function () {
 		it('ES*= @a[0] *= 54', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES*=',
 				BODY: {
-					SYMBOL: 'ES*=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 54
 						}
 					}
@@ -476,14 +476,14 @@ describe('ACCESS::', function () {
 		it('ES*= @a.b *= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES*=',
 				BODY: {
-					SYMBOL: 'ES*=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -491,8 +491,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -508,14 +508,14 @@ describe('ACCESS::', function () {
 		it('ES*= NaN Exception @a.b *= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES*=',
 				BODY: {
-					SYMBOL: 'ES*=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -523,8 +523,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -544,17 +544,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 45 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES/=',
 				BODY: {
-					SYMBOL: 'ES/=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 45
 						}
 					}
@@ -567,28 +567,28 @@ describe('ACCESS::', function () {
 		it('ES/= @a[0] /= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES/=',
 				BODY: {
-					SYMBOL: 'ES/=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -604,14 +604,14 @@ describe('ACCESS::', function () {
 		it('ES/= @a.b /= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES/=',
 				BODY: {
-					SYMBOL: 'ES/=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -619,8 +619,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -636,14 +636,14 @@ describe('ACCESS::', function () {
 		it('ES/= NaN Exception @a.b /= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES/=',
 				BODY: {
-					SYMBOL: 'ES/=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -651,8 +651,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -671,14 +671,14 @@ describe('ACCESS::', function () {
 		it('ES/= Infinity Exception @a.b /= 0', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES/=',
 				BODY: {
-					SYMBOL: 'ES/=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -686,8 +686,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 0
 						}
 					}
@@ -707,17 +707,17 @@ describe('ACCESS::', function () {
 			const vm = new LCVM();
 			const scope = { test: 45 };
 			const variableAssignment = Statement.linkNode({
+				SYMBOL: 'ES%=',
 				BODY: {
-					SYMBOL: 'ES%=',
 					LEFT: {
+						SYMBOL: 'ACCESS::VARIABLE',
 						BODY: {
-							SYMBOL: 'ACCESS::VARIABLE',
 							IDENTIFIER: 'test'
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 40
 						}
 					}
@@ -730,28 +730,28 @@ describe('ACCESS::', function () {
 		it('ES%= @a[0] %= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES%=',
 				BODY: {
-					SYMBOL: 'ES%=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::EXPRESSION',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
 							DESTINATION: {
+								SYMBOL: 'LITERAL::SIMPLE',
 								BODY: {
-									SYMBOL: 'LITERAL::SIMPLE',
 									DESTINATION: 0
 								}
 							}
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}
@@ -767,14 +767,14 @@ describe('ACCESS::', function () {
 		it('ES%= @a.b %= 3', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES%=',
 				BODY: {
-					SYMBOL: 'ES%=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -782,8 +782,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 3
 						}
 					}
@@ -799,14 +799,14 @@ describe('ACCESS::', function () {
 		it('ES%= NaN Exception @a.b %= 2', function () {
 			const vm = new LCVM();
 			const elementAssignment = Statement.linkNode({
+				SYMBOL: 'ES%=',
 				BODY: {
-					SYMBOL: 'ES%=',
 					LEFT: {
+						SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 						BODY: {
-							SYMBOL: 'ACCESS::PROPERTY::IDENTIFIER',
 							BASE: {
+								SYMBOL: 'ACCESS::VARIABLE',
 								BODY: {
-									SYMBOL: 'ACCESS::VARIABLE',
 									IDENTIFIER: 'a'
 								}
 							},
@@ -814,8 +814,8 @@ describe('ACCESS::', function () {
 						}
 					},
 					RIGHT: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 2
 						}
 					}

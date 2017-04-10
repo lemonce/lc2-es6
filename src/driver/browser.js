@@ -32,7 +32,7 @@ class JumptoStatement extends DriverStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.url = this.$linkBySymbol(BODY.URL);
+		this.url = this.linkNode(BODY.URL);
 	}
 	
 	*execute($) {
@@ -54,8 +54,8 @@ class ResizeStatement extends DriverStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.width = this.$linkBySymbol(BODY.WIDTH);
-		this.height = this.$linkBySymbol(BODY.HEIGHT);
+		this.width = this.linkNode(BODY.WIDTH);
+		this.height = this.linkNode(BODY.HEIGHT);
 	}
 	
 	*execute($) {

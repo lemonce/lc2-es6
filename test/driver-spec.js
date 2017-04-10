@@ -8,8 +8,8 @@ describe('DRIVER::', function () {
 		it('BACK', function (done) {
 			const blankVM = new LCVM();
 			const node = Statement.linkNode({
+				SYMBOL: 'BROWSER::BACK',
 				BODY: {
-					SYMBOL: 'BROWSER::BACK'
 				}
 			});
 
@@ -27,9 +27,8 @@ describe('DRIVER::', function () {
 		it('forward', function (done) {
 			const blankVM = new LCVM();
 			const node = Statement.linkNode({
-				BODY: {
-					SYMBOL: 'BROWSER::FORWARD'
-				}
+				SYMBOL: 'BROWSER::FORWARD',
+				BODY: {}
 			});
 
 			blankVM.on('fetch', (rpc, invoking) => {
@@ -46,9 +45,8 @@ describe('DRIVER::', function () {
 		it('refresh', function (done) {
 			const blankVM = new LCVM();
 			const node = Statement.linkNode({
-				BODY: {
-					SYMBOL: 'BROWSER::REFRESH'
-				}
+				SYMBOL: 'BROWSER::REFRESH',
+				BODY: {}
 			});
 
 			blankVM.on('fetch', (rpc, invoking) =>  {
@@ -65,11 +63,11 @@ describe('DRIVER::', function () {
 		it('jumpto', function (done) {
 			const blankVM = new LCVM();
 			const node = new Statement.linkNode({
+				SYMBOL: 'BROWSER::JUMPTO',
 				BODY: {
-					SYMBOL: 'BROWSER::JUMPTO',
 					URL: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'http://baidu.com'
 						}
 					}
@@ -104,11 +102,11 @@ describe('DRIVER::', function () {
 
 		function genNode(symbol) {
 			return Statement.linkNode({
+				SYMBOL: symbol,
 				BODY: {
-					SYMBOL: symbol,
 					SELECTOR: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'body a'
 						}
 					}
@@ -159,17 +157,17 @@ describe('DRIVER::', function () {
 			});
 			
 			const node = Statement.linkNode({
+				SYMBOL: 'ACTION::INPUT',
 				BODY: {
-					SYMBOL: 'ACTION::INPUT',
 					SELECTOR: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'body a'
 						}
 					},
 					VALUE: {
+						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
-							SYMBOL: 'LITERAL::SIMPLE',
 							DESTINATION: 'abc'
 						}
 					}
@@ -182,21 +180,21 @@ describe('DRIVER::', function () {
 			it('success with correct file list arguments.', function (done) {
 				const vm = new LCVM();
 				const upload = Statement.linkNode({
+					SYMBOL: 'ACTION::UPLOAD',
 					BODY: {
-						SYMBOL: 'ACTION::UPLOAD',
 						FILE_LIST: {
+							SYMBOL: 'LITERAL::ARRAY',
 							BODY: {
-								SYMBOL: 'LITERAL::ARRAY',
 								LIST: [
 									{
+										SYMBOL: 'LITERAL::SIMPLE',
 										BODY: {
-											SYMBOL: 'LITERAL::SIMPLE',
 											DESTINATION: 'jpg'
 										}
 									},
 									{
+										SYMBOL: 'LITERAL::SIMPLE',
 										BODY: {
-											SYMBOL: 'LITERAL::SIMPLE',
 											DESTINATION: 'png'
 										}
 									}
@@ -222,11 +220,11 @@ describe('DRIVER::', function () {
 			it('fail with incorrect file list.', function (done) {
 				const vm = new LCVM();
 				const upload = Statement.linkNode({
+					SYMBOL: 'ACTION::UPLOAD',
 					BODY: {
-						SYMBOL: 'ACTION::UPLOAD',
 						FILE_LIST: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'jpg'
 							}
 						}
@@ -259,11 +257,11 @@ describe('DRIVER::', function () {
 			it(OP, function (done) {
 				const vm = new LCVM();
 				const node = Statement.linkNode({
+					SYMBOL: OP,
 					BODY: {
-						SYMBOL: OP,
 						SELECTOR: {
+							SYMBOL: 'LITERAL::SIMPLE',
 							BODY: {
-								SYMBOL: 'LITERAL::SIMPLE',
 								DESTINATION: 'body a'
 							}
 						}

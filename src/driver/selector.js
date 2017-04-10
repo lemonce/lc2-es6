@@ -16,7 +16,7 @@ function SelectorStatementFactory(symbol, method) {
 	class SelectorStatementClass extends Statement {
 		constructor ({POSITION, BODY}) {
 			super({POSITION});
-			this.selector = this.$linkBySymbol(BODY.SELECTOR);
+			this.selector = this.linkNode(BODY.SELECTOR);
 		}
 		
 		*execute($) {

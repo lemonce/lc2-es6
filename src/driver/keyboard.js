@@ -4,9 +4,9 @@ class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
 		super({POSITION});
 
-		this.selector = BODY.SELECTOR && this.$linkBySymbol(BODY.SELECTOR);
-		this.value = this.$linkBySymbol(BODY.VALUE);
-		this.limit = BODY.LIMIT && this.$linkBySymbol(BODY.LIMIT);
+		this.selector = BODY.SELECTOR && this.linkNode(BODY.SELECTOR);
+		this.value = this.linkNode(BODY.VALUE);
+		this.limit = BODY.LIMIT && this.linkNode(BODY.LIMIT);
 	}
 
 	*execute($) {

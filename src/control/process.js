@@ -8,7 +8,7 @@ class ProcessStatement extends ControlStatement {
 		this.identifier = BODY.IDENTIFIER;
 		this.parameter = Array.from(BODY.PARAMETER);
 
-		this.segment = this.$linkSegment(BODY.SEGMENT);
+		this.segment = this.linkSegment(BODY.SEGMENT);
 	}
 
 	*execute($) {
@@ -40,7 +40,7 @@ class ReturnStatement extends Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.ret = this.$linkBySymbol(BODY.RET);
+		this.ret = this.linkNode(BODY.RET);
 	}
 
 	*execute($) {
