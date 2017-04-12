@@ -21,7 +21,7 @@ class ProcessStatement extends ControlStatement {
 					ret.err ? runtime.throw(ret.err) : runtime.next(ret.data);
 
 				if (value === 'PROCESS::RETURN') {
-					return $.scope['<RETURN>'];
+					return;
 				}
 				
 				$done = done;
@@ -29,7 +29,7 @@ class ProcessStatement extends ControlStatement {
 				try {
 					ret = {data: yield value};
 				} catch (err) {
-					ret = {err}
+					ret = {err};
 				}
 			}
 		}

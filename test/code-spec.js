@@ -1,4 +1,4 @@
-const {parse, parseAt} = require('lc2-compiler');
+const {parse} = require('lc2-compiler');
 const {link, LCVM} = require('../src');
 const assert = require('assert');
 
@@ -10,13 +10,11 @@ function codeTest(code, testFn) {
 	vm.on('case-end', (...args) => {
 		testFn(...args);
 	});
-	
-	vm.on('fetch', rpc => {
-		rpc.async(() => {
-			return new Promise(resolve => setTimeout(resolve, 1500));
-		});
-	});
 
+	vm.setOnFetch(() => {
+		return new Promise(resolve => setTimeout(resolve, 1500));
+	});
+	
 	vm.start();
 }
 
@@ -36,8 +34,8 @@ process test() {
 		return 5;
 	}
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 2);
+			`, (err, ret) => {
+				assert.equal(ret, 2);
 				done();
 			});
 		});
@@ -52,8 +50,8 @@ process main () {
 
 	return index;
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 5);
+			`, (err, ret) => {
+				assert.equal(ret, 5);
 				done();
 			});
 		});
@@ -71,8 +69,8 @@ process main () {
 
 	return index;
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 3);
+			`, (err, ret) => {
+				assert.equal(ret, 3);
 				done();
 			});
 
@@ -90,8 +88,8 @@ process main () {
 
 	return a;
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], undefined);
+			`, (err, ret) => {
+				assert.equal(ret, undefined);
 				done();
 			});
 
@@ -115,8 +113,8 @@ process main () {
 
 	return 'fail';
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 'success');
+			`, (err, ret) => {
+				assert.equal(ret, 'success');
 				done();
 			});
 		});
@@ -126,8 +124,8 @@ process main () {
 process main () {
 	return [0, 1, 2];
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], [0, 1, 2]);
+			`, (err, ret) => {
+				assert.deepEqual(ret, [0, 1, 2]);
 				done();
 			});
 		});
@@ -140,8 +138,8 @@ process main () {
 
 	return [0, b - a, 2];
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], [0, 1, 2]);
+			`, (err, ret) => {
+				assert.deepEqual(ret, [0, 1, 2]);
 				done();
 			});
 		});
@@ -151,8 +149,8 @@ process main () {
 process main () {
 	return [3, 4, 5][2];
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], 5);
+			`, (err, ret) => {
+				assert.deepEqual(ret, 5);
 				done();
 			});
 		});
@@ -162,8 +160,8 @@ process main () {
 process main () {
 	return [[0, 1, 2], 3, 4, 5];
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], [[0, 1, 2], 3, 4, 5]);
+			`, (err, ret) => {
+				assert.deepEqual(ret, [[0, 1, 2], 3, 4, 5]);
 				done();
 			});
 		});
@@ -173,8 +171,8 @@ process main () {
 process main () {
 	return [3, [0, 1, 2], 4, 5][1][2];
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 2);
+			`, (err, ret) => {
+				assert.equal(ret, 2);
 				done();
 			});
 		});
@@ -186,8 +184,8 @@ process main () {
 	a[0] = false;
 	return a;
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], [false]);
+			`, (err, ret) => {
+				assert.deepEqual(ret, [false]);
 				done();
 			});
 		});
@@ -201,8 +199,8 @@ process main () {
 	}
 	return sum;
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 11);
+			`, (err, ret) => {
+				assert.equal(ret, 11);
 				done();
 			});
 		});
@@ -212,8 +210,8 @@ process main () {
 process main () {
 	return {a:1, b:2};
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], {a: 1, b:2});
+			`, (err, ret) => {
+				assert.deepEqual(ret, {a: 1, b:2});
 				done();
 			});
 		});
@@ -230,8 +228,8 @@ process main () {
 	data.list[1] = false;
 	return data;
 }
-			`, vm => {
-				assert.deepEqual(vm.rootScope['<CHILD_RETURN>'], {
+			`, (err, ret) => {
+				assert.deepEqual(ret, {
 					a: 1,
 					b: 2,
 					list: [3, false, 5]
@@ -259,8 +257,8 @@ process main () {
 
 	return keystr + sum;
 }
-			`, vm => {
-				assert.equal(vm.rootScope['<CHILD_RETURN>'], 'abc6');
+			`, (err, ret) => {
+				assert.equal(ret, 'abc6');
 				done();
 			});
 

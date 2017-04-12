@@ -52,11 +52,15 @@ class CallStatement extends LC2Statement {
 		if (process) {
 			const parameterList = process.parameter;
 			
+			// Compute arguments & build child scope.
 			yield* this.iterateArgument($$, (index, ret) => {
 				childScope[parameterList[index]] = ret;
 			});
 			
-			return parentScope['<CHILD_RETURN>'] = yield* process.doExecution($$);
+			// Execute process.
+			yield* process.doExecution($$);
+
+			return childScope['<RETURN>'];
 		} else {
 			const args = [];
 			yield* this.iterateArgument($$, (index, ret) => {

@@ -74,7 +74,7 @@ describe('NATIVE::', function () {
 
 			vm.on('program-end', function () {
 				const realDelay = Date.now() - startTime;
-				assert.equal(realDelay - 300 < 10, true);
+				assert.equal(realDelay - 300 < 30, true);
 				done();
 			});
 

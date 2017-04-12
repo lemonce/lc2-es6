@@ -24,7 +24,10 @@ class LCVM extends ESVM {
 		this.rootScope = new LCScope();
 		this.loop = 0;
 
-		this.on('program-end', () => this.loopEnd());
+		this.on('program-end', (err, ret) => {
+			this.loopEnd(err, ret);
+		});
+		
 		this.on('program-start', () => {
 			const loop = this.loop;
 			Object.assign(this.rootScope, {
@@ -38,8 +41,8 @@ class LCVM extends ESVM {
 		});
 	}
 
-	loopEnd () {
-		this.emit('loop-end', this);
+	loopEnd(err, ret) {
+		this.emit('loop-end', err, ret, this);
 
 		this.loop += 1;
 		if (this.loop < this.options.times) {
@@ -47,14 +50,14 @@ class LCVM extends ESVM {
 				this.callMainProcess();
 			}, this.options.interval);
 		} else {
-			this.caseEnd();
+			this.caseEnd(err, ret);
 		}
 	}
 
-	caseEnd () {
+	caseEnd (err, ret) {
 		this.$runtime = null;
 		this.$state = 'ready';
-		this.emit('case-end', this);
+		this.emit('case-end', err, ret, this);
 	}
 
 	/**
@@ -84,7 +87,6 @@ class LCVM extends ESVM {
 	}
 
 	get state() { return this.$state; }
-	getPosition() { return this.position; }
 	start() {
 		this.$state = 'running';
 

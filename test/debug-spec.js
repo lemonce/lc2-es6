@@ -26,15 +26,11 @@ const assert = require('assert');
 
 describe.skip('DEBUG::', function () {
 	const vm = new LCVM();
-	
-	vm.on('fetch', (rpc, invoking) => {
-		rpc.async(() => {
-			return new Promise(resolve => {
-				setTimeout(() => resolve(3434),200)
-			}).then(ret => {
-				rpc.setRet(ret);
-			});					
-		});
+
+	vm.setOnFetch(() => {
+		return new Promise(resolve => {
+			setTimeout(() => resolve(3434),200)
+		});					
 	});
 
 	it('fuck', function (done) {

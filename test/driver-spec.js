@@ -13,7 +13,7 @@ describe('DRIVER::', function () {
 				}
 			});
 
-			blankVM.on('fetch', (rpc, invoking) => {
+			blankVM.setOnFetch(invoking => {
 				assert.deepEqual(invoking, {
 					method: 'back',
 					args: {}
@@ -31,7 +31,7 @@ describe('DRIVER::', function () {
 				BODY: {}
 			});
 
-			blankVM.on('fetch', (rpc, invoking) => {
+			blankVM.setOnFetch(invoking => {
 				assert.deepEqual(invoking, {
 					method: 'forward',
 					args: {}
@@ -49,7 +49,7 @@ describe('DRIVER::', function () {
 				BODY: {}
 			});
 
-			blankVM.on('fetch', (rpc, invoking) =>  {
+			blankVM.setOnFetch(invoking => {
 				assert.deepEqual(invoking, {
 					method: 'refresh',
 					args: {}
@@ -74,7 +74,7 @@ describe('DRIVER::', function () {
 				}
 			});
 
-			blankVM.on('fetch', (rpc, invoking) =>  {
+			blankVM.setOnFetch(invoking => {
 				assert.deepEqual(invoking, {
 					method: 'jumpto',
 					args: { url: 'http://baidu.com' }
@@ -117,7 +117,7 @@ describe('DRIVER::', function () {
 		for(let symbol in pointerSymbolMap) {
 			it(symbol, function (done) {
 				const vm = new LCVM();
-				vm.on('fetch', (rpc, invoking) =>  {
+				vm.setOnFetch(invoking => {
 					if (invoking.method === 'doDrop') {
 						assert.deepEqual(invoking, {
 							method: 'doDrop',
@@ -145,7 +145,7 @@ describe('DRIVER::', function () {
 
 		it('ACTION::INPUT', function (done) {
 			const vm = new LCVM();
-			vm.on('fetch', (rpc, invoking) => {
+			vm.setOnFetch(invoking => {
 				assert.deepEqual(invoking, {
 					method: 'doInput',
 					args: {
@@ -204,7 +204,7 @@ describe('DRIVER::', function () {
 					}
 				});
 
-				vm.on('fetch', (rpc, invoking) => {
+				vm.setOnFetch(invoking => {
 					assert.deepEqual(invoking, {
 						method: 'doUpload',
 						args: {
@@ -268,7 +268,7 @@ describe('DRIVER::', function () {
 					}
 				});
 
-				vm.on('fetch', (rpc, invoking) => {
+				vm.setOnFetch(invoking => {
 					assert.deepEqual(invoking, {
 						method: selectorList[OP],
 						args: { selector: 'body a' }
