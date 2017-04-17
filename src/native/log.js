@@ -1,3 +1,4 @@
+const {register} = require('es-vm');
 const {LC2Statement} = require('../lc2');
 
 class LogStatement extends LC2Statement {
@@ -14,4 +15,4 @@ class LogStatement extends LC2Statement {
 		return content;
 	}
 }
-module.exports = LogStatement.register('LOG');
+register(LogStatement, 'LOG');

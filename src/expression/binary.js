@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 const assert = require('assert');
 
 function BinaryOperatorStatementFactory(symbol, operation) {
@@ -18,7 +18,7 @@ function BinaryOperatorStatementFactory(symbol, operation) {
 		}
 	}
 
-	return BinaryOperatorStatementClass.register(symbol);
+	register(BinaryOperatorStatementClass, symbol);
 }
 
 function doOperation(val) {
@@ -66,5 +66,3 @@ const operationSymbolMap = {
 for(let symbol in operationSymbolMap) {
 	BinaryOperatorStatementFactory(symbol, operationSymbolMap[symbol]);
 }
-
-module.exports = BinaryOperatorStatementFactory;

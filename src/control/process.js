@@ -1,5 +1,5 @@
 const {ControlStatement} = require('../lc2');
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class ProcessStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
@@ -50,5 +50,5 @@ class ReturnStatement extends Statement {
 	}
 }
 
-ReturnStatement.register('RETURN');
-module.exports = ProcessStatement.register('PROCESS');
+register(ReturnStatement, 'RETURN');
+module.exports = register(ProcessStatement, 'PROCESS');

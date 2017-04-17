@@ -1,3 +1,4 @@
+const {register} = require('es-vm');
 const {LC2Statement} = require('../lc2');
 
 class WaitStatement extends LC2Statement {
@@ -21,4 +22,5 @@ class WaitStatement extends LC2Statement {
 		return yield true;
 	}
 }
-module.exports = WaitStatement.register('WAIT');
+
+register(WaitStatement, 'WAIT');

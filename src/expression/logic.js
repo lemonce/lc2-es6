@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class ESNotStatement extends Statement {
 	constructor ({POSITION, BODY}) {
@@ -13,7 +13,7 @@ class ESNotStatement extends Statement {
 		return !sources;
 	}
 }
-ESNotStatement.register('ES!');
+register(ESNotStatement, 'ES!');
 
 class ESAndStatement extends Statement {
 	constructor ({POSITION, BODY}) {
@@ -35,7 +35,7 @@ class ESAndStatement extends Statement {
 		return left;
 	}
 }
-ESAndStatement.register('ES&&');
+register(ESAndStatement, 'ES&&');
 
 class ESORStatement extends Statement {
 	constructor ({POSITION, BODY}) {
@@ -57,4 +57,4 @@ class ESORStatement extends Statement {
 		return left;
 	}
 }
-ESORStatement.register('ES||');
+register(ESORStatement, 'ES||');

@@ -1,6 +1,6 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('ACCESS::', function () {
@@ -13,7 +13,7 @@ describe('ACCESS::', function () {
 			}
 		};
 
-		assert.equal(vm.run(Statement.linkNode(syntax), {
+		assert.equal(vm.run(linkNode(syntax), {
 			abc: 234
 		}), 234);
 	});
@@ -33,7 +33,7 @@ describe('ACCESS::', function () {
 			}
 		};
 
-		assert.equal(vm.run(Statement.linkNode(syntax), {
+		assert.equal(vm.run(linkNode(syntax), {
 			object: {test: 1}
 		}), 1);
 	});
@@ -58,7 +58,7 @@ describe('ACCESS::', function () {
 			}
 		};
 
-		assert.equal(vm.run(Statement.linkNode(syntax), {
+		assert.equal(vm.run(linkNode(syntax), {
 			object: {test: 1}
 		}), 1);
 
@@ -68,7 +68,7 @@ describe('ACCESS::', function () {
 		it('ES= @test = 45', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES=',
 				BODY: {
 					LEFT: {
@@ -91,7 +91,7 @@ describe('ACCESS::', function () {
 
 		it('ES= @a[0] = false', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES=',
 				BODY: {
 					LEFT: {
@@ -128,7 +128,7 @@ describe('ACCESS::', function () {
 
 		it('ES= @a.b = 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES=',
 				BODY: {
 					LEFT: {
@@ -161,7 +161,7 @@ describe('ACCESS::', function () {
 		it('ES+= @test += 45', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES+=',
 				BODY: {
 					LEFT: {
@@ -183,7 +183,7 @@ describe('ACCESS::', function () {
 		});
 		it('ES+= @a[0] += 54', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES+=',
 				BODY: {
 					LEFT: {
@@ -220,7 +220,7 @@ describe('ACCESS::', function () {
 
 		it('ES+= @a.b += 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES+=',
 				BODY: {
 					LEFT: {
@@ -252,7 +252,7 @@ describe('ACCESS::', function () {
 
 		it('ES+= NaN Exception @a.b += 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES+=',
 				BODY: {
 					LEFT: {
@@ -288,7 +288,7 @@ describe('ACCESS::', function () {
 		it('ES-= @test -= 45', function () {
 			const vm = new LCVM();
 			const scope = { test: 250 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES-=',
 				BODY: {
 					LEFT: {
@@ -310,7 +310,7 @@ describe('ACCESS::', function () {
 		});
 		it('ES-= @a[0] -= 54', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES-=',
 				BODY: {
 					LEFT: {
@@ -347,7 +347,7 @@ describe('ACCESS::', function () {
 
 		it('ES-= @a.b -= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES-=',
 				BODY: {
 					LEFT: {
@@ -379,7 +379,7 @@ describe('ACCESS::', function () {
 
 		it('ES-= NaN Exception @a.b -= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES-=',
 				BODY: {
 					LEFT: {
@@ -415,7 +415,7 @@ describe('ACCESS::', function () {
 		it('ES*= @test *= 45', function () {
 			const vm = new LCVM();
 			const scope = { test: 2 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES*=',
 				BODY: {
 					LEFT: {
@@ -438,7 +438,7 @@ describe('ACCESS::', function () {
 
 		it('ES*= @a[0] *= 54', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES*=',
 				BODY: {
 					LEFT: {
@@ -475,7 +475,7 @@ describe('ACCESS::', function () {
 
 		it('ES*= @a.b *= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES*=',
 				BODY: {
 					LEFT: {
@@ -507,7 +507,7 @@ describe('ACCESS::', function () {
 
 		it('ES*= NaN Exception @a.b *= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES*=',
 				BODY: {
 					LEFT: {
@@ -543,7 +543,7 @@ describe('ACCESS::', function () {
 		it('ES/= @test /= 45', function () {
 			const vm = new LCVM();
 			const scope = { test: 45 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES/=',
 				BODY: {
 					LEFT: {
@@ -566,7 +566,7 @@ describe('ACCESS::', function () {
 
 		it('ES/= @a[0] /= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES/=',
 				BODY: {
 					LEFT: {
@@ -603,7 +603,7 @@ describe('ACCESS::', function () {
 
 		it('ES/= @a.b /= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES/=',
 				BODY: {
 					LEFT: {
@@ -635,7 +635,7 @@ describe('ACCESS::', function () {
 
 		it('ES/= NaN Exception @a.b /= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES/=',
 				BODY: {
 					LEFT: {
@@ -670,7 +670,7 @@ describe('ACCESS::', function () {
 
 		it('ES/= Infinity Exception @a.b /= 0', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES/=',
 				BODY: {
 					LEFT: {
@@ -706,7 +706,7 @@ describe('ACCESS::', function () {
 		it('ES%= @test %= 40', function () {
 			const vm = new LCVM();
 			const scope = { test: 45 };
-			const variableAssignment = Statement.linkNode({
+			const variableAssignment = linkNode({
 				SYMBOL: 'ES%=',
 				BODY: {
 					LEFT: {
@@ -729,7 +729,7 @@ describe('ACCESS::', function () {
 
 		it('ES%= @a[0] %= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES%=',
 				BODY: {
 					LEFT: {
@@ -766,7 +766,7 @@ describe('ACCESS::', function () {
 
 		it('ES%= @a.b %= 3', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES%=',
 				BODY: {
 					LEFT: {
@@ -798,7 +798,7 @@ describe('ACCESS::', function () {
 
 		it('ES%= NaN Exception @a.b %= 2', function () {
 			const vm = new LCVM();
-			const elementAssignment = Statement.linkNode({
+			const elementAssignment = linkNode({
 				SYMBOL: 'ES%=',
 				BODY: {
 					LEFT: {

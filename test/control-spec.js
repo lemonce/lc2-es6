@@ -1,13 +1,13 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('CONTROL::', function () {
 	it('LOOP::WHILE', function () {
 		const vm = new LCVM();
 		const scope = { index: 0 };
-		const node = Statement.linkNode({
+		const node = linkNode({
 			SYMBOL: 'LOOP::WHILE',
 			BODY: {
 				CONDITION: {
@@ -55,7 +55,7 @@ describe('CONTROL::', function () {
 	
 	it('BRANCH', function () {
 		const vm = new LCVM();
-		const node =  Statement.linkNode({
+		const node =  linkNode({
 			SYMBOL: 'BRANCH',
 			BODY: {
 				CONDITION: {
@@ -110,7 +110,7 @@ describe('CONTROL::', function () {
 
 	it('PROCESS', function () {
 		const vm = new LCVM();
-		const process = Statement.linkNode({
+		const process = linkNode({
 			SYMBOL: 'PROCESS',
 			BODY: {
 				IDENTIFIER: 'main',

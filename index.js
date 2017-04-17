@@ -1,6 +1,5 @@
 const {link, LCVM} = require('./src');
-const {Statement} = require('es-vm');
+const {linkNode} = require('es-vm');
 module.exports = {
-	linkNode: Statement.linkNode,
-	link, LCVM
+	linkNode, link, LCVM
 };

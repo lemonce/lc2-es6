@@ -1,3 +1,4 @@
+const {register} = require('es-vm');
 const {DriverStatement} = require('../lc2');
 const config = require('../config');
 
@@ -21,7 +22,7 @@ function BrowserStatementFactory(symbol, method) {
 			return true;
 		}
 	}
-	BrowserSimpleStatementClass.register(symbol);
+	register(BrowserSimpleStatementClass, symbol);
 }
 
 for(let symbol in browserActionMap) {
@@ -48,7 +49,7 @@ class JumptoStatement extends DriverStatement {
 		return true;
 	}
 }
-JumptoStatement.register('BROWSER::JUMPTO');
+register(JumptoStatement, 'BROWSER::JUMPTO');
 
 class ResizeStatement extends DriverStatement {
 	constructor ({POSITION, BODY}) {
@@ -70,4 +71,4 @@ class ResizeStatement extends DriverStatement {
 		return true;
 	}
 }
-ResizeStatement.register('BROWSER::RESIZE');
+register(ResizeStatement, 'BROWSER::RESIZE');

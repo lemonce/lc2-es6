@@ -1,6 +1,6 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('LITERAL::',function () {
@@ -58,7 +58,7 @@ describe('LITERAL::',function () {
 		const {syntax, ret} = node;
 		it(syntax.SYMBOL, function () {
 			const vm = new LCVM();
-			const statement = Statement.linkNode(syntax);
+			const statement = linkNode(syntax);
 
 			assert.deepEqual(vm.run(statement), ret);
 		});

@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 const config = require('../config');
 
 const methodSymbolMap = {
@@ -32,7 +32,7 @@ function SelectorStatementFactory(symbol, method) {
 		}
 	}
 
-	return SelectorStatementClass.register(symbol);
+	register(SelectorStatementClass, symbol);
 }
 
 for(let symbol in methodSymbolMap) {

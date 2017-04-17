@@ -1,4 +1,4 @@
-const {ESVM, Statement} = require('es-vm');
+const {ESVM, Statement, linkNode} = require('es-vm');
 const LCScope = require('./scope');
 const CallStatement = require('./native/call');
 const callMain = new CallStatement({BODY: {IDENTIFIER: 'main', ARGUMENTS: []}});
@@ -35,7 +35,7 @@ class LCVM extends ESVM {
 			});
 
 			global && global.forEach(statement => {
-				const run = Statement.linkNode(statement).doExecution({vm: this, scope: this.rootScope});
+				const run = linkNode(statement).doExecution({vm: this, scope: this.rootScope});
 				for(let tick of run);
 			});
 		});

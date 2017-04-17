@@ -1,13 +1,13 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('LOGIC::', function () {
 	const vm = new LCVM();
 
 	it('ES|| @0||a=1;', function () {
-		const test = Statement.linkNode({
+		const test = linkNode({
 			SYMBOL: 'ES||',
 			BODY: {
 				LEFT: {
@@ -41,7 +41,7 @@ describe('LOGIC::', function () {
 	});
 
 	it('ES|| @1||a=2;', function () {
-		const test = Statement.linkNode({
+		const test = linkNode({
 			SYMBOL: 'ES||',
 			BODY: {
 				LEFT: {
@@ -75,7 +75,7 @@ describe('LOGIC::', function () {
 	});
 
 	it('ES&& @0&&a=1;', function () {
-		const test = Statement.linkNode({
+		const test = linkNode({
 			SYMBOL: 'ES&&',
 			BODY: {
 				LEFT: {
@@ -109,7 +109,7 @@ describe('LOGIC::', function () {
 	});
 
 	it('ES&& @1&&a=2;', function () {
-		const test = Statement.linkNode({
+		const test = linkNode({
 			SYMBOL: 'ES&&',
 			BODY: {
 				LEFT: {
@@ -143,7 +143,7 @@ describe('LOGIC::', function () {
 	});
 
 	it('ES! @!0;', function () {
-		const test = Statement.linkNode({
+		const test = linkNode({
 			SYMBOL: 'ES!',
 			BODY: {
 				SOURCES: {

@@ -1,3 +1,4 @@
+const {register} = require('es-vm');
 const {LC2Statement} = require('../lc2');
 const {randexp} = require('randexp');
 const dateFormat = require('dateformat');
@@ -72,5 +73,6 @@ class CallStatement extends LC2Statement {
 	}
 }
 CallStatement.native = native;
+register(CallStatement, 'CALL');
 
-module.exports = CallStatement.register('CALL');
+module.exports = CallStatement;

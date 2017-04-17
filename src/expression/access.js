@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class AccessStatement extends Statement {
 	*execute($) {
@@ -59,9 +59,9 @@ class IdentifierPropertyAccessStatement extends AccessStatement {
 	}
 }
  
-ExpressionPropertyAccessStatement.register('ACCESS::PROPERTY::EXPRESSION');
-IdentifierPropertyAccessStatement.register('ACCESS::PROPERTY::IDENTIFIER');
-VariableAccessStatement.register('ACCESS::VARIABLE');
+register(ExpressionPropertyAccessStatement, 'ACCESS::PROPERTY::EXPRESSION');
+register(IdentifierPropertyAccessStatement, 'ACCESS::PROPERTY::IDENTIFIER');
+register(VariableAccessStatement, 'ACCESS::VARIABLE');
 
 function AssignmentStatementFactory(symbol, operation) {
 	class AssignmentStatementClass extends Statement {
@@ -81,7 +81,7 @@ function AssignmentStatementFactory(symbol, operation) {
 		}
 	}
 
-	return AssignmentStatementClass.register(symbol);
+	register(AssignmentStatementClass, symbol);
 }
 
 function doOperation(operation, base, destination, value) {
@@ -106,4 +106,3 @@ const operationSymbolMap = {
 for(let symbol in operationSymbolMap) {
 	AssignmentStatementFactory(symbol, operationSymbolMap[symbol]);
 }
-module.exports = AssignmentStatementFactory;

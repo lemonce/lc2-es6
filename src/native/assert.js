@@ -1,3 +1,4 @@
+const {register} = require('es-vm');
 const {LC2Statement} = require('../lc2');
 
 class AssertStatement extends LC2Statement {
@@ -36,4 +37,4 @@ class AssertStatement extends LC2Statement {
 		throw new Error('[LCVM]: Assertion Failure.');
 	}
 }
-module.exports = AssertStatement.register('ASSERT');
+register(AssertStatement, 'ASSERT');

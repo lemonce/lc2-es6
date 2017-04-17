@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class LiteralStatement extends Statement {
 	*execute($) {
@@ -71,7 +71,7 @@ class ArrayLiteralStatement extends LiteralStatement {
 	}
 }
 
-ArrayLiteralStatement.register('LITERAL::ARRAY');
-SimpleLiteralStatement.register('LITERAL::SIMPLE');
-ObjectLiteralStatement.register('LITERAL::OBJECT');
-ObjectLiteralPropertyDefinedStatement.register('LITERAL::OBJECT::PROPERTY', false);
+register(ArrayLiteralStatement, 'LITERAL::ARRAY');
+register(SimpleLiteralStatement, 'LITERAL::SIMPLE');
+register(ObjectLiteralStatement, 'LITERAL::OBJECT');
+register(ObjectLiteralPropertyDefinedStatement, 'LITERAL::OBJECT::PROPERTY', false);

@@ -20,7 +20,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "dateformat": "^2.0.0",
-    "es-vm": "^1.3.0",
+    "es-vm": "^1.4.0",
     "randexp": "^0.4.5"
   },
   "devDependencies": {

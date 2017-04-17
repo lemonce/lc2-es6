@@ -21,7 +21,7 @@ const a = {
 
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe.skip('DEBUG::', function () {
@@ -34,7 +34,7 @@ describe.skip('DEBUG::', function () {
 	});
 
 	it('fuck', function (done) {
-		vm.run(Statement.linkNode(a));
+		vm.run(linkNode(a));
 	});
 
 });

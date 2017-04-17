@@ -1,15 +1,15 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('BinaryOperator::', function () {
 	const vm = new LCVM();
 	describe('NoState -E::', function () {
 		function generateNode(left, right, operator) {
-			return new Statement.map[operator]({
+			return linkNode({
+				SYMBOL: operator,
 				BODY: {
-					SYMBOL: operator,
 					LEFT: {
 						SYMBOL: 'LITERAL::SIMPLE',
 						BODY: {
@@ -133,7 +133,7 @@ describe('BinaryOperator::', function () {
 
 	describe('NoState +E::', function () {
 		function generateNode(left, right, operator) {
-			return new Statement.map[operator]({
+			return linkNode({
 				SYMBOL: operator,
 				BODY: {
 					LEFT: {

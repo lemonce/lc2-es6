@@ -1,4 +1,4 @@
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class ESConditionStatement extends Statement {
 	constructor ({POSITION, BODY}) {
@@ -15,4 +15,4 @@ class ESConditionStatement extends Statement {
 		return yield* this[Boolean(condition)].doExecution($);
 	}
 }
-ESConditionStatement.register('ES?:');
+register(ESConditionStatement, 'ES?:');

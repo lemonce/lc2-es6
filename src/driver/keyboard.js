@@ -1,4 +1,5 @@
 const {DriverStatement} = require('../lc2');
+const {register} = require('es-vm');
 
 class InputStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
@@ -33,6 +34,6 @@ class InputStatement extends DriverStatement {
 	}
 }
 
-InputStatement.register('ACTION::INPUT');
+register(InputStatement, 'ACTION::INPUT');
 
 //TODO keypress

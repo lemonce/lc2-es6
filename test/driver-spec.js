@@ -1,13 +1,13 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('DRIVER::', function () {
 	describe('BROWSER::', function () {
 		it('BACK', function (done) {
 			const blankVM = new LCVM();
-			const node = Statement.linkNode({
+			const node = linkNode({
 				SYMBOL: 'BROWSER::BACK',
 				BODY: {
 				}
@@ -26,7 +26,7 @@ describe('DRIVER::', function () {
 
 		it('forward', function (done) {
 			const blankVM = new LCVM();
-			const node = Statement.linkNode({
+			const node = linkNode({
 				SYMBOL: 'BROWSER::FORWARD',
 				BODY: {}
 			});
@@ -44,7 +44,7 @@ describe('DRIVER::', function () {
 
 		it('refresh', function (done) {
 			const blankVM = new LCVM();
-			const node = Statement.linkNode({
+			const node = linkNode({
 				SYMBOL: 'BROWSER::REFRESH',
 				BODY: {}
 			});
@@ -62,7 +62,7 @@ describe('DRIVER::', function () {
 
 		it('jumpto', function (done) {
 			const blankVM = new LCVM();
-			const node = new Statement.linkNode({
+			const node = new linkNode({
 				SYMBOL: 'BROWSER::JUMPTO',
 				BODY: {
 					URL: {
@@ -101,7 +101,7 @@ describe('DRIVER::', function () {
 		};
 
 		function genNode(symbol) {
-			return Statement.linkNode({
+			return linkNode({
 				SYMBOL: symbol,
 				BODY: {
 					SELECTOR: {
@@ -156,7 +156,7 @@ describe('DRIVER::', function () {
 				done();
 			});
 			
-			const node = Statement.linkNode({
+			const node = linkNode({
 				SYMBOL: 'ACTION::INPUT',
 				BODY: {
 					SELECTOR: {
@@ -179,7 +179,7 @@ describe('DRIVER::', function () {
 		describe('UPLOAD', function () {
 			it('success with correct file list arguments.', function (done) {
 				const vm = new LCVM();
-				const upload = Statement.linkNode({
+				const upload = linkNode({
 					SYMBOL: 'ACTION::UPLOAD',
 					BODY: {
 						FILE_LIST: {
@@ -219,7 +219,7 @@ describe('DRIVER::', function () {
 
 			it('fail with incorrect file list.', function (done) {
 				const vm = new LCVM();
-				const upload = Statement.linkNode({
+				const upload = linkNode({
 					SYMBOL: 'ACTION::UPLOAD',
 					BODY: {
 						FILE_LIST: {
@@ -256,7 +256,7 @@ describe('DRIVER::', function () {
 		for(let OP in selectorList) {
 			it(OP, function (done) {
 				const vm = new LCVM();
-				const node = Statement.linkNode({
+				const node = linkNode({
 					SYMBOL: OP,
 					BODY: {
 						SELECTOR: {

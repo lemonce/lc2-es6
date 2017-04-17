@@ -1,11 +1,11 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 it('ES?:', function () {
 	const vm = new LCVM();
-	const node = Statement.linkNode({
+	const node = linkNode({
 		SYMBOL: 'ES?:',
 		BODY: {
 			CONDITION: {

@@ -1,13 +1,13 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('NATIVE::', function () {
 	describe('CALL', function () {
 		it('call a native process', function () {
 			const vm = new LCVM();
-			const call = Statement.linkNode({
+			const call = linkNode({
 				SYMBOL: 'CALL',
 				BODY: {
 					IDENTIFIER: 'random',
@@ -28,7 +28,7 @@ describe('NATIVE::', function () {
 
 	it('LOG', function (done) {
 		const vm = new LCVM();
-		const wait = Statement.linkNode({
+		const wait = linkNode({
 			SYMBOL: 'LOG',
 			BODY: {
 				LOG: {
@@ -58,7 +58,7 @@ describe('NATIVE::', function () {
 	describe('WAIT::', function () {
 		it('can block the following statement', function (done) {
 			const vm = new LCVM();
-			const wait = Statement.linkNode({
+			const wait = linkNode({
 				SYMBOL: 'WAIT',
 				BODY: {
 					DELAY: {
@@ -84,7 +84,7 @@ describe('NATIVE::', function () {
 		it('can stop by $halt', function (done) {
 			let eventEmited = false;
 			const vm = new LCVM();
-			const wait = Statement.linkNode({
+			const wait = linkNode({
 				SYMBOL: 'WAIT',
 				BODY: {
 					DELAY: {
@@ -116,7 +116,7 @@ describe('NATIVE::', function () {
 	describe('ASSERT::', function () {
 		it('return true when success', function () {
 			const vm = new LCVM();
-			const assertStatement = Statement.linkNode({
+			const assertStatement = linkNode({
 				SYMBOL: 'ASSERT',
 				BODY: {
 					TEST: {
@@ -133,7 +133,7 @@ describe('NATIVE::', function () {
 
 		it('throw error when fail in default limit.', function (done) {
 			const vm = new LCVM();
-			const assertStatement = Statement.linkNode({
+			const assertStatement = linkNode({
 				SYMBOL: 'ASSERT',
 				BODY: {
 					TEST: {
@@ -155,7 +155,7 @@ describe('NATIVE::', function () {
 
 		it('throw error when fail in assigned limit. 1000ms', function (done) {
 			const vm = new LCVM();
-			const assertStatement = Statement.linkNode({
+			const assertStatement = linkNode({
 				SYMBOL: 'ASSERT',
 				BODY: {
 					TEST: {
@@ -183,7 +183,7 @@ describe('NATIVE::', function () {
 
 		it('test success at 300ms', function (done) {
 			const vm = new LCVM();
-			const assertStatement = Statement.linkNode({
+			const assertStatement = linkNode({
 				SYMBOL: 'ASSERT',
 				BODY: {
 					TEST: {
@@ -213,7 +213,7 @@ describe('NATIVE::', function () {
 
 		it('halt when testing at 500ms', function (done) {
 			const vm = new LCVM();
-			const assertStatement = Statement.linkNode({
+			const assertStatement = linkNode({
 				SYMBOL: 'ASSERT',
 				BODY: {
 					TEST: {

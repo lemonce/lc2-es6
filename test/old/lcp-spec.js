@@ -1,6 +1,6 @@
 const {parse, parseAt} = require('lc2-compiler');
 const {link, LCVM} = require('../src');
-const {Statement} = require('es-vm');
+const {Statement, linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('Testing with compiler::', function () {
@@ -54,7 +54,7 @@ describe('Testing with compiler::', function () {
 	it('Sync code', function () {
 		code.forEach(str => {
 			const node = parseAt(str);
-			let ret = vm.run(Statement.linkNode(node));
+			let ret = vm.run(linkNode(node));
 		});
 	});
 

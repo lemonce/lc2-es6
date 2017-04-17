@@ -1,4 +1,5 @@
 const {ControlStatement} = require('../lc2');
+const {register} = require('es-vm');
 
 class BranchStatement extends ControlStatement {
 	constructor ({POSITION, BODY}) {
@@ -21,4 +22,6 @@ class BranchStatement extends ControlStatement {
 	}
 }
 
-module.exports = BranchStatement.register('BRANCH');
+register(BranchStatement, 'BRANCH');
+
+module.exports = BranchStatement;

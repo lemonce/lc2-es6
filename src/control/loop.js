@@ -1,5 +1,5 @@
 const {ControlStatement} = require('../lc2');
-const {Statement} = require('es-vm');
+const {Statement, register} = require('es-vm');
 
 class LoopStatement extends ControlStatement {
 	*executeSegment($) {
@@ -22,7 +22,7 @@ class LoopStatement extends ControlStatement {
 				try {
 					ret = {data: yield value};
 				} catch (err) {
-					ret = {err}
+					ret = {err};
 				}
 			}
 		}
@@ -79,8 +79,8 @@ class KeyIteratorStatement extends IteratorStatement {
 	}
 }
 
-ItemIteratorStatement.register('ITERATOR::ITEM');
-KeyIteratorStatement.register('ITERATOR::KEY');
+register(ItemIteratorStatement, 'ITERATOR::ITEM');
+register(KeyIteratorStatement, 'ITERATOR::KEY');
 
 class WhileLoopStatement extends LoopStatement {
 	constructor ({POSITION, BODY}) {
@@ -120,6 +120,6 @@ class ContinueStatement extends Statement {
 	}
 }
 
-WhileLoopStatement.register('LOOP::WHILE');
-ContinueStatement.register('CONTINUE');
-BreakStatement.register('BREAK');
+register(WhileLoopStatement, 'LOOP::WHILE');
+register(ContinueStatement, 'CONTINUE');
+register(BreakStatement, 'BREAK');

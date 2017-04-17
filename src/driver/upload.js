@@ -1,4 +1,5 @@
 const {DriverStatement} = require('../lc2');
+const {register} = require('es-vm');
 
 class UploadStatement extends DriverStatement {
 	constructor({POSITION, BODY}) {
@@ -31,4 +32,4 @@ class UploadStatement extends DriverStatement {
 	}
 }
 
-UploadStatement.register('ACTION::UPLOAD');
+register(UploadStatement, 'ACTION::UPLOAD');

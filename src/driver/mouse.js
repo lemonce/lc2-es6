@@ -1,4 +1,5 @@
 const {DriverStatement} = require('../lc2');
+const {register} = require('es-vm');
 
 const pointerSymbolMap = {
 	'ACTION::CLICK': {method: 'doClick', action: 'click'},
@@ -43,7 +44,7 @@ function PointerStatementFactory(symbol, {method, action}) {
 		}
 	}
 
-	PointerStatementClass.register(symbol);
+	register(PointerStatementClass, symbol);
 }
 
 for(let symbol in pointerSymbolMap) {
@@ -68,6 +69,6 @@ class MouseDropStatement extends DriverStatement {
 		return true;
 	}
 }
-MouseDropStatement.register('ACTION::DROP');
+register(MouseDropStatement, 'ACTION::DROP');
 
 //TODO wheel
