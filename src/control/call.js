@@ -33,7 +33,7 @@ class CallStatement extends LC2Statement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
 
-		this.identifier = BODY.IDENTIFIER;
+		this.accessor = this.linkNode(BODY.ACCESSOR);
 		this.arguments = this.linkSegment(BODY.ARGUMENTS || []);
 	}
 

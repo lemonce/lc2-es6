@@ -9,12 +9,9 @@ require('./expression/access'); // 5ES + var + property
 require('./expression/literal');
 require('./expression/logic'); // ES! ES&& ES||
 require('./expression/condition'); // ES?:
-
-// Native
-require('./native/call');
-require('./native/log');
-require('./native/wait');
-require('./native/assert');
+require('./expression/log');
+require('./expression/wait');
+require('./expression/assert');
 
 // Driver
 require('./driver/selector'); // LC7 <* />

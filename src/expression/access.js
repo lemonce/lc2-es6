@@ -25,6 +25,12 @@ class VariableAccessStatement extends AccessStatement {
 	}
 }
 
+class ThisStatement extends Statement {
+	*execute($) {
+		return $.context || null;
+	}
+}
+
 class ExpressionPropertyAccessStatement extends AccessStatement {
 	constructor ({POSITION, BODY}) {
 		super({POSITION});
@@ -59,6 +65,7 @@ class IdentifierPropertyAccessStatement extends AccessStatement {
 	}
 }
  
+register(ThisStatement, 'ACCESS::THIS');
 register(ExpressionPropertyAccessStatement, 'ACCESS::PROPERTY::EXPRESSION');
 register(IdentifierPropertyAccessStatement, 'ACCESS::PROPERTY::IDENTIFIER');
 register(VariableAccessStatement, 'ACCESS::VARIABLE');

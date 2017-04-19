@@ -4,11 +4,7 @@ const config = require('../config');
 const methodSymbolMap = {
 	'LC<!': 'isDisplay',
 	'LC<#': 'getLength',
-	'LC<@': 'getText',
-	'LC<-': 'getWidth',
-	'LC<|': 'getHeigth',
-	'LC<<': 'getLeft',
-	'LC<^': 'getTop',
+	'LC<@': 'getText'
 };
 
 function SelectorStatementFactory(symbol, method) {

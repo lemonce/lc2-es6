@@ -3,39 +3,21 @@ const {Statement, register} = require('es-vm');
 
 class LoopStatement extends ControlStatement {
 	*executeSegment($) {
-		for (let statement of this.segment) {
-			const runtime = statement.doExecution($);
-			
-			let ret = {}, $done = false;
-			while (!$done) {
-				const {done, value} =
-					ret.err ? runtime.throw(ret.err) : runtime.next(ret.data);
-
-				if (value === 'LOOP::CONTINUE') {
-					return LoopStatement.LOOP_CONTINIU;
-				} else if (value === 'LOOP::BREAK') {
-					return LoopStatement.LOOP_BREAK;
-				}
-				
-				$done = done;
-
-				try {
-					ret = {data: yield value};
-				} catch (err) {
-					ret = {err};
-				}
+		try {
+			for (let statement of this.segment) {
+				yield* statement.doExecution($);
 			}
+		} catch (signal) {
+			if (signal.type === 'break') {
+				return false;
+			} else if (signal.type === 'continue') {
+				return true;
+			}
+
+			throw signal;
 		}
 
 		return LoopStatement.LOOP_CONTINIU;
-	}
-
-	static get LOOP_CONTINIU() {
-		return true;
-	}
-
-	static get LOOP_BREAK() {
-		return false;
 	}
 }
 
@@ -56,8 +38,7 @@ class ItemIteratorStatement extends IteratorStatement {
 		for(let item of iterable) {
 			$.scope[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment($);
-			if (!nextFlag) {
+			if (yield* this.executeSegment($) === false) {
 				return;
 			}
 		}
@@ -71,16 +52,12 @@ class KeyIteratorStatement extends IteratorStatement {
 		for(let item in iterable) {
 			$.scope[this.identifier] = item;
 
-			const nextFlag = yield* this.executeSegment($);
-			if (!nextFlag) {
+			if (yield* this.executeSegment($) === false) {
 				return;
 			}
 		}
 	}
 }
-
-register(ItemIteratorStatement, 'ITERATOR::ITEM');
-register(KeyIteratorStatement, 'ITERATOR::KEY');
 
 class WhileLoopStatement extends LoopStatement {
 	constructor ({POSITION, BODY}) {
@@ -100,8 +77,7 @@ class WhileLoopStatement extends LoopStatement {
 				return;
 			}
 
-			const nextFlag = yield* this.executeSegment($);
-			if(!nextFlag) {
+			if(yield* this.executeSegment($) === false) {
 				return;
 			}
 		}
@@ -110,16 +86,18 @@ class WhileLoopStatement extends LoopStatement {
 
 class BreakStatement extends Statement {
 	*execute() {
-		yield 'LOOP::BREAK';
+		throw {type: 'break'};
 	}
 }
 
 class ContinueStatement extends Statement {
 	*execute() {
-		yield 'LOOP::CONTINUE';
+		throw {type: 'continue'};
 	}
 }
 
+register(ItemIteratorStatement, 'ITERATOR::ITEM');
+register(KeyIteratorStatement, 'ITERATOR::KEY');
 register(WhileLoopStatement, 'LOOP::WHILE');
 register(ContinueStatement, 'CONTINUE');
 register(BreakStatement, 'BREAK');

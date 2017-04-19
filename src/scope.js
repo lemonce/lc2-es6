@@ -8,6 +8,9 @@ class LCScope extends Scope {
 		this.$offsetX = '50%';
 		this.$offsetY = '50%';
 		this.$it = null;
+
+		this.limit = 5000;
+		this.wait = 500;
 	}
 
 	$new(presets) {

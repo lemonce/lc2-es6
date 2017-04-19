@@ -21,7 +21,8 @@
   "dependencies": {
     "dateformat": "^2.0.0",
     "es-vm": "^1.4.0",
-    "randexp": "^0.4.5"
+    "randexp": "^0.4.5",
+    "lc2-compiler": "^2.1.4"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -31,7 +32,6 @@
     "babelify": "^7.3.0",
     "browserify": "^14.3.0",
     "jsdoc": "^3.4.3",
-    "lc2-compiler": "^2.1.4",
     "mocha": "^3.2.0",
     "uglifyify": "^3.0.4"
   },

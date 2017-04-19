@@ -19,7 +19,7 @@ class LC2Statement extends Statement {
 	}
 
 	output($, type, data) {
-		$.vm.emit('driver', {
+		$.vm.emit('output', {
 			type,
 			data: Object.assign({
 				position: this.position
@@ -65,24 +65,6 @@ class DriverStatement extends LC2Statement {
 }
 
 class ControlStatement extends LC2Statement {
-	// *executeSegment($, segment, callback) {
-	// 	for (let statement of segment) {
-	// 		const statementRuntime = statement.doExecution($);
-	// 		let ret, $done = false;
-			
-	// 		while (!$done) {
-	// 			const {done, value} = statementRuntime.next(ret);
-
-	// 			if(callback(value)) {
-	// 				break;
-	// 			}
-				
-	// 			$done = done;
-	// 			ret = yield value;
-	// 		}
-	// 	}
-
-	// }
 }
 
 exports.ControlStatement = ControlStatement;
