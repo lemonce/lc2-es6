@@ -6,6 +6,7 @@ class LC2Statement extends Statement {
 			vm.$suspending = false;
 			vm.$suspended = true;
 			yield 'VM::BLOCKED';
+			vm.emit('suspended', vm);
 
 			return true;
 		}
