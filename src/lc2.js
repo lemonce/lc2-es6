@@ -5,8 +5,11 @@ class LC2Statement extends Statement {
 		if (vm.$suspending) {
 			vm.$suspending = false;
 			vm.$suspended = true;
-			yield 'VM::BLOCKED';
+
+			vm.$clearAllTimeout();
 			vm.emit('suspended', vm);
+
+			yield 'VM::BLOCKED';
 
 			return true;
 		}

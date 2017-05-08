@@ -138,7 +138,6 @@ class LCVM extends ESVM {
 			throw new Error(`The status is not 'running' but '${this.state}'.`);
 		}
 
-		this.$clearAllTimeout();
 		this.$suspending = true;
 
 		return this;
