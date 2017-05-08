@@ -11,13 +11,9 @@ class WaitStatement extends LC2Statement {
 	*execute($) {
 		const delay = Number(yield* this.delay.doExecution($));
 
-		if (isNaN(delay)) {
-			throw new Error('[LCVM]: Delay is not a number');
-		}
-
-		yield $.vm.$setTimeout(() => $.vm.$run(), delay);
 		this.output($, 'wait', {delay});
-		yield 'VM::BLOCKED';
+		
+		yield* this.autowait($.vm, delay);
 
 		return yield true;
 	}

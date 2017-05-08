@@ -39,6 +39,9 @@ class LCVM extends ESVM {
 				for(let tick of run);
 			});
 		});
+
+		this.$suspending = false;
+		this.$suspended = false;
 	}
 
 	loopEnd(err, ret) {
@@ -46,17 +49,15 @@ class LCVM extends ESVM {
 
 		this.loop += 1;
 		if (this.loop < this.options.times) {
-			this.$setTimeout(() => {
-				this.callMainProcess();
-			}, this.options.interval);
+			this.start();
 		} else {
+			this.loop = 0;
 			this.caseEnd(err, ret);
 		}
 	}
 
 	caseEnd (err, ret) {
 		this.$runtime = null;
-		this.$state = 'ready';
 		this.emit('case-end', err, ret, this);
 	}
 
@@ -77,28 +78,48 @@ class LCVM extends ESVM {
 		return this.$run();
 	}
 
-	callMainProcess() {
+	loadProcessMain() {
 		this.$loadProgram(callMain, {
 			scope: this.rootScope = new LCScope()
 		});
-		this.$launch();
 
 		return this;
 	}
 
-	get state() { return this.$state; }
-	start() {
-		this.$state = 'running';
+	get state() {
+		if (this.$runtime === null) {
+			return 'ready';
+		}
 
-		this.$setTimeout(() => {
-			this.callMainProcess();
+		if (this.$runtime && this.$suspending && !this.$suspended) {
+			return 'suspending';
+		}
+
+		if (this.$runtime && !this.$suspending && this.$suspended) {
+			return 'suspended';
+		}
+
+		if (this.$runtime && !this.$suspending && !this.$suspended) {
+			return 'running';
+		}
+
+		return 'unknown';
+	}
+
+	start() {
+		this.loadProcessMain().$setTimeout(() => {
+			this.$launch();
 		}, this.options.interval);
 
 		return this;
 	}
 
 	resume() {
-		this.$state = 'running';
+		if (this.state !== 'suspended') {
+			throw new Error(`The status is not 'suspended' but '${this.state}'.`);
+		}
+
+		this.$suspended = false;
 		this.$run();
 
 		return this;
@@ -106,7 +127,18 @@ class LCVM extends ESVM {
 
 	stop() {
 		this.$halt();
-		this.$state = 'ready';
+		this.$suspending = false;
+		this.$suspended = false;
+
+		return this;
+	}
+
+	pause() {
+		if (this.state !== 'running') {
+			throw new Error(`The status is not 'running' but '${this.state}'.`);
+		}
+
+		this.$suspending = true;
 
 		return this;
 	}

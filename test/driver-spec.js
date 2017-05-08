@@ -143,6 +143,42 @@ describe('DRIVER::', function () {
 			});
 		}
 
+		const keyboardSymbolMap = {
+			'ACTION::KEYDOWN': 'doKeydown',
+			'ACTION::KEYUP': 'doKeyup',
+			'ACTION::KEYPRESS': 'doKeypress'
+		};
+
+		function genKeyboardNode(symbol) {
+			return linkNode({
+				SYMBOL: symbol,
+				BODY: {
+					KEY_EXPR: {
+						SYMBOL: 'LITERAL::SIMPLE',
+						BODY: {
+							DESTINATION: 'Enter'
+						}
+					}
+				}
+			});
+		}
+
+		for(let symbol in keyboardSymbolMap) {
+			it(symbol, function (done) {
+				const vm = new LCVM();
+				vm.setOnFetch(invoking => {
+					assert.deepEqual(invoking, {
+						method: keyboardSymbolMap[symbol],
+						args: {code: 'Enter'}
+					});
+
+					done();
+				});
+				
+				vm.run(genKeyboardNode(symbol));
+			});
+		}
+
 		it('ACTION::INPUT', function (done) {
 			const vm = new LCVM();
 			vm.setOnFetch(invoking => {

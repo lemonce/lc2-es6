@@ -4,6 +4,7 @@ const {randexp} = require('randexp');
 const dateFormat = require('dateformat');
 
 const native = {
+	string: String,
 	number: num => {
 		if(isNaN(num)) {
 			throw new Error(`[LCVM]: ${num} can not be converted to number.`);

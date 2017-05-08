@@ -1,12 +1,25 @@
 const {Statement} = require('es-vm');
 
 class LC2Statement extends Statement {
-	*autowait(vm) {
-		const autoWait = vm.options.wait;
-		if (autoWait >= 0) {
-			yield vm.$setTimeout(() => vm.$run(), autoWait);
+	*autowait(vm, wait = vm.options.wait) {
+		if (vm.$suspending) {
+			vm.$suspending = false;
+			vm.$suspended = true;
+			yield 'VM::BLOCKED';
+
+			return true;
+		}
+
+		if (isNaN(wait)) {
+			throw new Error('[LCVM] timeout get a NaN argument, a number ms excepted.');
+		}
+
+		if (wait >= 0) {
+			yield vm.$setTimeout(() => vm.$run(), wait);
 			yield 'VM::BLOCKED';
 		}
+
+		return false;
 	}
 
 	*getLimit($) {

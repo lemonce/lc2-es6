@@ -13,7 +13,8 @@ class AssertStatement extends LC2Statement {
 		const limit = yield* this.getLimit($);
 		const cycleTestStart = Date.now();
 		
-		while (Date.now() - cycleTestStart <= limit) {
+		let resumeOnce = false;
+		while (Date.now() - cycleTestStart <= limit || resumeOnce) {
 			const test = Boolean(yield* this.test.doExecution($));
 			
 			if (test === true) {
@@ -24,9 +25,10 @@ class AssertStatement extends LC2Statement {
 				
 				return true;
 			} else {
-				yield $.vm.$setTimeout(() => $.vm.$run(), 50);
-				yield 'VM::BLOCKED';
+				resumeOnce = yield* this.autowait($.vm, 50);
 			}
+
+			resumeOnce = false;
 		}
 		
 		this.output($, 'assert', {
