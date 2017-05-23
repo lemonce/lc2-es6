@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
+    "test-server": "webpack-dev-server --hot --no-info --host 0.0.0.0 --port 9200",
     "build:es5": "browserify index.js -g babelify -s LCVM --outfile dist/lc2-es6-vm.es5.js",
     "build:es5-min": "browserify index.js -g babelify -g uglifyify -s LCVM --outfile dist/lc2-es6-vm.es5.min.js",
     "build:es6": "browserify index.js -s LCVM --outfile dist/lc2-es6-vm.es6.js",
@@ -25,15 +26,21 @@
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-runtime": "^6.23.0",
     "babelify": "^7.3.0",
     "browserify": "^14.3.0",
+    "css-loader": "^0.28.2",
+    "html-webpack-plugin": "^2.28.0",
     "jsdoc": "^3.4.3",
     "lc2-compiler": "2.2.3",
     "mocha": "3.3.0",
-    "uglifyify": "^3.0.4"
+    "style-loader": "^0.18.0",
+    "uglifyify": "^3.0.4",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
   },
   "typings": "index.d.ts"
 }
