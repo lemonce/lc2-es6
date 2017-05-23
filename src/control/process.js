@@ -6,7 +6,7 @@ class ProcessStatement extends ControlStatement {
 		super({POSITION});
 
 		this.identifier = BODY.IDENTIFIER;
-		this.parameter = Array.from(BODY.PARAMETER);
+		this.parameter = Array.prototype.slice.call(BODY.PARAMETER);
 
 		this.segment = this.linkSegment(BODY.SEGMENT);
 	}

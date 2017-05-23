@@ -4,7 +4,7 @@
   "description": "LemonCase2 Engine by ECMAScript 6",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 99999",
     "test-server": "webpack-dev-server --hot --no-info --host 0.0.0.0 --port 9200",
     "build:es5": "browserify index.js -g babelify -s LCVM --outfile dist/lc2-es6-vm.es5.js",
     "build:es5-min": "browserify index.js -g babelify -g uglifyify -s LCVM --outfile dist/lc2-es6-vm.es5.min.js",
@@ -35,7 +35,7 @@
     "css-loader": "^0.28.2",
     "html-webpack-plugin": "^2.28.0",
     "jsdoc": "^3.4.3",
-    "lc2-compiler": "2.2.3",
+    "lc2-compiler": "^2.2.4",
     "mocha": "3.3.0",
     "style-loader": "^0.18.0",
     "uglifyify": "^3.0.4",
