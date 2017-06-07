@@ -15,19 +15,18 @@ class InputStatement extends DriverStatement {
 
 		const selector = yield* this.getSelector($);
 		const value = yield* this.value.doExecution($);
-		const startTime = Date.now();
+		const limit = yield* this.getLimit($);
 
-		yield $.vm.fetch({
+		const duration = yield* this.autoRetry($.vm, limit, {
 			method: 'doInput',
 			args: {selector, value}
-		}, yield* this.getLimit($));
+		});
 
 		this.output($, 'action', {
-			selector,
+			selector, duration,
 			action: 'input',
 			success: true,
-			param: value,
-			duration: Date.now() - startTime
+			param: value
 		});
 
 		return true;
@@ -55,14 +54,14 @@ function KeyboardStatementFactory(symbol, {method, action}) {
 			yield* this.autowait($.vm);
 			
 			const code = yield* this.code.doExecution($);
-			const startTime = Date.now();
+			const limit = yield* this.getLimit($);
 
-			yield $.vm.fetch({method, args: {code}}, yield* this.getLimit($));
-
-			this.output($, 'action', {
-				action, code, success: true,
-				duration: Date.now() - startTime
+			const duration = yield* this.autoRetry($.vm, limit, {
+				method,
+				args: {code}
 			});
+
+			this.output($, 'action', {action, code, success: true, duration});
 
 			return true;
 		}

@@ -1,6 +1,6 @@
 'use strict';
 const {LCVM} = require('../src');
-const {Statement, linkNode} = require('es-vm');
+const {linkNode} = require('es-vm');
 const assert = require('assert');
 
 describe('DRIVER::', function () {
@@ -89,7 +89,7 @@ describe('DRIVER::', function () {
 	});
 
 	describe('ACTION::', function () {
-		this.timeout(2000);
+		this.timeout(10000);
 
 		const pointerSymbolMap = {
 			'ACTION::CLICK': 'doClick',
@@ -142,6 +142,29 @@ describe('DRIVER::', function () {
 				vm.run(genNode(symbol));
 			});
 		}
+		
+		it('click with error', function (done) {
+			const vm = new LCVM();
+			vm.setOnFetch(invoking => {
+				assert.deepEqual(invoking, {
+					method: pointerSymbolMap['ACTION::CLICK'],
+					args: {
+						button: 'left',
+						selector: 'body a'
+					}
+				});
+
+				throw null;
+			});
+
+			vm.on('program-end', exception => {
+				assert.equal(exception.message, 'Driver action request failed.');
+
+				done();
+			});
+			
+			vm.run(genNode('ACTION::CLICK'));
+		});
 
 		const keyboardSymbolMap = {
 			'ACTION::KEYDOWN': 'doKeydown',

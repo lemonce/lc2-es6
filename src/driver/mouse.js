@@ -22,22 +22,21 @@ function PointerStatementFactory(symbol, {method, action}) {
 			yield* this.autowait($.vm);
 			
 			const selector = yield* this.getSelector($);
-			const startTime = Date.now();
-
-			yield $.vm.fetch({
+			const limit = yield* this.getLimit($);
+			
+			const duration = yield* this.autoRetry($.vm, limit, {
 				method,
 				args: {
 					selector,
 					button: $.scope.$BUTTON
 					// scope.$OFFSET_X, scope.$OFFSET_Y,
 				}
-			}, yield* this.getLimit($));
+			});
 
 			this.output($, 'action', {
-				action, selector,
+				action, selector, duration,
 				success: true,
-				param: null,
-				duration: Date.now() - startTime
+				param: null
 			});
 
 			return true;

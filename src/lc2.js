@@ -1,4 +1,5 @@
 const {Statement} = require('es-vm');
+const config = require('./config');
 
 class LC2Statement extends Statement {
 	*autowait(vm, wait = vm.options.wait) {
@@ -78,6 +79,23 @@ class DriverStatement extends LC2Statement {
 		}
 
 		return $.scope.$IT;
+	}
+
+	*autoRetry(vm, limit, args) {
+		const start = Date.now();
+		
+		while (Date.now() - start <= limit) {
+			try {
+				yield vm.fetch(args, config.get('MAX_RPC_LIMIT'));
+				
+				return Date.now() - start;
+			} catch (err) {
+				yield* this.autowait(vm, 50);
+				continue;
+			}
+		}
+
+		throw new Error('Driver action request failed.');
 	}
 }
 
